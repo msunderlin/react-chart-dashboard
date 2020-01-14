@@ -1,7 +1,9 @@
 import React from 'react';
 import BarChart from './components/BarChart'; 
+import LineChart from './components/LineChart'; 
 import DoughnutChart from './components/DoughnutChart'; 
 import PieChart from './components/PieChart'; 
+import PolarChart from './components/PolarChart'; 
 
 
 
@@ -55,6 +57,12 @@ function getData() {
     title: 'Data 4',
     data: getRandomArray(6) });
 
+  data.push({
+    title: 'Data 5',
+    data: getRandomArray(5) });
+  data.push({
+    title: 'Data 6',
+    data: getRandomArray(10) });
 
   return data;
 }
@@ -80,6 +88,13 @@ class App extends React.Component{
 render(){
 	return (
 		<div className="App">
+		<div classNmae="main chart-wrapper">
+			<LineChart
+				data={this.state.feeds[0].data}
+				title={this.state.feeds[0].title}
+				color="#70CAD1"
+			/>
+		</div>
 		<div className="sub chart-wrapper">
 			<BarChart
 				data={this.state.feeds[1].data}
@@ -91,7 +106,7 @@ render(){
 			<BarChart
 				data={this.state.feeds[2].data}
 				title={this.state.feeds[2].title}
-				color="#70CAD1"
+				color="#7070D1"
 			/>
 		</div>
 		<div className="sub chart-wrapper">
@@ -103,8 +118,15 @@ render(){
 		</div>
 <div className="sub chart-wrapper">
 			<PieChart
-				data={this.state.feeds[3].data}
-				title={this.state.feeds[3].title}
+				data={this.state.feeds[4].data}
+				title={this.state.feeds[4].title}
+		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
+			/>
+		</div>
+		<div className="sub chart-wrapper">
+			<PolarChart
+				data={this.state.feeds[5].data}
+				title={this.state.feeds[5].title}
 		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
 			/>
 		</div>
