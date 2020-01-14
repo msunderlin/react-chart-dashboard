@@ -1,4 +1,5 @@
 import React from 'react';
+import Layout from './components/layout/Layout';
 import BarChart from './components/charts/BarChart'; 
 import LineChart from './components/charts/LineChart'; 
 import DoughnutChart from './components/charts/DoughnutChart'; 
@@ -87,50 +88,57 @@ class App extends React.Component{
 
 render(){
 	return (
-		<div className="App">
-		<div classNmae="main chart-wrapper">
+<div>
+		<Layout >
+		<div key="a" className="grid-item" data-grid={{x:0, y:0,w:4,h:50,static:true}}>
+			<div><h1>This is the nav bar</h1></div>
+		</div>
+		<div key="b" className="grid-item" data-grid={{x:4,y:0,w:18,h:4,minH:8,minW:8}}>
+
 			<LineChart
 				data={this.state.feeds[0].data}
 				title={this.state.feeds[0].title}
 				color="#70CAD1"
 			/>
 		</div>
-		<div className="sub chart-wrapper">
-			<BarChart
-				data={this.state.feeds[1].data}
-				title={this.state.feeds[1].title}
-				color="#70CAD1"
-			/>
-		</div>
-		<div className="sub chart-wrapper">
+		<div key="c" className="grid-item" data-grid={{x:4, y:0,w:8,h:8,minH:8,minW:8}}>
+			
 			<BarChart
 				data={this.state.feeds[2].data}
 				title={this.state.feeds[2].title}
 				color="#7070D1"
 			/>
 		</div>
-		<div className="sub chart-wrapper">
-			<DoughnutChart
-				data={this.state.feeds[3].data}
-				title={this.state.feeds[3].title}
-		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
+		<div key="d" className="grid-item" data-grid={{x:4,y:0,w:6,h:8,minH:8,minW:8}}>
+			
+			<BarChart
+				data={this.state.feeds[2].data}
+				title={this.state.feeds[2].title}
+				color="#70CAD1"
 			/>
 		</div>
-<div className="sub chart-wrapper">
-			<PieChart
+		<div key="e" className="grid-item" data-grid={{x:8, y:0,w:6,h:8,minH:8,minW:8}}>
+			<PieChart 
 				data={this.state.feeds[4].data}
 				title={this.state.feeds[4].title}
 		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
 			/>
 		</div>
-		<div className="sub chart-wrapper">
-			<PolarChart
-				data={this.state.feeds[5].data}
-				title={this.state.feeds[5].title}
+		<div key="f" className="grid-item" data-grid={{x:8, y:0,w:6,h:8,minH:8,minW:8}}>
+			<DoughnutChart
+				data={this.state.feeds[4].data}
+				title={this.state.feeds[4].title}
 		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
 			/>
 		</div>
-
+		<div key="g" className="grid-item" data-grid={{x:4, y:0,w:6,h:8,minH:8,minW:8}}>
+			<PolarChart 
+				data={this.state.feeds[4].data}
+				title={this.state.feeds[4].title}
+		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
+			/>
+		</div>
+		</Layout>
 		</div>
 	);
 }
