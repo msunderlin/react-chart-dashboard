@@ -1,9 +1,9 @@
 import React from 'react';
-import BarChart from './components/BarChart'; 
-import LineChart from './components/LineChart'; 
-import DoughnutChart from './components/DoughnutChart'; 
-import PieChart from './components/PieChart'; 
-import PolarChart from './components/PolarChart'; 
+import BarChart from './components/charts/BarChart'; 
+import LineChart from './components/charts/LineChart'; 
+import DoughnutChart from './components/charts/DoughnutChart'; 
+import PieChart from './components/charts/PieChart'; 
+import PolarChart from './components/charts/PolarChart'; 
 
 
 
