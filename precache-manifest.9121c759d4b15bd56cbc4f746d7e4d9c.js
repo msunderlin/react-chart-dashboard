@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "0760a0046a3bec135cbe20fa99532e44",
+    "revision": "182809cb793a68603fa16e4c7f2e7591",
     "url": "/react-chart-dashboard/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/react-chart-dashboard/static/js/2.81bedbef.chunk.js.LICENSE"
   },
   {
-    "revision": "0d8f2aea535e1a14c5ee",
-    "url": "/react-chart-dashboard/static/js/main.23077e3c.chunk.js"
+    "revision": "d2bca6a09903de093aea",
+    "url": "/react-chart-dashboard/static/js/main.d1d41a1c.chunk.js"
   },
   {
     "revision": "b3ea8692679729bc4468",
