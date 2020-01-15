@@ -1,12 +1,8 @@
 import React from 'react';
+import {Card, Container} from '@material-ui/core';
 import NavBar from './components/navbar/NavBar';
 import Layout from './components/layout/Layout';
-import BarChart from './components/charts/BarChart'; 
-import LineChart from './components/charts/LineChart'; 
-import DoughnutChart from './components/charts/DoughnutChart'; 
-import PieChart from './components/charts/PieChart'; 
-import PolarChart from './components/charts/PolarChart'; 
-import {Card, Button, Drawer, Container} from '@material-ui/core';
+import ChartWrapper from './components/charts/ChartWrapper'; 
 
 
 // Data generation
@@ -70,11 +66,83 @@ function getData() {
 }
 
 
+function getCharts(){
+	let data = [];
+	data.push({
+		type:'line',
+		interval:0,
+		defaultpos: {
+			h:2,
+			w:2,
+			minW:2,
+			minH:2
+		},
+		source:''
+	});
+	data.push({
+		type:'bar',
+		interval:0,
+		defaultpos: {
+			h:2,
+			w:2,
+			minW:2,
+			minH:2
+		},
+		source:''
+	});
+	data.push({
+		type:'bar',
+		interval:0,
+		defaultpos: {
+			h:2,
+			w:2,
+			minW:2,
+			minH:2
+		},
+		source:''
+	});
+	data.push({
+		type:'pie',
+		interval:0,
+		defaultpos: {
+			h:2,
+			w:2,
+			minW:2,
+			minH:2
+		},
+		source:''
+	});
+	data.push({
+		type:'doughnut',
+		interval:0,
+		defaultpos: {
+			h:2,
+			w:2,
+			minW:2,
+			minH:2
+		},
+		source:''
+	});
+	data.push({
+		type:'polar',
+		interval:0,
+		defaultpos: {
+			h:2,
+			w:2,
+			minW:2,
+			minH:2
+		},
+		source:''
+	});
+	return data;
+
+}
 
 class App extends React.Component{
   constructor(props){
 	  super(props);
 	  this.state = {
+		  chart:getCharts(),
 		  feeds:getData()
 	  };
   }
@@ -90,21 +158,15 @@ class App extends React.Component{
 render(){
 	return (
 <div>	
-		<Drawer variant="permanent" anchor="left" elevation="5">
-			<ul style={{padding:"15px"}}>
-		<li>Item 1</li>
-		<li>Item 2</li>
-		<li>Item 3</li>
-		<li>Item 4</li>
-		<li>Item 5</li>
-		</ul>
-		</Drawer>
 		<Container>
 		<NavBar>
 			<h1>Hello From The NavBar</h1>
 		</NavBar>
 		<Layout >
-		<Card variant="outlined" key="b" data-grid={{x:1,y:0,w:22,h:4,minH:8,minW:8}}>
+			{(()=>{
+				this.state.charts.map(<ChartWrapper></ChartWrapper> )
+			})}
+		<Card variant="outlined" key="b" data-grid={{x:1,y:0,w:22,h:4,minH:2,minW:2}}>
 
 			<LineChart
 				data={this.state.feeds[0].data}
@@ -112,7 +174,7 @@ render(){
 				color="#70CAD1"
 			/>
 		</Card>
-				<Card variant="outlined" key="c" className="grid-item" data-grid={{x:4, y:0,w:8,h:8,minH:8,minW:8}}>
+				<Card variant="outlined" key="c" className="grid-item" data-grid={{x:4, y:0,w:8,h:8,minH:2,minW:2}}>
 			
 			<BarChart
 				data={this.state.feeds[2].data}
@@ -120,7 +182,7 @@ render(){
 				color="#7070D1"
 			/>
 		</Card>
-	 <Card variant="outlined" key="d" className="grid-item" data-grid={{x:4,y:0,w:6,h:8,minH:8,minW:8}}>
+	 <Card variant="outlined" key="d" className="grid-item" data-grid={{x:4,y:0,w:6,h:8,minH:2,minW:2}}>
 			
 			<BarChart
 				data={this.state.feeds[2].data}
@@ -128,21 +190,21 @@ render(){
 				color="#70CAD1"
 			/>
 		</Card>
-<Card variant="outlined" key="e" className="grid-item" data-grid={{x:8, y:0,w:6,h:8,minH:8,minW:8}}>
+<Card variant="outlined" key="e" className="grid-item" data-grid={{x:8, y:0,w:6,h:8,minH:2,minW:2}}>
 			<PieChart 
 				data={this.state.feeds[4].data}
 				title={this.state.feeds[4].title}
 		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
 			/>
 		</Card>
-		<Card variant="outlined" key="f" className="grid-item" data-grid={{x:8, y:0,w:6,h:8,minH:8,minW:8}}>
+		<Card variant="outlined" key="f" className="grid-item" data-grid={{x:8, y:0,w:6,h:8,minH:2,minW:2}}>
 			<DoughnutChart
 				data={this.state.feeds[4].data}
 				title={this.state.feeds[4].title}
 		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
 			/>
 		</Card>
-		<Card variant="outlined" key="g" className="grid-item" data-grid={{x:4, y:0,w:6,h:8,minH:8,minW:8}}>
+		<Card variant="outlined" key="g" className="grid-item" data-grid={{x:4, y:0,w:6,h:8,minH:2,minW:2}}>
 		
 			<PolarChart 
 				data={this.state.feeds[4].data}
