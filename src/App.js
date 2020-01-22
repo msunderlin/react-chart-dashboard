@@ -2,8 +2,11 @@ import React from 'react';
 import {Card, Container} from '@material-ui/core';
 import NavBar from './components/navbar/NavBar';
 import Layout from './components/layout/Layout';
-import ChartWrapper from './components/charts/ChartWrapper'; 
-
+import BarChart from './components/charts/BarChart'; 
+import LineChart from './components/charts/LineChart'; 
+import DoughnutChart from './components/charts/DoughnutChart'; 
+import PieChart from './components/charts/PieChart'; 
+import PolarChart from './components/charts/PolarChart';
 
 // Data generation
 function getRandomArray(numItems) {
@@ -163,9 +166,6 @@ render(){
 			<h1>Hello From The NavBar</h1>
 		</NavBar>
 		<Layout >
-			{(()=>{
-				this.state.charts.map(<ChartWrapper></ChartWrapper> )
-			})}
 		<Card variant="outlined" key="b" data-grid={{x:1,y:0,w:22,h:4,minH:2,minW:2}}>
 
 			<LineChart
