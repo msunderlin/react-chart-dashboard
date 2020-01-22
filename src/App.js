@@ -1,5 +1,5 @@
 import React from 'react';
-import {Container} from '@material-ui/core';
+import {Container, Card} from '@material-ui/core';
 import NavBar from './components/navbar/NavBar';
 import Layout from './components/layout/Layout';
 import ChartWrapper from './components/charts/ChartWrapper';
@@ -65,7 +65,7 @@ function getData() {
 }
 
 
-function getCharts(){
+ function getCharts(){
 	let data = [];
 	data.push({
 		type:'line',
@@ -135,7 +135,21 @@ render(){
 		</NavBar>
 		<Layout>
 			{this.state.chart.map((chart,i)=>{
-				return <ChartWrapper chart={chart} key={i} feeds={this.state.feeds}/>
+				return (	
+                <Card variant="outlined" key={i} className="grid-item" data-grid={{
+						x: chart.defaultpos.h * i,
+						y: chart.defaultpos.w * i,
+						h: chart.defaultpos.h,
+						w: chart.defaultpos.w,
+						minH: chart.defaultpos.minH,
+						minW: chart.defaultpos.minW,
+
+				}}
+				
+				>
+					<ChartWrapper chart={chart}  feeds={this.state.feeds}/>
+				</Card>
+				);
 			})
 		}
 		</Layout>
