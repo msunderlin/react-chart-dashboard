@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Container} from '@material-ui/core';
+import {Container} from '@material-ui/core';
 import NavBar from './components/navbar/NavBar';
 import Layout from './components/layout/Layout';
 import ChartWrapper from './components/charts/ChartWrapper';
@@ -70,67 +70,37 @@ function getCharts(){
 	data.push({
 		type:'line',
 		interval:0,
-		defaultpos: {
-			h:2,
-			w:2,
-			minW:2,
-			minH:2
-		},
+		defaultpos: "{h:2,w:2,minW:2,minH:2}",
 		source:''
 	});
 	data.push({
 		type:'bar',
 		interval:0,
-		defaultpos: {
-			h:2,
-			w:2,
-			minW:2,
-			minH:2
-		},
+		defaultpos: "{h:2,w:2,minW:2,minH:2}",
 		source:''
 	});
 	data.push({
 		type:'bar',
 		interval:0,
-		defaultpos: {
-			h:2,
-			w:2,
-			minW:2,
-			minH:2
-		},
+		defaultpos: "{h:2,w:2,minW:2,minH:2}",
 		source:''
 	});
 	data.push({
 		type:'pie',
 		interval:0,
-		defaultpos: {
-			h:2,
-			w:2,
-			minW:2,
-			minH:2
-		},
+		defaultpos: "{h:2,w:2,minW:2,minH:2}",
 		source:''
 	});
 	data.push({
 		type:'doughnut',
 		interval:0,
-		defaultpos: {
-			h:2,
-			w:2,
-			minW:2,
-			minH:2
-		},
+		defaultpos: "{h:2,w:2,minW:2,minH:2}",
 		source:''
 	});
 	data.push({
 		type:'polar',
 		interval:0,
-		defaultpos: {
-			h:2,
-			w:2,
-			minW:2,
-			minH:2
-		},
+		defaultpos: "{h:2,w:2,minW:2,minH:2}",
 		source:''
 	});
 	return data;
@@ -163,12 +133,12 @@ render(){
 		<NavBar>
 			<h1>Hello From The NavBar</h1>
 		</NavBar>
-		 if(this.state.chart){
-			this.state.chart.map((chart,i)=>{
-				return <ChartWrapper chart={chart} />
+		<Layout>
+			{this.state.chart.map((chart,i)=>{
+				return <ChartWrapper chart={chart} key={i} feeds={this.state.feeds}/>
 			})
 		}
-		
+		</Layout>
 	
 		</Container>
 		</div>
