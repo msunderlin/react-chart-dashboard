@@ -90,15 +90,6 @@ class App extends React.Component{
 render(){
 	return (
 <div>	
-		<Drawer variant="permanent" anchor="left" elevation="5">
-			<ul style={{padding:"15px"}}>
-		<li>Item 1</li>
-		<li>Item 2</li>
-		<li>Item 3</li>
-		<li>Item 4</li>
-		<li>Item 5</li>
-		</ul>
-		</Drawer>
 		<Container>
 		<NavBar>
 			<h1>Hello From The NavBar</h1>
