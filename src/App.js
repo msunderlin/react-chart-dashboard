@@ -163,8 +163,12 @@ render(){
 		<NavBar>
 			<h1>Hello From The NavBar</h1>
 		</NavBar>
+		 if(this.state.chart){
+			this.state.chart.map((chart,i)=>{
+				return <ChartWrapper chart={chart} />
+			})
+		}
 		
-			<ChartWrapper chart={this.state.chart}></ChartWrapper> 
 	
 		</Container>
 		</div>

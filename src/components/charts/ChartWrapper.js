@@ -1,15 +1,23 @@
 import React, { Component } from 'react';
-import BarChart from './components/charts/BarChart'; 
-import LineChart from './components/charts/LineChart'; 
-import DoughnutChart from './components/charts/DoughnutChart'; 
-import PieChart from './components/charts/PieChart'; 
-import PolarChart from './components/charts/PolarChart'; 
+import BarChart from './BarChart'; 
+import LineChart from './LineChart'; 
+import DoughnutChart from './DoughnutChart'; 
+import PieChart from './PieChart'; 
+import PolarChart from './PolarChart'; 
 
-const ChartWrapper = ()=>{
-    //build out chart
-    let data = this.props.chart;
-    console.log(data);
+class ChartWrapper extends Component{
+    
+    render(){
 
+        const chart = this.props.chart;
+        const type = chart.type;
+        switch(type){
+            case 'bar':
+                return ();
+                break;
+        }
+        return <h1>{this.props.chart.type}</h1>;
+    }
 }
 
 export default ChartWrapper;
