@@ -163,55 +163,9 @@ render(){
 			<h1>Hello From The NavBar</h1>
 		</NavBar>
 		<Layout >
-			{(()=>{
-				this.state.charts.map(<ChartWrapper></ChartWrapper> )
-			})}
-		<Card variant="outlined" key="b" data-grid={{x:1,y:0,w:22,h:4,minH:2,minW:2}}>
-
-			<LineChart
-				data={this.state.feeds[0].data}
-				title={this.state.feeds[0].title}
-				color="#70CAD1"
-			/>
-		</Card>
-				<Card variant="outlined" key="c" className="grid-item" data-grid={{x:4, y:0,w:8,h:8,minH:2,minW:2}}>
-			
-			<BarChart
-				data={this.state.feeds[2].data}
-				title={this.state.feeds[2].title}
-				color="#7070D1"
-			/>
-		</Card>
-	 <Card variant="outlined" key="d" className="grid-item" data-grid={{x:4,y:0,w:6,h:8,minH:2,minW:2}}>
-			
-			<BarChart
-				data={this.state.feeds[2].data}
-				title={this.state.feeds[2].title}
-				color="#70CAD1"
-			/>
-		</Card>
-<Card variant="outlined" key="e" className="grid-item" data-grid={{x:8, y:0,w:6,h:8,minH:2,minW:2}}>
-			<PieChart 
-				data={this.state.feeds[4].data}
-				title={this.state.feeds[4].title}
-		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
-			/>
-		</Card>
-		<Card variant="outlined" key="f" className="grid-item" data-grid={{x:8, y:0,w:6,h:8,minH:2,minW:2}}>
-			<DoughnutChart
-				data={this.state.feeds[4].data}
-				title={this.state.feeds[4].title}
-		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
-			/>
-		</Card>
-		<Card variant="outlined" key="g" className="grid-item" data-grid={{x:4, y:0,w:6,h:8,minH:2,minW:2}}>
 		
-			<PolarChart 
-				data={this.state.feeds[4].data}
-				title={this.state.feeds[4].title}
-		        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
-			/>
-		</Card>
+			<ChartWrapper charts={this.state.chart} />
+	
 		</Layout>
 		</Container>
 		</div>
