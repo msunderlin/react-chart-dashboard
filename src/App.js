@@ -2,8 +2,7 @@ import React from 'react';
 import {Card, Container} from '@material-ui/core';
 import NavBar from './components/navbar/NavBar';
 import Layout from './components/layout/Layout';
-import ChartWrapper from './components/charts/ChartWrapper'; 
-
+import ChartWrapper from './components/charts/ChartWrapper';
 
 // Data generation
 function getRandomArray(numItems) {
@@ -150,7 +149,9 @@ class App extends React.Component{
     window.setInterval(() => {
 	    console.log('refreshing');
       this.setState({
-        feeds: getData() });
+		  chart:getCharts(),
+		  feeds:getData()
+      });
 
     }, 5000);
   }
@@ -162,11 +163,9 @@ render(){
 		<NavBar>
 			<h1>Hello From The NavBar</h1>
 		</NavBar>
-		<Layout >
 		
-			<ChartWrapper charts={this.state.chart} />
+			<ChartWrapper chart={this.state.chart}></ChartWrapper> 
 	
-		</Layout>
 		</Container>
 		</div>
 	);
