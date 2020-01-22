@@ -70,38 +70,38 @@ function getCharts(){
 	data.push({
 		type:'line',
 		interval:0,
-		defaultpos: "{h:2,w:2,minW:2,minH:2}",
-		source:''
+		defaultpos: {h:2,w:2,minW:2,minH:2},
+		source:0
 	});
 	data.push({
 		type:'bar',
 		interval:0,
-		defaultpos: "{h:2,w:2,minW:2,minH:2}",
-		source:''
+		defaultpos: {h:2,w:2,minW:2,minH:2},
+		source:2
 	});
 	data.push({
 		type:'bar',
 		interval:0,
-		defaultpos: "{h:2,w:2,minW:2,minH:2}",
-		source:''
+		defaultpos: {h:2,w:2,minW:2,minH:2},
+		source: 2
 	});
 	data.push({
 		type:'pie',
 		interval:0,
-		defaultpos: "{h:2,w:2,minW:2,minH:2}",
-		source:''
+		defaultpos: {h:2,w:2,minW:2,minH:2},
+		source:4
 	});
 	data.push({
 		type:'doughnut',
 		interval:0,
-		defaultpos: "{h:2,w:2,minW:2,minH:2}",
-		source:''
+		defaultpos: {h:2,w:2,minW:2,minH:2},
+		source:4
 	});
 	data.push({
 		type:'polar',
 		interval:0,
-		defaultpos: "{h:2,w:2,minW:2,minH:2}",
-		source:''
+		defaultpos: {h:2,w:2,minW:2,minH:2},
+		source:4
 	});
 	return data;
 

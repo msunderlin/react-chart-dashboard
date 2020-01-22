@@ -12,14 +12,16 @@ class ChartWrapper extends Component{
 
         const chart = this.props.chart;
         const type = chart.type;
+        const source = chart.source;
+        const pos = chart.defaultpos;
         switch(type){
             case 'bar':
                 return (
-                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={chart.defaultpos}>
+                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={pos}>
                     <h1>Bar Chart</h1>
         			<BarChart
-	        			data={this.props.feeds[2].data}
-		        		title={this.props.feeds[2].title}
+	        			data={this.props.feeds[chart.source].data}
+		        		title={this.props.feeds[chart.source].title}
 			        	color="#7070D1"
 			        />
 		        </Card>
@@ -27,10 +29,11 @@ class ChartWrapper extends Component{
                 break;
             case 'line':
                 return (
-                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={chart.defaultpos}>
+                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={pos}>
+                    <h1>Line Chart</h1>
         			<LineChart
-	        			data={this.props.feeds[2].data}
-		        		title={this.props.feeds[2].title}
+	        			data={this.props.feeds[chart.source].data}
+		        		title={this.props.feeds[chart.source].title}
 			        	color="#7070D1"
 			        />
 		        </Card>
@@ -38,39 +41,46 @@ class ChartWrapper extends Component{
                 break;
                 case 'doughnut':
                 return (
-                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={chart.defaultpos}>
+                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={pos}>
+                    <h1>Doughnut Chart</h1>
         			<DoughnutChart
+	        			data={this.props.feeds[chart.source].data}
+		        		title={this.props.feeds[chart.source].title}
 	        			data={this.props.feeds[2].data}
-		        		title={this.props.feeds[2].title}
-			        	color="#7070D1"
+                        title={this.props.feeds[2].title}
+                        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
 			        />
 		        </Card>
                 );
                 break;
                 case 'pie':
                 return (
-                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={chart.defaultpos}>
+                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={pos}>
+                    <h1>Pie Chart</h1>
         			<PieChart
-	        			data={this.props.feeds[2].data}
-		        		title={this.props.feeds[2].title}
-			        	color="#7070D1"
+	        			data={this.props.feeds[chart.source].data}
+		        		title={this.props.feeds[chart.source].title}
+                        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
 			        />
 		        </Card>
                 );
                 break;
                 case 'polar':
                 return (
-                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={chart.defaultpos}>
+                <Card variant="outlined" key={this.props.key} className="grid-item" data-grid={pos}>
+                    <h1>Polar Chart</h1>
         			<PolarChart
-	        			data={this.props.feeds[2].data}
-		        		title={this.props.feeds[2].title}
-			        	color="#7070D1"
+	        			data={this.props.feeds[chart.source].data}
+		        		title={this.props.feeds[chart.source].title}
+                        colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
 			        />
 		        </Card>
                 );
                 break;
+                default:
+                    return '';
+                    break;
         }
-        return <h1>{this.props.chart.type}</h1>;
     }
 }
 
