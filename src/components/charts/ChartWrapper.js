@@ -33,8 +33,6 @@ class ChartWrapper extends Component{
         			<DoughnutChart
 	        			data={this.props.feeds[chart.source].data}
 		        		title={this.props.feeds[chart.source].title}
-	        			data={this.props.feeds[2].data}
-                        title={this.props.feeds[2].title}
                         colors= {['#a8e0ff', '#8ee3f5', '#70cad1', '#3e517a', '#b08ea2', '#BBB6DF'] }
 			        />
                 );
