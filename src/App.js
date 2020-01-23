@@ -72,7 +72,7 @@ function getCharts() {
 
   data.push({
     type: "bar",
-    interval: 5000,
+    interval: 15000,
     defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
     source: "http://local.admin.admediary.com/test/getArray.php?count=7"
   });
@@ -84,7 +84,7 @@ function getCharts() {
   });
   data.push({
     type: "bar",
-    interval: 5000,
+    interval: 2000,
     defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
     source: "http://local.admin.admediary.com/test/getArray.php?count=3"
   });
