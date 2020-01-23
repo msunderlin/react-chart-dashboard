@@ -1,6 +1,5 @@
-
-import React from 'react';
-import Chart from 'chart.js';
+import React from "react";
+import Chart from "chart.js";
 
 class PieChart extends React.Component {
   constructor(props) {
@@ -16,21 +15,21 @@ class PieChart extends React.Component {
 
   componentDidMount() {
     this.myChart = new Chart(this.canvasRef.current, {
-      type: 'pie',
+      type: "pie",
       options: {
-	      maintainAspectRatio: false
+        maintainAspectRatio: false
       },
       data: {
         labels: this.props.data.map(d => d.label),
-        datasets: [{
-          data: this.props.data.map(d => d.value),
-          backgroundColor: this.props.colors
-        }]
+        datasets: [
+          {
+            data: this.props.data.map(d => d.value),
+            backgroundColor: this.props.colors
+          }
+        ]
       }
     });
-
   }
-
 
   render() {
     return <canvas ref={this.canvasRef} />;

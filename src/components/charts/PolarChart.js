@@ -1,6 +1,5 @@
-
-import React from 'react';
-import Chart from 'chart.js';
+import React from "react";
+import Chart from "chart.js";
 
 class PolarChart extends React.Component {
   constructor(props) {
@@ -16,21 +15,21 @@ class PolarChart extends React.Component {
 
   componentDidMount() {
     this.myChart = new Chart(this.canvasRef.current, {
-      type: 'polarArea',
+      type: "polarArea",
       options: {
-	      maintainAspectRatio: false
+        maintainAspectRatio: false
       },
       data: {
         labels: this.props.data.map(d => d.label),
-        datasets: [{
-          data: this.props.data.map(d => d.value),
-          backgroundColor: this.props.colors
-        }]
+        datasets: [
+          {
+            data: this.props.data.map(d => d.value),
+            backgroundColor: this.props.colors
+          }
+        ]
       }
     });
-
   }
-
 
   render() {
     return <canvas ref={this.canvasRef} />;
