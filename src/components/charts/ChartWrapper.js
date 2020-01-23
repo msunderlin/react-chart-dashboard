@@ -9,20 +9,26 @@ class ChartWrapper extends Component {
   constructor(props) {
     super(props);
     // Don't call this.setState() here!
-    this.state = { feeds: this.props.feeds };
+    this.state = { feeds: []};
+    fetch(this.props.chart.source)
+    .then(response => response.json())
+    .then(data=>{
+        this.setState({feeds:data});
+    });
+
   }
 
   componentDidMount() {
     window.setInterval(() => {
-      fetch(this.props.chart.source)
+        fetch(this.props.chart.source)
         .then(response => response.json())
-        .then(data => {
-          this.setState({ feeds: data });
-        })
-        .catch();
+        .then(data=>{
+            this.setState({feeds:data});
+        });
     }, this.props.chart.interval);
   }
   render() {
+      console.log(this.state.feeds)
     const chart = this.props.chart;
     const type = chart.type;
     switch (type) {

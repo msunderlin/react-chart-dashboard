@@ -130,7 +130,7 @@ class App extends React.Component {
                     minW: chart.defaultpos.minW
                   }}
                 >
-                  <ChartWrapper chart={chart} feeds={[]} />
+                  <ChartWrapper chart={chart}  />
                 </Card>
               );
             })}
