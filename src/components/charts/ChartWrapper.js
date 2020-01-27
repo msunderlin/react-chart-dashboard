@@ -33,14 +33,14 @@ class ChartWrapper extends Component {
     const type = chart.type;
     switch (type) {
       case "bar":
-        return <BarChart data={this.state.feeds} title="" color="#7070D1" />;
+        return <BarChart data={this.state.feeds} title={chart.title} color="#7070D1" />;
       case "line":
         return <LineChart data={this.state.feeds} title="" color="#7070D1" />;
       case "doughnut":
         return (
           <DoughnutChart
             data={this.state.feeds}
-            title=""
+            title={chart.title}
             colors={[
               "#a8e0ff",
               "#8ee3f5",
@@ -55,7 +55,7 @@ class ChartWrapper extends Component {
         return (
           <PieChart
             data={this.state.feeds}
-            title=""
+            title={chart.title}
             colors={[
               "#a8e0ff",
               "#8ee3f5",
@@ -70,7 +70,7 @@ class ChartWrapper extends Component {
         return (
           <PolarChart
             data={this.state.feeds}
-            title=""
+            title={chart.title}
             colors={[
               "#a8e0ff",
               "#8ee3f5",

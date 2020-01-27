@@ -14,6 +14,7 @@ class BarChart extends React.Component {
   }
 
   componentDidMount() {
+    console.log(this.props.data)
     this.myChart = new Chart(this.canvasRef.current, {
       type: "bar",
       options: {
@@ -27,13 +28,19 @@ class BarChart extends React.Component {
               }
             }
           ]
+        },
+        title:{display:true, 
+                text:this.props.title
+          },
+        legend:{
+          position:'bottom'
         }
       },
       data: {
         labels: this.props.data.map(d => d.label),
         datasets: [
           {
-            label: this.props.title,
+            label: this.props.data.map(d => d.label),
             data: this.props.data.map(d => d.value),
             backgroundColor: this.props.color
           }

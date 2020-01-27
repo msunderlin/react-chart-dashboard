@@ -19,7 +19,7 @@ class Layout extends React.Component {
     return {
       className: "layout",
       cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
-      rowHeight: 50
+      rowHeight: 75
     };
   }
   resetLayout() {
@@ -44,7 +44,7 @@ class Layout extends React.Component {
         <ResponsiveReactGridLayout
           className="layout"
           cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
-          rowHeight={50}
+          rowHeight={75}
           layouts={this.state.layouts}
           onLayoutChange={(layout, layouts) =>
             this.onLayoutChange(layout, layouts)

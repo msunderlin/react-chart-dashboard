@@ -1,6 +1,6 @@
 {
   "name": "dashboard",
-  "homepage": "http://msunderlin.github.io/react-chart-dashboard",
+  "homepage": "./react-chart-dashboard/build/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

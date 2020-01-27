@@ -3,6 +3,7 @@ import { Container, Card } from "@material-ui/core";
 import NavBar from "./components/navbar/NavBar";
 import Layout from "./components/layout/Layout";
 import ChartWrapper from "./components/charts/ChartWrapper";
+import StickyHeadTable from "./components/table/StickyHeadTable";
 
 // Data generation
 function getRandomArray(numItems) {
@@ -72,24 +73,28 @@ function getCharts() {
 
   data.push({
     type: "bar",
+    title:"foo",
     interval: 15000,
     defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
     source: "http://local.admin.admediary.com/test/getArray.php?count=7"
   });
   data.push({
     type: "pie",
+    title:"foo",
     interval: 10000,
     defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
     source: "http://local.admin.admediary.com/test/getArray.php?count=5"
   });
   data.push({
     type: "bar",
+    title:"foo",
     interval: 2000,
     defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
     source: "http://local.admin.admediary.com/test/getArray.php?count=3"
   });
   data.push({
     type: "bar",
+    title:"foo",
     interval: 5000,
     defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
     source: "http://local.admin.admediary.com/test/getArray.php?count=15"
@@ -134,7 +139,23 @@ class App extends React.Component {
                 </Card>
               );
             })}
+            <Card
+             variant="outlined"
+             key={5}
+             className="grid-item"
+             data-grid={{
+               x: 0,
+               y:12,
+               h: 4,
+               w: 4,
+               minH: 4,
+               minW:4
+             }}
+            >
+            <StickyHeadTable title="I'm a table"></StickyHeadTable>
+            </Card>
           </Layout>
+          
         </Container>
       </div>
     );

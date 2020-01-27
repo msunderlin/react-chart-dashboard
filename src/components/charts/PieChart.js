@@ -17,7 +17,13 @@ class PieChart extends React.Component {
     this.myChart = new Chart(this.canvasRef.current, {
       type: "pie",
       options: {
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        title:{display:true, 
+                text:this.props.title
+          },
+        legend:{
+          position:'bottom'
+        }
       },
       data: {
         labels: this.props.data.map(d => d.label),
