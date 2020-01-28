@@ -18,11 +18,9 @@ class PieChart extends React.Component {
       type: "pie",
       options: {
         maintainAspectRatio: false,
-        title:{display:true, 
-                text:this.props.title
-          },
-        legend:{
-          position:'bottom'
+        title: { display: true, text: this.props.title },
+        legend: {
+          position: "bottom"
         }
       },
       data: {

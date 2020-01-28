@@ -18,11 +18,9 @@ class DoughnutChart extends React.Component {
       type: "doughnut",
       options: {
         maintainAspectRatio: false,
-        title:{display:true, 
-                text:this.props.title
-          },
-        legend:{
-          position:'bottom'
+        title: { display: true, text: this.props.title },
+        legend: {
+          position: "bottom"
         }
       },
       data: {

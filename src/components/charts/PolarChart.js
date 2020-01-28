@@ -18,11 +18,9 @@ class PolarChart extends React.Component {
       type: "polarArea",
       options: {
         maintainAspectRatio: false,
-        title:{display:true, 
-                text:this.props.title
-          },
-        legend:{
-          position:'bottom'
+        title: { display: true, text: this.props.title },
+        legend: {
+          position: "bottom"
         }
       },
       data: {

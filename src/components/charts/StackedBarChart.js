@@ -15,7 +15,7 @@ class StackedBarChart extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props.data)
+    console.log(this.props.data);
     this.myChart = new Chart(this.canvasRef.current, {
       type: "bar",
       options: {
@@ -23,7 +23,7 @@ class StackedBarChart extends React.Component {
         scales: {
           yAxes: [
             {
-              stacked:(this.props.stacked)?true:false,
+              stacked: this.props.stacked ? true : false,
               ticks: {
                 min: 0,
                 max: 100
@@ -31,15 +31,12 @@ class StackedBarChart extends React.Component {
             }
           ]
         },
-        title:{display:true, 
-                text:this.props.title
-          },
-        legend:{
-          position:'bottom'
+        title: { display: true, text: this.props.title },
+        legend: {
+          position: "bottom"
         }
       },
-      data: this.props.data 
-      
+      data: this.props.data
     });
   }
 

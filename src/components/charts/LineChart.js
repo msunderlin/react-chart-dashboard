@@ -34,13 +34,10 @@ class LineChart extends React.Component {
             }
           ]
         },
-        title:{display:true, 
-                text:this.props.title
-          },
-        legend:{
-          position:'bottom'
+        title: { display: true, text: this.props.title },
+        legend: {
+          position: "bottom"
         }
-
       },
       data: {
         labels: this.props.data.map(d => d.time),
