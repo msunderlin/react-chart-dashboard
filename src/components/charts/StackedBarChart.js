@@ -1,15 +1,16 @@
 import React from "react";
 import Chart from "chart.js";
 
-class BarChart extends React.Component {
+class StackedBarChart extends React.Component {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
   }
 
   componentDidUpdate() {
-    this.myChart.data.labels = this.props.data.map(d => d.label);
-    this.myChart.data.datasets[0].data = this.props.data.map(d => d.value);
+    console.log(this.props.data);
+    this.myChart.data.labels = this.props.data.labels;
+    this.myChart.data.datasets = this.props.data.datasets;
     this.myChart.update();
   }
 
@@ -37,16 +38,8 @@ class BarChart extends React.Component {
           position:'bottom'
         }
       },
-      data: {
-        labels: this.props.data.map(d => d.label),
-        datasets: [
-          {
-            label: this.props.data.map(d => d.label),
-            data: this.props.data.map(d => d.value),
-            backgroundColor: this.props.color
-          }
-        ]
-      }
+      data: this.props.data 
+      
     });
   }
 
@@ -55,4 +48,4 @@ class BarChart extends React.Component {
   }
 }
 
-export default BarChart;
+export default StackedBarChart;

@@ -3,7 +3,7 @@ import { Container, Card } from "@material-ui/core";
 import NavBar from "./components/navbar/NavBar";
 import Layout from "./components/layout/Layout";
 import ChartWrapper from "./components/charts/ChartWrapper";
-import StickyHeadTable from "./components/table/StickyHeadTable";
+// import StickyHeadTable from "./components/table/StickyHeadTable";
 
 // Data generation
 function getRandomArray(numItems) {
@@ -68,46 +68,13 @@ function getData() {
   return data;
 }
 
-function getCharts() {
-  let data = [];
 
-  data.push({
-    type: "bar",
-    title:"foo",
-    interval: 15000,
-    defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
-    source: "http://local.admin.admediary.com/test/getArray.php?count=7"
-  });
-  data.push({
-    type: "pie",
-    title:"foo",
-    interval: 10000,
-    defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
-    source: "http://local.admin.admediary.com/test/getArray.php?count=5"
-  });
-  data.push({
-    type: "bar",
-    title:"foo",
-    interval: 2000,
-    defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
-    source: "http://local.admin.admediary.com/test/getArray.php?count=3"
-  });
-  data.push({
-    type: "bar",
-    title:"foo",
-    interval: 5000,
-    defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
-    source: "http://local.admin.admediary.com/test/getArray.php?count=15"
-  });
-
-  return data;
-}
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      chart: getCharts()
+      chart: window.getCharts()
     };
   }
 
@@ -139,7 +106,7 @@ class App extends React.Component {
                 </Card>
               );
             })}
-            <Card
+            {/* <Card
              variant="outlined"
              key={5}
              className="grid-item"
@@ -153,7 +120,7 @@ class App extends React.Component {
              }}
             >
             <StickyHeadTable title="I'm a table"></StickyHeadTable>
-            </Card>
+            </Card> */}
           </Layout>
           
         </Container>

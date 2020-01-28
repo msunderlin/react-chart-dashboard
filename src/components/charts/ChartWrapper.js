@@ -4,6 +4,7 @@ import LineChart from "./LineChart";
 import DoughnutChart from "./DoughnutChart";
 import PieChart from "./PieChart";
 import PolarChart from "./PolarChart";
+import StackedBarChart from "./StackedBarChart";
 
 class ChartWrapper extends Component {
   constructor(props) {
@@ -33,7 +34,10 @@ class ChartWrapper extends Component {
     const type = chart.type;
     switch (type) {
       case "bar":
-        return <BarChart data={this.state.feeds} title={chart.title} color="#7070D1" />;
+        if(chart.stacked === 1){
+        return <StackedBarChart data={this.state.feeds} title={chart.title} stacked={(chart.stacked)?true:false} colors={["#7070D1","#ff0000"]} />;
+        }
+        return <BarChart data={this.state.feeds} title={chart.title} stacked={(chart.stacked)?true:false} color="#7070D1" />;
       case "line":
         return <LineChart data={this.state.feeds} title="" color="#7070D1" />;
       case "doughnut":
