@@ -12,18 +12,15 @@ class ChartWrapper extends Component {
     super(props);
     // Don't call this.setState() here!
     this.state = { feeds: []};
+    this.myRef = React.createRef();
     fetch(this.props.chart.source)
     .then(response => response.json())
     .then(data=>{
         this.setState({feeds:data});
     });
-    this.getHeader = null;
   }
 
   componentDidMount() {
-    if(this.getHeader) {
-      console.log(this.getHeader);
-      }
     if(this.props.chart.type !== 'table'){
     window.setInterval(() => {
         fetch(this.props.chart.source)
@@ -35,7 +32,7 @@ class ChartWrapper extends Component {
   }
   }
   render() {
-      console.log(this.state.feeds)
+
     const chart = this.props.chart;
     const type = chart.type;
     switch (type) {
@@ -93,15 +90,14 @@ class ChartWrapper extends Component {
         );
         case "table":
           return (
-            <Table title={chart.title} columns={chart.columns} options={{
+            <Table title={chart.title} columns={chart.columns} innerRef={this.props.innerRef} options={{
               search:false,
               sort:true,
               paging:false,
               headerStyle: { position: 'sticky', top: 0 }, 
-              maxBodyHeight: '650px',
+              maxBodyHeight: "500px",
               padding:"dense",
             }}
-            innerRef={(header) => this.getHeader = header}
             url={chart.source}
           /> 
           );
@@ -111,4 +107,4 @@ class ChartWrapper extends Component {
   }
 }
 
-export default ChartWrapper;
+export default React.forwardRef((props,ref)=><ChartWrapper innerRef={ref} {...props}/>);

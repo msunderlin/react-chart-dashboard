@@ -35,7 +35,7 @@ class App extends React.Component {
                     minW: chart.defaultpos.minW
                   }}
                 >
-                  <ChartWrapper chart={chart} />
+                  <ChartWrapper chart={chart} {...this.props}/>
                 </Card>
               );
             })}

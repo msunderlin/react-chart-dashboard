@@ -31,6 +31,10 @@ class Layout extends React.Component {
     this.setState({ layouts });
   }
   render() {
+    const childrenWithProps = React.Children.map(this.props.children, child =>
+      React.cloneElement(child, { style: this.props.style })
+
+    );
     return (
       <>
         <br />
@@ -50,7 +54,7 @@ class Layout extends React.Component {
             this.onLayoutChange(layout, layouts)
           }
         >
-          {this.props.children}
+         {childrenWithProps}
         </ResponsiveReactGridLayout>
       </>
     );

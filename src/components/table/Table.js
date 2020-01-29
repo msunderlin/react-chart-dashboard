@@ -48,20 +48,17 @@ const tableIcons = {
 class Table extends React.Component{
     constructor(props){
       super(props);
-      this.tableRef = React.createRef();
+
       this.state = {
         url: this.props.url
       }
       this.getHeader = null;
     }
     componentDidMount(){
-      if(this.getHeader) {
-        console.log(this.getHeader.getBoundingClientRect().height)
-        };
+        console.log(this.props)
     }
     
     render() {
-     
       return (
         <MaterialTable     
         icons={tableIcons}
