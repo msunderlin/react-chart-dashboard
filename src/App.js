@@ -3,7 +3,6 @@ import { Container, Card } from "@material-ui/core";
 import NavBar from "./components/navbar/NavBar";
 import Layout from "./components/layout/Layout";
 import ChartWrapper from "./components/charts/ChartWrapper";
-// import StickyHeadTable from "./components/table/StickyHeadTable";
 
 class App extends React.Component {
   constructor(props) {

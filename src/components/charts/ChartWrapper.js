@@ -5,6 +5,7 @@ import DoughnutChart from "./DoughnutChart";
 import PieChart from "./PieChart";
 import PolarChart from "./PolarChart";
 import StackedBarChart from "./StackedBarChart";
+import Table from "../table/Table";
 
 class ChartWrapper extends Component {
   constructor(props) {
@@ -16,10 +17,14 @@ class ChartWrapper extends Component {
     .then(data=>{
         this.setState({feeds:data});
     });
-
+    this.getHeader = null;
   }
 
   componentDidMount() {
+    if(this.getHeader) {
+      console.log(this.getHeader);
+      }
+    if(this.props.chart.type !== 'table'){
     window.setInterval(() => {
         fetch(this.props.chart.source)
         .then(response => response.json())
@@ -27,6 +32,7 @@ class ChartWrapper extends Component {
             this.setState({feeds:data});
         });
     }, this.props.chart.interval);
+  }
   }
   render() {
       console.log(this.state.feeds)
@@ -85,6 +91,20 @@ class ChartWrapper extends Component {
             ]}
           />
         );
+        case "table":
+          return (
+            <Table title={chart.title} columns={chart.columns} options={{
+              search:false,
+              sort:true,
+              paging:false,
+              headerStyle: { position: 'sticky', top: 0 }, 
+              maxBodyHeight: '650px',
+              padding:"dense",
+            }}
+            innerRef={(header) => this.getHeader = header}
+            url={chart.source}
+          /> 
+          );
       default:
         return "";
     }
