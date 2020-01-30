@@ -21,22 +21,10 @@ class App extends React.Component {
           </NavBar>
           <Layout>
             {this.state.chart.map((chart, i) => {
+		    console.log(this.state);
               return (
-                <Card
-                  variant="outlined"
-                  key={i}
-                  className="grid-item"
-                  data-grid={{
-                    x: chart.defaultpos.h * i,
-                    y: chart.defaultpos.w * i,
-                    h: chart.defaultpos.h,
-                    w: chart.defaultpos.w,
-                    minH: chart.defaultpos.minH,
-                    minW: chart.defaultpos.minW
-                  }}
-                >
-                  <ChartWrapper chart={chart} {...this.props}/>
-                </Card>
+                   
+                  <ChartWrapper chart={chart} k={i} />
               );
             })}
             {/* <Card

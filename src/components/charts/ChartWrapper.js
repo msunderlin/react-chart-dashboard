@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {Card} from '@material-ui/core';
 import BarChart from "./BarChart";
 import LineChart from "./LineChart";
 import DoughnutChart from "./DoughnutChart";
@@ -12,14 +13,12 @@ class ChartWrapper extends Component {
     super(props);
     // Don't call this.setState() here!
     this.state = { feeds: []};
-    this.myRef = React.createRef();
     fetch(this.props.chart.source)
     .then(response => response.json())
     .then(data=>{
         this.setState({feeds:data});
     });
   }
-
   componentDidMount() {
     if(this.props.chart.type !== 'table'){
     window.setInterval(() => {
@@ -89,8 +88,25 @@ class ChartWrapper extends Component {
           />
         );
         case "table":
+
+		  let k = this.props.k;
           return (
-            <Table title={chart.title} columns={chart.columns} innerRef={this.props.innerRef} options={{
+		   <Card
+                  variant="outlined"
+                  key={k}
+                  className="grid-item"
+                  data-grid={{
+                    x: chart.defaultpos.h * k,
+                    y: chart.defaultpos.w * k,
+                    h: chart.defaultpos.h,
+                    w: chart.defaultpos.w,
+                    minH: chart.defaultpos.minH,
+                    minW: chart.defaultpos.minW
+                  }}
+
+                >
+
+            <Table title={chart.title} columns={chart.columns} ref={this.ref} options={{
               search:false,
               sort:true,
               paging:false,
@@ -99,7 +115,8 @@ class ChartWrapper extends Component {
               padding:"dense",
             }}
             url={chart.source}
-          /> 
+          />
+		  </Card>
           );
       default:
         return "";
@@ -107,4 +124,5 @@ class ChartWrapper extends Component {
   }
 }
 
-export default React.forwardRef((props,ref)=><ChartWrapper innerRef={ref} {...props}/>);
+export default React.forwardRef((props,ref)=>(<ChartWrapper {...props} ref={ref} />)
+);
