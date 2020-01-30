@@ -21,23 +21,45 @@ class App extends React.Component {
           </NavBar>
           <Layout>
             {this.state.chart.map((chart, i) => {
-              return (
-                <Card
-                  variant="outlined"
-                  key={i}
-                  className="grid-item"
-                  data-grid={{
-                    x: chart.defaultpos.h * i,
-                    y: chart.defaultpos.w * i,
-                    h: chart.defaultpos.h,
-                    w: chart.defaultpos.w,
-                    minH: chart.defaultpos.minH,
-                    minW: chart.defaultpos.minW
-                  }}
-                >
-                  <ChartWrapper chart={chart} />
-                </Card>
-              );
+              console.log((chart.type === 'table'));
+              if(chart.type === 'table'){
+                return (
+                  <Card
+                    variant="outlined"
+                    key={i}
+                    className="grid-item"
+                    data-grid={{
+                      x: chart.defaultpos.h * i,
+                      y: chart.defaultpos.w * i,
+                      h: chart.defaultpos.h,
+                      w: chart.defaultpos.w,
+                      minH: chart.defaultpos.minH,
+                      minW: chart.defaultpos.minW,
+                     maxH:chart.defaultpos.minH,
+                    }}
+                  >
+                    <ChartWrapper chart={chart} />
+                  </Card>
+                );
+                }else{
+                  return (
+                    <Card
+                      variant="outlined"
+                      key={i}
+                      className="grid-item"
+                      data-grid={{
+                        x: chart.defaultpos.h * i,
+                        y: chart.defaultpos.w * i,
+                        h: chart.defaultpos.h,
+                        w: chart.defaultpos.w,
+                        minH: chart.defaultpos.minH,
+                        minW: chart.defaultpos.minW,
+                      }}
+                    >
+                      <ChartWrapper chart={chart} />
+                    </Card>
+                  );
+                }
             })}
             {/* <Card
              variant="outlined"

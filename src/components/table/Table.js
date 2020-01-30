@@ -54,15 +54,11 @@ class Table extends React.Component{
       }
       this.getHeader = null;
     }
-    componentDidMount(){
-      if(this.getHeader) {
-        console.log(this.getHeader.getBoundingClientRect().height)
-        };
-    }
-    
+   footerData = null; 
     render() {
      
       return (
+        <React.Fragment>
         <MaterialTable     
         icons={tableIcons}
           title={this.props.title}
@@ -87,6 +83,7 @@ class Table extends React.Component{
           }
           
         />
+        </React.Fragment>
       )
     }
   }

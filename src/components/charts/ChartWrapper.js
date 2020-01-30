@@ -98,7 +98,7 @@ class ChartWrapper extends Component {
               sort:true,
               paging:false,
               headerStyle: { position: 'sticky', top: 0 }, 
-              maxBodyHeight: '650px',
+              maxBodyHeight: '335px',
               padding:"dense",
             }}
             innerRef={(header) => this.getHeader = header}
