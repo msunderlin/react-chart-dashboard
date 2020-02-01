@@ -1,13 +1,15 @@
-function getCharts() {
+function getCharts($user_id = 0) {
+
+  console.log($user_id);
   let data = [];
 
   data.push({
     type: "bar",
-    title: "Daily PL 01/05/2020",
+    title: "Daily PL 01/08/2020",
     interval: 20000,
     defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
     source:
-      "http://local.admin.admediary.com/test/getArray.php?report=dailypl&date=01/05/2020"
+      "http://local.admin.admediary.com/test/getArray.php?report=dailypl&date=01/08/2020"
   });
   data.push({
     type: "pie",
@@ -21,12 +23,13 @@ function getCharts() {
     type: "bar",
     title: "Daily PL 01/07/2020",
     interval: 20000,
+    stacked:1,
     defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
     source:
-      "http://local.admin.admediary.com/test/getArray.php?report=dailypl&date=01/07/2020"
+      "http://local.admin.admediary.com/test/getArray.php?report=dailyplstacked&date=01/07/2020"
   });
   data.push({
-    type: "pie",
+    type: "polar",
     title: "Daily PL 01/07/2020",
     interval: 20000,
     defaultpos: { h: 2, w: 5, minW: 2, minH: 2 },

@@ -43,7 +43,7 @@ class ChartWrapper extends Component {
         if(chart.stacked === 1){
         return <StackedBarChart data={this.state.feeds} title={chart.title} stacked={(chart.stacked)?true:false} colors={["#7070D1","#ff0000"]} />;
         }
-        return <BarChart data={this.state.feeds} title={chart.title} stacked={(chart.stacked)?true:false} color="#7070D1" />;
+        return <BarChart data={this.state.feeds} title={chart.title} stacked={(chart.stacked)?true:false} color="red" />;
       case "line":
         return <LineChart data={this.state.feeds} title="" color="#7070D1" />;
       case "doughnut":

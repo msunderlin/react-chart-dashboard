@@ -8,7 +8,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      chart: window.getCharts()
+      chart: window.getCharts(window.getUserID()),
+      user_id: window.getUserID()
     };
   }
 

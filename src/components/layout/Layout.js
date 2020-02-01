@@ -7,11 +7,14 @@ import "./layout.css";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const originalLayouts = getFromLS("layouts") || {};
+const originalLayoutDB = getFromDB("layouts") || {};
+
 
 class Layout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user_id: props.user_id,
       layouts: JSON.parse(JSON.stringify(originalLayouts))
     };
   }
@@ -67,6 +70,18 @@ function getFromLS(key) {
   }
   return ls[key];
 }
+function getFromDB(key) {
+  let ls = {};
+  if (global.localStorage) {
+    try {
+      ls = JSON.parse(global.localStorage.getItem("rgl-8")) || {};
+    } catch (e) {
+      /*Ignore*/
+    }
+  }
+  return ls[key];
+}
+
 
 function saveToLS(key, value) {
   if (global.localStorage) {

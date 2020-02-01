@@ -33,6 +33,13 @@
 <script src="./assets/js/getCharts.js"></script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <input type="hidden" value="59" id="user_id"/>
+    <script>
+        function getUserID(){
+          return document.querySelector('#user_id').value;
+        }
+    </script>
+
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
