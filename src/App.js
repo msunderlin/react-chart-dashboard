@@ -16,7 +16,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Container>
+        <Container disableGutters={false}maxWidth="lg">
           <NavBar>
             <h1>Hello From The NavBar</h1>
           </NavBar>

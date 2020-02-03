@@ -21,8 +21,9 @@ class Layout extends React.Component {
   static get defaultProps() {
     return {
       className: "layout",
-      cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
-      rowHeight: 75
+      cols:{lg: 12, md: 10, sm: 6, xs: 4, xxs: 2},
+      rowHeight: 75,
+      verticalCompact: false
     };
   }
   resetLayout() {
@@ -44,10 +45,12 @@ class Layout extends React.Component {
         >
           Reset Layout
         </Button>
-        <ResponsiveReactGridLayout
+        <ResponsiveReactGridLayout 
+        width={2400}
           className="layout"
-          cols={{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }}
+          cols={{lg: 12, md: 10, sm: 6, xs: 4, xxs: 2}}
           rowHeight={75}
+      verticalCompact={false}
           layouts={this.state.layouts}
           onLayoutChange={(layout, layouts) =>
             this.onLayoutChange(layout, layouts)
