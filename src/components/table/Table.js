@@ -36,6 +36,7 @@ const tableIcons = {
     PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
     ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
     Refresh: forwardRef((props, ref) => <RefreshIcon {...props} ref={ref} />),
+    Save: forwardRef((props, ref) => <RefreshIcon {...props} ref={ref} />),
     Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
     SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
     ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
@@ -55,6 +56,20 @@ class Table extends React.Component{
       this.getHeader = null;
     }
    footerData = null; 
+
+   is_list= ()=>{
+        if(window.getAction() === 'list'){
+            return [
+              {
+                icon: tableIcons['Add'],
+                tooltip: 'Save User',
+                onClick: (event, rowData) =>  window.location.href = "/"+rowData.dashboard_name
+              }
+            ];
+        }else{
+          return "";
+        }
+   }
     render() {
      
       return (
@@ -65,6 +80,7 @@ class Table extends React.Component{
           options={this.props.options}
           tableRef={this.tableRef}
           columns={this.props.columns}
+          actions={this.is_list()}
           data={query=>
             new Promise((resolve, reject) => {
               let url = this.state.url; 

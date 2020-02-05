@@ -79,6 +79,6 @@ function getCharts($user_id = 0) {
       "http://local.admin.admediary.com/test/getArray.php?report=dailyplreport&date=01/07/2020"
   });
 
-
+console.log(JSON.stringify(data));
   return data;
 }

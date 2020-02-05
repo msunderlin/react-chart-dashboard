@@ -30,24 +30,37 @@
     <title>React App</title>
   </head>
   <body>
-<script src="./assets/js/getCharts.js"></script>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+<!-- <script src="./assets/js/getCharts.js"></script> -->
     <input type="hidden" value="59" id="user_id"/>
+    <input type="hidden" value="list" id="dashboard_action">
+    <input type="hidden" value="0" id="dashboard_id">
     <script>
+
+
         function getUserID(){
           return document.querySelector('#user_id').value;
         }
+
+        function getAction(){
+          return document.querySelector('#dashboard_action').value;
+        }
+        function setAction(action){
+          
+          return document.querySelector('#dashboard_action').value = action;
+        }
+        function getDashboardId(){
+          return document.querySelector('#dashboard_id').value;
+        }
+
+        function setDashboardId(dashboard_id){
+          document.querySelector('#dashboard_id').value = dashboard_id;
+          return dashboard_id;
+        }
     </script>
 
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+<script src="./assets/js/getCharts2.js"></script>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div id="root"></div>
+ 
 </html>
