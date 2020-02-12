@@ -12,6 +12,10 @@ async function getCharts() {
   )
     .then(response => response.json())
     .then(data => {
+      console.log(typeof data);
+      if((typeof data) == "string"){
+       data =  JSON.parse(data);
+      }
       return data; 
     })
     .catch(error => {

@@ -53,6 +53,14 @@ class App extends React.Component {
         </div>
       );
     } else {
+      console.log('+++++++++++++++start++++++++++++++++');
+      console.log(typeof this.state.chart);
+      console.log(this.state.chart);
+      console.log('+++++++++++++++end++++++++++++++++');
+      console.log('+++++++++++++++start++++++++++++++++');
+      console.log(typeof this.state.layouts);
+      console.log(this.state.layouts);
+      console.log('+++++++++++++++end++++++++++++++++');
       return (
         <div>
           <Container disableGutters={false} maxWidth="lg">
