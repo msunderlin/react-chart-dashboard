@@ -5,20 +5,18 @@ async function getCharts() {
   const charts = await fetch(
     "http://local.admin.admediary.com/test/chartMgmt.php?user_id=" +
       user_id +
-      "&action="
-      +action
-      +"&dashboard_id="
-      +dashboard_id
-      
+      "&action=" +
+      action +
+      "&dashboard_id=" +
+      dashboard_id
   )
     .then(response => response.json())
     .then(data => {
-      return JSON.parse(data[0]);
+      return data; 
     })
-    .catch((error) => {
-        console.error('Error:', error);
-        return false;
-      });
-
+    .catch(error => {
+      console.error("Error:", error);
+      return false;
+    });
   return await charts;
 }

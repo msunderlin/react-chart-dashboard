@@ -22,7 +22,6 @@ class ChartWrapper extends Component {
 
   componentDidMount() {
     if (this.getHeader) {
-      console.log(this.getHeader);
     }
     if (this.props.chart.type !== "table") {
       window.setInterval(() => {
@@ -35,9 +34,7 @@ class ChartWrapper extends Component {
     }
   }
   render() {
-    console.log(this.state.feeds);
     const chart = this.props.chart;
-    console.log(chart)
     const type = chart.type;
     switch (type) {
       case "bar":

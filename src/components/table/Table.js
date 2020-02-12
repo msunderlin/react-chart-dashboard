@@ -67,7 +67,7 @@ class Table extends React.Component{
               }
             ];
         }else{
-          return "";
+          return [];
         }
    }
     render() {

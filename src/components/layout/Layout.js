@@ -7,7 +7,7 @@ import "./layout.css";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 const originalLayouts = getFromLS("layouts") || {};
-const originalLayoutDB = getFromDB() || {};
+const originalLayoutDB = getFromDB("layouts") || {};
 
 class Layout extends React.Component {
   constructor(props) {
@@ -15,24 +15,24 @@ class Layout extends React.Component {
     this.state = {
       user_id: props.user_id,
       dashboard_id: props.dashboard_id,
-      layouts: JSON.parse(JSON.stringify(originalLayouts)),
+      layouts: props.layouts
     };
   }
+
   static get defaultProps() {
     return {
       className: "layout",
       cols: { lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 },
-      rowHeight: 75,
-      verticalCompact: true
+      rowHeight: 75
     };
   }
+
   resetLayout() {
-    console.log("fired!");
     this.setState({ layouts: {} });
   }
   onLayoutChange(layout, layouts) {
-    saveToLS("layouts", layouts);
-    savetoDB(layouts,this.props.charts);
+    // saveToLS("layouts", layouts);
+    savetoDB("layouts", layouts, this.props.charts);
     this.setState({ layouts });
   }
   render() {
@@ -74,13 +74,14 @@ function getFromLS(key) {
   }
   return ls[key];
 }
-async function getFromDB() {
+async function getFromDB(key) {
+  let ls = {};
   const action = "get_layout";
   const user_id = window.getUserID();
   const dashboard_id = window.getDashboardId();
 
-  const layouts = await fetch(
-     "http://local.admin.admediary.com/test/chartMgmt.php?user_id=" +
+  ls = await fetch(
+    "http://local.admin.admediary.com/test/chartMgmt.php?user_id=" +
       user_id +
       "&action=" +
       action +
@@ -89,37 +90,45 @@ async function getFromDB() {
   )
     .then(response => response.json())
     .then(data => {
-      console.log(data[0]);
-      return JSON.parse(data[0]);
-    }).catch(()=>{
+      return data;
+    })
+    .catch(() => {
       return false;
     });
 
-  return layouts;
+  return ls[key];
 }
-function savetoDB(value, charts){
-  const action = "get_layout";
+function resetLayout() {
+  this.setState();
+}
+async function savetoDB(key, value, charts) {
+  const action = "set_layout";
   const user_id = window.getUserID();
   const dashboard_id = window.getDashboardId();
+  const data = new FormData();
+  data.append("user_id", user_id);
+  data.append("dashboard_id", dashboard_id);
+  data.append("action", action);
+  data.append("widgets", JSON.stringify(charts));
+  data.append("positions", JSON.stringify({ [key]: value }));
   const layouts = await fetch(
     "http://local.admin.admediary.com/test/chartMgmt.php",
     {
-      method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-     
-        user_id: user_id,
-        action:action,
-        dashboard_id:dashboard_id,
-        widgets:  
-        positions: JSON.stringify(value)
-    });
-  });
-  const content = await rawResponse.json();
+      method: "POST",
+      headers: {
+        Accept: "application/json"
+      },
+      body: data
     }
+  )
+    .then(response => response.json())
+    .then(data => {
+      return data;
+    })
+    .catch(e => {
+      console.error(e);
+    });
+}
 function saveToLS(key, value) {
   if (global.localStorage) {
     global.localStorage.setItem(
