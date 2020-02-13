@@ -1,5 +1,6 @@
 import React from "react";
 import Chart from "chart.js";
+// import { ThemeProvider } from "@material-ui/core";
 
 class BarChart extends React.Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class BarChart extends React.Component {
   componentDidUpdate() {
     this.myChart.data.labels = this.props.data.map(d => d.label);
     this.myChart.data.datasets[0].data = this.props.data.map(d => d.value);
+    this.myChart.options.title.text = this.props.title;
     this.myChart.update();
   }
 
