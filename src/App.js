@@ -116,35 +116,37 @@ class App extends React.Component {
   }
 
   async getParams() {
-    let url = window.location.href;
-    let dashboard_name = new URL(url).pathname;
-    console.log(dashboard_name);
-    let user_id = window.getUserID();
-    let action = "dashboard_lookup";
-    let dashboard_id = null;
-    dashboard_name = dashboard_name.replace("/", "");
-    if (isNaN(dashboard_name)) {
-      dashboard_id = await fetch(
-        "http://local.admin.admediary.com/test/chartMgmt.php?user_id=" +
-          user_id +
-          "&action=" +
-          action +
-          "&dashboard_name=" +
-          dashboard_name
-      )
-        .then(response => response.json())
-        .then(data => {
-          return data.dashboard_id;
-        })
-        .catch(e => {});
-      if (dashboard_id === false) {
-        window.setAction("list");
-      } else {
-        window.setAction("get_dashboard");
-        window.setDashboardId(await dashboard_id);
-      }
+    // let url = window.location.href;
+    // let dashboard_name = new URL(url).pathname;
+    // console.log(dashboard_name);
+
+    // let user_id = window.getUserID();
+    // let action = "dashboard_lookup";
+    // let dashboard_id = null;
+    // dashboard_name = dashboard_name.replace("/", "");
+    // if (isNaN(dashboard_name)) {
+    //   dashboard_id = await fetch(
+    //     "http://local.admin.admediary.com/test/chartMgmt.php?user_id=" +
+    //       user_id +
+    //       "&action=" +
+    //       action +
+    //       "&dashboard_name=" +
+    //       dashboard_name
+    //   )
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       return data.dashboard_id;
+    //     })
+    //     .catch(e => {});
+    //   if (dashboard_id === false) {
+    //     window.setAction("list");
+    //   } else {
+    //     window.setAction("get_dashboard");
+    //     window.setDashboardId(await dashboard_id);
+    //   }
+      let dashboard_id = window.getDashboardId();
       return await dashboard_id;
-    }
+    
   }
 
   async getFromDB(key) {
