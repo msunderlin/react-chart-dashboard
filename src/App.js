@@ -118,6 +118,7 @@ class App extends React.Component {
   async getParams() {
     let url = window.location.href;
     let dashboard_name = new URL(url).pathname;
+    console.log(dashboard_name);
     let user_id = window.getUserID();
     let action = "dashboard_lookup";
     let dashboard_id = null;
