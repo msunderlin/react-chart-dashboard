@@ -10,13 +10,9 @@ import moment from "moment";
 class ChartWrapper extends Component {
   constructor(props) {
     super(props);
-    // Don't call this.setState() here!
     this.state = {
       feeds: [],
-      startDate: moment(),
-      endDate: moment(),
-      title: this.props.chart.title,
-      source: this.props.chart.source
+
     };
     fetch(this.props.chart.source)
       .then(response => response.json())
@@ -25,30 +21,13 @@ class ChartWrapper extends Component {
       });
     this.getHeader = null;
   }
-  handleStartDateChange = date => {
-    this.setState({
-      startDate: date,
-      title: this.props.chart.title + " " + date.format("L"),
-      feeds: [],
-      source: this.props.chart.source + "&date=" + date.format("L")
-    });
 
-    fetch(this.props.chart.source + "&date=" + date.format("L"))
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ feeds: data });
-      });
-  };
-
-  handleEndDateChange = date => {
-    this.setState({ endDate: date });
-  };
   componentDidMount() {
     if (this.getHeader) {
     }
     if (this.props.chart.type !== "table") {
       window.setInterval(() => {
-        fetch(this.state.source)
+    fetch(this.props.chart.source)
           .then(response => response.json())
           .then(data => {
             this.setState({ feeds: data });
@@ -56,6 +35,7 @@ class ChartWrapper extends Component {
       }, this.props.chart.interval);
     }
   }
+
   render() {
     const chart = this.props.chart;
     const type = chart.type;
@@ -74,7 +54,7 @@ class ChartWrapper extends Component {
         return (
           <BarChart
             data={this.state.feeds}
-            title={this.state.title}
+            title={chart.title}
             stacked={chart.stacked ? true : false}
             color="red"
           />
@@ -100,7 +80,7 @@ class ChartWrapper extends Component {
         return (
           <PieChart
             data={this.state.feeds}
-            title={this.state.title}
+            title={chart.title}
             colors={[
               "#a8e0ff",
               "#8ee3f5",

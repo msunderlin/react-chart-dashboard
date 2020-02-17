@@ -58,7 +58,7 @@ class Table extends React.Component{
    footerData = null; 
 
    is_list= ()=>{
-        if(window.getDashboardId() ===1){
+        if(parseInt(window.getDashboardId()) ===1){
             return [
               {
                 icon: tableIcons['Add'],

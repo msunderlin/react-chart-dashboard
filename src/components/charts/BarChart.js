@@ -1,6 +1,5 @@
 import React from "react";
 import Chart from "chart.js";
-// import { ThemeProvider } from "@material-ui/core";
 
 class BarChart extends React.Component {
   constructor(props) {

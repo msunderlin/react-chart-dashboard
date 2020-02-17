@@ -4,42 +4,21 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import DropDown from '../dropdowns/DropDown';
 import DateHandler from "../date/DateHandler";
 import moment from "moment";
 import TextInput from "../inputs/TextInput";
 
 class EditWidget extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      startDate: moment(),
-      endDate: moment(),
-      open:props.opened,
-      chart:props.chart,
-      title: "title"
-    };
-  }
-  handleStartDateChange = date => {
-    this.setState({ startDate: date });
+
+
+ handleClose = () => {
+    this.props.handleSave();
+    this.props.handleClose();
   };
 
-  handleEndDateChange = date => {
-    this.setState({ endDate: date });
-  };
-
-  handleClose = () => {
-    this.setState({
-      open: false
-    });
-  };
-
-  handleTitleChange = event => {
-    let v = event.target.value;
-    this.setState({ title: v });
-  };
   render() {
     return (
-      <div>
         <Dialog
           open={this.props.opened}
           onClose={this.handleClose}
@@ -50,18 +29,37 @@ class EditWidget extends Component {
             <TextInput
               variant="filled"
               label="Title"
-              handleChange={this.handleTitleChange}
-              value={this.state.title}
+              handleChange={this.props.handleTitleChange}
+              value={this.props.title}
             />
-            <DateHandler
-              handleStartDateChange={this.handleStartDateChange}
-              handleEndDateChange={this.handleEndDateChange}
-              startDate={this.state.startDate}
-              endDate={this.state.endDate}
-            />
+            <DropDown label="Chart Type" handleChange={this.props.handleTypeChange}
+            value = {this.props.chart.type}
+                  options={[
+                    {
+                      text: "Bar",
+                      value: "bar"
+                    },
+                    {
+                      text:"Pie",
+                      value:"pie"
+                    },
+                    {
+                      text:"Line",
+                      value:"line"
+                    },
+                    {
+                      text:"Polar",
+                      value:"polar"
+                    },
+                    {
+                      text:"Doughnut",
+                      value:"doughnut"
+                    }
+                  ]}
+                  />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} variant="contained">
+            <Button onClick={this.props.handleClose} variant="contained">
               Cancel
             </Button>
             <Button
@@ -73,7 +71,7 @@ class EditWidget extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-      </div>
+
     );
   }
 }

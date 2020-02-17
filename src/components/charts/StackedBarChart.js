@@ -10,6 +10,7 @@ class StackedBarChart extends React.Component {
   componentDidUpdate() {
     this.myChart.data.labels = this.props.data.labels;
     this.myChart.data.datasets = this.props.data.datasets;
+    this.myChart.title = this.props.title;
     this.myChart.update();
   }
 
