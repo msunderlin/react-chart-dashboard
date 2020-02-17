@@ -1,11 +1,13 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
-
+import Button from "@material-ui/core/Button";
+import DehazeIcon from "@material-ui/icons/Dehaze";
 import NavBar from "./components/navbar/NavBar";
 import CircleLoader from "./components/loader/CircleLoader";
 import Layout from "./components/layout/Layout";
 import ChartWrapper from "./components/charts/ChartWrapper";
+import EditWidget from "./components/edit/EditWidget";
 
 class App extends React.Component {
   constructor(props) {
@@ -15,7 +17,9 @@ class App extends React.Component {
       chart: [],
       layouts: [],
       user_id: window.getUserID(),
-      action: window.getAction()
+      action: window.getAction(),
+      edit_opened: false,
+      edit_target: []
     };
   }
 
@@ -32,7 +36,13 @@ class App extends React.Component {
       });
     });
   }
-
+  handleEditClick=(i)=>{
+    console.log(i)
+    this.setState({
+      edit_opened:true,
+      edit_target: this.state.chart[i]
+    })
+ }
   render() {
     if (this.state.chart.length === 0 || this.state.layouts.length === 0) {
       let wrapper_style = {
@@ -53,16 +63,18 @@ class App extends React.Component {
         </div>
       );
     } else {
-      console.log('+++++++++++++++start++++++++++++++++');
+      console.log("+++++++++++++++start++++++++++++++++");
       console.log(typeof this.state.chart);
       console.log(this.state.chart);
-      console.log('+++++++++++++++end++++++++++++++++');
-      console.log('+++++++++++++++start++++++++++++++++');
+      console.log("+++++++++++++++end++++++++++++++++");
+      console.log("+++++++++++++++start++++++++++++++++");
       console.log(typeof this.state.layouts);
       console.log(this.state.layouts);
-      console.log('+++++++++++++++end++++++++++++++++');
+      console.log("+++++++++++++++end++++++++++++++++");
       return (
         <div>
+ <EditWidget chart={this.state.edit_target} opened={this.state.edit_opened}/>
+
           <Container disableGutters={false} maxWidth="lg">
             <NavBar>
               <h1>Hello From The NavBar</h1>
@@ -85,6 +97,9 @@ class App extends React.Component {
                         maxH: chart.defaultpos.minH
                       }}
                     >
+                      <Button color="primary" onClick={()=>{this.handleEditClick(i)}}>
+                        <DehazeIcon />
+                      </Button>
                       <ChartWrapper chart={chart} />
                     </Card>
                   );
@@ -103,6 +118,9 @@ class App extends React.Component {
                         minW: chart.defaultpos.minW
                       }}
                     >
+                      <Button color="primary" onClick={()=>{this.handleEditClick(i)}}>
+                        <DehazeIcon />
+                      </Button>
                       <ChartWrapper chart={chart} />
                     </Card>
                   );

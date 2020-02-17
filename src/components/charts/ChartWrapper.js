@@ -6,9 +6,7 @@ import PieChart from "./PieChart";
 import PolarChart from "./PolarChart";
 import StackedBarChart from "./StackedBarChart";
 import Table from "../table/Table";
-import DatePicker from "../pickers/DatePicker";
 import moment from "moment";
-import Container from "@material-ui/core/Container";
 class ChartWrapper extends Component {
   constructor(props) {
     super(props);
@@ -17,10 +15,10 @@ class ChartWrapper extends Component {
       feeds: [],
       startDate: moment(),
       endDate: moment(),
-      title: this.props.chart.title + " " + moment().format("L"),
+      title: this.props.chart.title,
       source: this.props.chart.source
     };
-    fetch(this.props.chart.source + "&date=" + moment().format("L"))
+    fetch(this.props.chart.source)
       .then(response => response.json())
       .then(data => {
         this.setState({ feeds: data });
@@ -74,23 +72,12 @@ class ChartWrapper extends Component {
           );
         }
         return (
-          <React.Fragment>
-            <Container>
-              <DatePicker
-                date={this.state.startDate}
-                label="Start Date"
-                handleDateChange={this.handleStartDateChange}
-                variant="dialog"
-                id="date-picker-start"
-              />
-            </Container>
-            <BarChart
-              data={this.state.feeds}
-              title={this.state.title}
-              stacked={chart.stacked ? true : false}
-              color="red"
-            />
-          </React.Fragment>
+          <BarChart
+            data={this.state.feeds}
+            title={this.state.title}
+            stacked={chart.stacked ? true : false}
+            color="red"
+          />
         );
       case "line":
         return <LineChart data={this.state.feeds} title="" color="#7070D1" />;
@@ -111,17 +98,6 @@ class ChartWrapper extends Component {
         );
       case "pie":
         return (
-          <React.Fragment>
-            <Container>
-              <DatePicker
-                date={this.state.startDate}
-                label="Start Date"
-                handleDateChange={this.handleStartDateChange}
-                variant="dialog"
-                id="date-picker-start"
-              />
-            </Container>
-            
           <PieChart
             data={this.state.feeds}
             title={this.state.title}
@@ -134,7 +110,6 @@ class ChartWrapper extends Component {
               "#BBB6DF"
             ]}
           />
-          </React.Fragment>
         );
       case "polar":
         return (
