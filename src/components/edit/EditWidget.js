@@ -15,8 +15,9 @@ class EditWidget extends Component {
  handleClose = () => {
     this.props.handleSave();
     this.props.handleClose();
-  };
+  }; 
 
+   
   render() {
     return (
         <Dialog

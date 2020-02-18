@@ -109,6 +109,7 @@ class App extends React.Component {
             handleTypeChange={this.handleTypeChange}
             handleSave={this.handleChartChange}
             title={this.state.edit_target.title}
+
           />
 
           <Container disableGutters={false} maxWidth="lg">
