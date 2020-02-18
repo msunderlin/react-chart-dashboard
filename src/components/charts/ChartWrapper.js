@@ -5,6 +5,7 @@ import DoughnutChart from "./DoughnutChart";
 import PieChart from "./PieChart";
 import PolarChart from "./PolarChart";
 import StackedBarChart from "./StackedBarChart";
+import StackedLineChart from "./StackedLineChart";
 import Table from "../table/Table";
 
 class ChartWrapper extends Component {
@@ -57,6 +58,16 @@ class ChartWrapper extends Component {
           />
         );
       case "line":
+        if(chart.stacked === 1){
+          return (
+           <StackedLineChart
+            data={this.state.feeds}
+            title={chart.title}
+            stacked={chart.stacked?true:false}
+              colors={["#4472C4", "#ED7D31","#A5A5A5"]}
+           /> 
+          )
+        }
         return <LineChart data={this.state.feeds} title="" color="#7070D1" />;
       case "doughnut":
         return (

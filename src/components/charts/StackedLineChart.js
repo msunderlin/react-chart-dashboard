@@ -1,7 +1,6 @@
 import React from "react";
 import Chart from "chart.js";
-
-class StackedBarChart extends React.Component {
+class StackedLineChart extends React.Component {
   constructor(props) {
     super(props);
     this.canvasRef = React.createRef();
@@ -15,22 +14,24 @@ class StackedBarChart extends React.Component {
 
   componentDidMount() {
     this.myChart = new Chart(this.canvasRef.current, {
-      type: "bar",
+      type: "line",
       options: {
         maintainAspectRatio: false,
         scales: {
-          yAxes: [
+          xAxes: [
             {
-              stacked: this.props.stacked ? true : false,
-              ticks: {
-                min: 0,
-                max: 100
+              type: "time",
+              time: {
+                unit: "day"
               }
             }
           ],
-          xAxes:[
+          yAxes: [
             {
-              stacked: this.props.stacked ? true : false,
+              stacked:true,
+              ticks: {
+                min: 0
+              }
             }
           ]
         },
@@ -39,13 +40,15 @@ class StackedBarChart extends React.Component {
           position: "bottom"
         }
       },
-      data: this.props.data
+      data:this.props.data 
     });
+    
   }
 
+
   render() {
-    return React.createElement("canvas", { ref: this.canvasRef });
+    return <canvas ref={this.canvasRef} />;
   }
 }
 
-export default StackedBarChart;
+export default StackedLineChart;
