@@ -1,11 +1,13 @@
 import React from "react";
 import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
-
+import Button from "@material-ui/core/Button";
+import DehazeIcon from "@material-ui/icons/Dehaze";
 import NavBar from "./components/navbar/NavBar";
 import CircleLoader from "./components/loader/CircleLoader";
 import Layout from "./components/layout/Layout";
 import ChartWrapper from "./components/charts/ChartWrapper";
+import EditWidget from "./components/edit/EditWidget";
 
 class App extends React.Component {
   constructor(props) {
@@ -15,22 +17,66 @@ class App extends React.Component {
       chart: [],
       layouts: [],
       user_id: window.getUserID(),
-      action: window.getAction()
+      action: window.getAction(),
+      edit_opened: false,
+      edit_target: [],
+      edit_target_id: 0
     };
   }
 
-  async componentDidMount() {
-    await this.getParams().then(async () => {
+   componentDidMount() {
+    this.getParams().then(async () => {
       window.getCharts().then(result => {
         this.setState({ chart: JSON.parse(JSON.stringify(result)) });
       });
     });
-
-    await this.getParams().then(async () => {
+  
+     this.getParams().then(async () => {
       this.getFromDB("layouts").then(result => {
         this.setState({ layouts: JSON.parse(JSON.stringify(result)) });
       });
     });
+  }
+  handleEditClick = i => {
+    console.log(i);
+    this.setState({
+      edit_opened: true,
+      edit_target: this.state.chart[i],
+      edit_target_id: i
+    });
+  };
+  handleEditClose = () => {
+    this.setState({
+      edit_opened: false
+
+    });
+  };
+
+  handleTitleChange = event => {
+    let edit_target = { ...this.state.edit_target };
+    edit_target.title = event.target.value;
+    this.setState({
+      edit_target
+    });
+  };
+
+  handleTypeChange = event =>{
+
+    let edit_target = { ...this.state.edit_target };
+    edit_target.type = event.target.value;
+    this.setState({
+      edit_target
+    });
+  }
+
+  handleChartChange=()=> {
+    if(this.state.chart.length >0){
+    let chart = this.state.chart;
+    chart[this.state.edit_target_id] = this.state.edit_target;
+    this.setState({chart});
+    this.saveChartsToDB(this.state.layouts, chart);
+    this.forceUpdate();
+    }
   }
 
   render() {
@@ -53,16 +99,19 @@ class App extends React.Component {
         </div>
       );
     } else {
-      console.log('+++++++++++++++start++++++++++++++++');
-      console.log(typeof this.state.chart);
-      console.log(this.state.chart);
-      console.log('+++++++++++++++end++++++++++++++++');
-      console.log('+++++++++++++++start++++++++++++++++');
-      console.log(typeof this.state.layouts);
-      console.log(this.state.layouts);
-      console.log('+++++++++++++++end++++++++++++++++');
       return (
         <div>
+          <EditWidget
+            chart={this.state.edit_target}
+            opened={this.state.edit_opened}
+            handleClose={this.handleEditClose}
+            handleTitleChange={this.handleTitleChange}
+            handleTypeChange={this.handleTypeChange}
+            handleSave={this.handleChartChange}
+            title={this.state.edit_target.title}
+
+          />
+
           <Container disableGutters={false} maxWidth="lg">
             <NavBar>
               <h1>Hello From The NavBar</h1>
@@ -85,6 +134,15 @@ class App extends React.Component {
                         maxH: chart.defaultpos.minH
                       }}
                     >
+                      <Button
+                        color="primary"
+                        onClick={() => {
+                          this.handleEditClick(i);
+                        }}
+                        style={{ position: "absolute", top: 0, left: 0 }}
+                      >
+                        <DehazeIcon />
+                      </Button>
                       <ChartWrapper chart={chart} />
                     </Card>
                   );
@@ -102,7 +160,17 @@ class App extends React.Component {
                         minH: chart.defaultpos.minH,
                         minW: chart.defaultpos.minW
                       }}
+                      style={{ position: "relative" }}
                     >
+                      <Button
+                        color="primary"
+                        onClick={() => {
+                          this.handleEditClick(i);
+                        }}
+                        style={{ position: "absolute", top: 0, left: 0 }}
+                      >
+                        <DehazeIcon />
+                      </Button>
                       <ChartWrapper chart={chart} />
                     </Card>
                   );
@@ -169,6 +237,36 @@ class App extends React.Component {
       });
 
     return ls[key];
+  };
+
+  async saveChartsToDB(layouts, charts) {
+    const action = "set_widgets";
+    const user_id = window.getUserID();
+    const dashboard_id = window.getDashboardId();
+    const data = new FormData();
+    data.append("user_id", user_id);
+    data.append("dashboard_id", dashboard_id);
+    data.append("action", action);
+    console.log(charts);
+    data.append("widgets", JSON.stringify(charts));
+    data.append("positions", JSON.stringify({layouts}));
+    await fetch(
+      "http://local.admin.admediary.com/test/chartMgmt.php",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json"
+        },
+        body: data
+      }
+    )
+      .then(response => response.json())
+      .then(data => {
+        return data;
+      })
+      .catch(e => {
+        console.error(e);
+      });
   }
 }
 

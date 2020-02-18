@@ -7,12 +7,14 @@ import PolarChart from "./PolarChart";
 import StackedBarChart from "./StackedBarChart";
 import StackedLineChart from "./StackedLineChart";
 import Table from "../table/Table";
-
+import moment from "moment";
 class ChartWrapper extends Component {
   constructor(props) {
     super(props);
-    // Don't call this.setState() here!
-    this.state = { feeds: [] };
+    this.state = {
+      feeds: [],
+
+    };
     fetch(this.props.chart.source)
       .then(response => response.json())
       .then(data => {
@@ -26,7 +28,7 @@ class ChartWrapper extends Component {
     }
     if (this.props.chart.type !== "table") {
       window.setInterval(() => {
-        fetch(this.props.chart.source)
+    fetch(this.props.chart.source)
           .then(response => response.json())
           .then(data => {
             this.setState({ feeds: data });
@@ -34,6 +36,7 @@ class ChartWrapper extends Component {
       }, this.props.chart.interval);
     }
   }
+
   render() {
     const chart = this.props.chart;
     const type = chart.type;

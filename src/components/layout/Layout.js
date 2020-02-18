@@ -6,8 +6,6 @@ import "../../../node_modules/react-resizable/css/styles.css";
 import "./layout.css";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-const originalLayouts = getFromLS("layouts") || {};
-const originalLayoutDB = getFromDB("layouts") || {};
 
 class Layout extends React.Component {
   constructor(props) {
@@ -31,7 +29,6 @@ class Layout extends React.Component {
     this.setState({ layouts: {} });
   }
   onLayoutChange(layout, layouts) {
-    // saveToLS("layouts", layouts);
     savetoDB("layouts", layouts, this.props.charts);
     this.setState({ layouts });
   }
@@ -63,44 +60,7 @@ class Layout extends React.Component {
     );
   }
 }
-function getFromLS(key) {
-  let ls = {};
-  if (global.localStorage) {
-    try {
-      ls = JSON.parse(global.localStorage.getItem("rgl-8")) || {};
-    } catch (e) {
-      /*Ignore*/
-    }
-  }
-  return ls[key];
-}
-async function getFromDB(key) {
-  let ls = {};
-  const action = "get_layout";
-  const user_id = window.getUserID();
-  const dashboard_id = window.getDashboardId();
 
-  ls = await fetch(
-    "http://local.admin.admediary.com/test/chartMgmt.php?user_id=" +
-      user_id +
-      "&action=" +
-      action +
-      "&dashboard_id=" +
-      dashboard_id
-  )
-    .then(response => response.json())
-    .then(data => {
-      return data;
-    })
-    .catch(() => {
-      return false;
-    });
-
-  return ls[key];
-}
-function resetLayout() {
-  this.setState();
-}
 async function savetoDB(key, value, charts) {
   const action = "set_layout";
   const user_id = window.getUserID();
@@ -111,7 +71,7 @@ async function savetoDB(key, value, charts) {
   data.append("action", action);
   data.append("widgets", JSON.stringify(charts));
   data.append("positions", JSON.stringify({ [key]: value }));
-  const layouts = await fetch(
+  await fetch(
     "http://local.admin.admediary.com/test/chartMgmt.php",
     {
       method: "POST",
@@ -128,15 +88,5 @@ async function savetoDB(key, value, charts) {
     .catch(e => {
       console.error(e);
     });
-}
-function saveToLS(key, value) {
-  if (global.localStorage) {
-    global.localStorage.setItem(
-      "rgl-8",
-      JSON.stringify({
-        [key]: value
-      })
-    );
-  }
 }
 export default Layout;
