@@ -8,6 +8,7 @@ import CircleLoader from "./components/loader/CircleLoader";
 import Layout from "./components/layout/Layout";
 import ChartWrapper from "./components/charts/ChartWrapper";
 import EditWidget from "./components/edit/EditWidget";
+import { formatMs } from "@material-ui/core";
 
 class App extends React.Component {
   constructor(props) {
@@ -24,14 +25,14 @@ class App extends React.Component {
     };
   }
 
-   componentDidMount() {
+  componentDidMount() {
     this.getParams().then(async () => {
       window.getCharts().then(result => {
         this.setState({ chart: JSON.parse(JSON.stringify(result)) });
       });
     });
-  
-     this.getParams().then(async () => {
+
+    this.getParams().then(async () => {
       this.getFromDB("layouts").then(result => {
         this.setState({ layouts: JSON.parse(JSON.stringify(result)) });
       });
@@ -48,7 +49,6 @@ class App extends React.Component {
   handleEditClose = () => {
     this.setState({
       edit_opened: false
-
     });
   };
 
@@ -60,24 +60,59 @@ class App extends React.Component {
     });
   };
 
-  handleTypeChange = event =>{
-
+  handleTypeChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.type = event.target.value;
     this.setState({
       edit_target
     });
-  }
+  };
+  handleStartChange = date => {
+    let edit_target = { ...this.state.edit_target };
+    edit_target.params.start_date = date.format('l');
+    this.setState({
+      edit_target
+    });
+  };
+  handleEndChange = date=> {
+    let edit_target = { ...this.state.edit_target };
+    edit_target.params.end_date = date.format('l');
+    this.setState({
+      edit_target
+    });
+  };
 
-  handleChartChange=()=> {
-    if(this.state.chart.length >0){
-    let chart = this.state.chart;
-    chart[this.state.edit_target_id] = this.state.edit_target;
-    this.setState({chart});
-    this.saveChartsToDB(this.state.layouts, chart);
-    this.forceUpdate();
-    }
+  handleProductChange = event => {
+    let edit_target = { ...this.state.edit_target };
+    edit_target.params.end_date = event.target.value;
+    this.setState({
+      edit_target
+    });
+  };
+  handleParamIntervalChange = event => {
+    let edit_target = { ...this.state.edit_target };
+    edit_target.params.interval = event.target.value;
+    this.setState({
+      edit_target
+    });
+  };
+
+  handleIntervalChange = event =>{
+    let edit_target = { ...this.state.edit_target };
+    edit_target.interval = event.target.value;
+    this.setState({
+      edit_target
+    });
   }
+  handleChartChange = () => {
+    if (this.state.chart.length > 0) {
+      let chart = this.state.chart;
+      chart[this.state.edit_target_id] = this.state.edit_target;
+      this.setState({ chart });
+      this.saveChartsToDB(this.state.layouts, chart);
+      this.forceUpdate();
+    }
+  };
 
   render() {
     if (this.state.chart.length === 0 || this.state.layouts.length === 0) {
@@ -107,9 +142,13 @@ class App extends React.Component {
             handleClose={this.handleEditClose}
             handleTitleChange={this.handleTitleChange}
             handleTypeChange={this.handleTypeChange}
+            handleStartChange={this.handleStartChange}
+            handleEndChange={this.handleEndChange}
+            handleIntervalChange={this.handleIntervalChange}
+            handleProductChange={this.handleProductChange}
+            handleParamIntervalChange={this.handleParamIntervalChange}
             handleSave={this.handleChartChange}
             title={this.state.edit_target.title}
-
           />
 
           <Container disableGutters={false} maxWidth="lg">
@@ -237,7 +276,7 @@ class App extends React.Component {
       });
 
     return ls[key];
-  };
+  }
 
   async saveChartsToDB(layouts, charts) {
     const action = "set_widgets";
@@ -249,17 +288,14 @@ class App extends React.Component {
     data.append("action", action);
     console.log(charts);
     data.append("widgets", JSON.stringify(charts));
-    data.append("positions", JSON.stringify({layouts}));
-    await fetch(
-      "http://local.admin.admediary.com/test/chartMgmt.php",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json"
-        },
-        body: data
-      }
-    )
+    data.append("positions", JSON.stringify({ layouts }));
+    await fetch("http://local.admin.admediary.com/test/chartMgmt.php", {
+      method: "POST",
+      headers: {
+        Accept: "application/json"
+      },
+      body: data
+    })
       .then(response => response.json())
       .then(data => {
         return data;

@@ -4,22 +4,39 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import DropDown from '../dropdowns/DropDown';
+import CircleLoader from "../loader/CircleLoader";
+import DropDown from "../dropdowns/DropDown";
 import DateHandler from "../date/DateHandler";
 import moment from "moment";
 import TextInput from "../inputs/TextInput";
 
 class EditWidget extends Component {
-
-
- handleClose = () => {
+  handleClose = () => {
     this.props.handleSave();
     this.props.handleClose();
-  }; 
+  };
 
-   
   render() {
-    return (
+    if (this.props.chart.length === 0){
+      let wrapper_style = {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        textAlign: "center",
+        alignItems: "center",
+        position: "absolute",
+        top: "0",
+        left: "0",
+        height: "100vh",
+        width: "100%"
+      };
+      return (
+        <div style={wrapper_style}>
+          <CircleLoader />
+        </div>
+      );
+    } else {
+      return (
         <Dialog
           open={this.props.opened}
           onClose={this.handleClose}
@@ -33,31 +50,47 @@ class EditWidget extends Component {
               handleChange={this.props.handleTitleChange}
               value={this.props.title}
             />
-            <DropDown label="Chart Type" handleChange={this.props.handleTypeChange}
-            value = {this.props.chart.type}
-                  options={[
-                    {
-                      text: "Bar",
-                      value: "bar"
-                    },
-                    {
-                      text:"Pie",
-                      value:"pie"
-                    },
-                    {
-                      text:"Line",
-                      value:"line"
-                    },
-                    {
-                      text:"Polar",
-                      value:"polar"
-                    },
-                    {
-                      text:"Doughnut",
-                      value:"doughnut"
-                    }
-                  ]}
-                  />
+            <DropDown
+              label="Chart Type"
+              handleChange={this.props.handleTypeChange}
+              value={this.props.chart.type}
+              options={[
+                {
+                  text: "Bar",
+                  value: "bar"
+                },
+               
+                {
+                  text: "Line",
+                  value: "line"
+                }
+              
+              
+              ]}
+            />
+            <br/>
+            <DropDown
+              label="Interval"
+              handleChange={this.props.handleParamIntervalChange}
+              value={this.props.chart.params.interval}
+              options={[
+                {
+                  text:"Hourly",
+                  value:"hourly"
+                },
+                {
+                  text:"Daily",
+                  value:"daily"
+                }
+              ]}
+              />
+            <br/>
+            <DateHandler
+              startDate={this.props.chart.params.start_date}
+              endDate={this.props.chart.params.end_date}
+              handleStartDateChange={this.props.handleStartChange}
+              handleEndDateChange={this.props.handleEndChange}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.handleClose} variant="contained">
@@ -72,8 +105,8 @@ class EditWidget extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-
-    );
+      );
+    }
   }
 }
 

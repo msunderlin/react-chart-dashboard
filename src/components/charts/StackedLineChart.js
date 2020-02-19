@@ -9,6 +9,23 @@ class StackedLineChart extends React.Component {
   componentDidUpdate() {
     this.myChart.data.labels = this.props.data.labels;
     this.myChart.data.datasets = this.props.data.datasets;
+    this.myChart.options.title.text = this.props.title;
+     this.myChart.options.scales = {xAxes: [
+      {
+        type: "time",
+        time: {
+          unit:(this.props.interval==='hourly')?'hour':'day'
+        }
+      }
+    ],
+    yAxes: [
+      {
+        stacked:true,
+        ticks: {
+          min: 0
+        }
+      }
+    ]};
     this.myChart.update();
   }
 
@@ -22,7 +39,7 @@ class StackedLineChart extends React.Component {
             {
               type: "time",
               time: {
-                unit: "day"
+                unit:(this.props.interval==='hourly')?'hour':'day'
               }
             }
           ],

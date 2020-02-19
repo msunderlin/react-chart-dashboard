@@ -15,7 +15,9 @@ class ChartWrapper extends Component {
       feeds: [],
 
     };
-    fetch(this.props.chart.source)
+
+      let query = buildQuery(this.props.chart.params);
+    fetch(this.props.chart.source+'&'+query)
       .then(response => response.json())
       .then(data => {
         this.setState({ feeds: data });
@@ -28,7 +30,8 @@ class ChartWrapper extends Component {
     }
     if (this.props.chart.type !== "table") {
       window.setInterval(() => {
-    fetch(this.props.chart.source)
+      let query = buildQuery(this.props.chart.params);
+    fetch(this.props.chart.source+'&'+query)
           .then(response => response.json())
           .then(data => {
             this.setState({ feeds: data });
@@ -68,6 +71,7 @@ class ChartWrapper extends Component {
             title={chart.title}
             stacked={chart.stacked?true:false}
               colors={["#4472C4", "#ED7D31","#A5A5A5"]}
+              interval={chart.params.interval}
            /> 
           )
         }
@@ -142,3 +146,26 @@ class ChartWrapper extends Component {
 }
 
 export default ChartWrapper;
+
+
+const buildQuery = (data) => {
+
+	// If the data is already a string, return it as-is
+	if (typeof (data) === 'string') return data;
+
+	// Create a query array to hold the key/value pairs
+	var query = [];
+
+	// Loop through the data object
+	for (var key in data) {
+		if (data.hasOwnProperty(key)) {
+
+			// Encode each key and value, concatenate them into a string, and push them to the array
+			query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+		}
+	}
+
+	// Join each item in the array with a `&` and return the resulting string
+	return query.join('&');
+
+};
