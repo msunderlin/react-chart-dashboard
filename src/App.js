@@ -3,12 +3,12 @@ import Container from "@material-ui/core/Container";
 import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
 import DehazeIcon from "@material-ui/icons/Dehaze";
-import NavBar from "./components/navbar/NavBar";
 import CircleLoader from "./components/loader/CircleLoader";
 import Layout from "./components/layout/Layout";
 import ChartWrapper from "./components/charts/ChartWrapper";
 import EditWidget from "./components/edit/EditWidget";
-import { formatMs } from "@material-ui/core";
+import ContextMenu from "./components/contextMenu/contextMenu";
+import PopupChart from "./components/layout/PopupChart";
 
 class App extends React.Component {
   constructor(props) {
@@ -21,7 +21,13 @@ class App extends React.Component {
       action: window.getAction(),
       edit_opened: false,
       edit_target: [],
-      edit_target_id: 0
+      edit_target_id: 0,
+      show_context: null,
+      context_action: null,
+      context_param: null,
+      context_x: null,
+      context_y: null,
+      show_popup: false
     };
   }
 
@@ -38,8 +44,39 @@ class App extends React.Component {
       });
     });
   }
+
+  //Context Menu Actions
+  handleContextOpenClick = (event, label, i) => {
+    this.setState({
+      show_context: event.target,
+      context_target: JSON.parse(JSON.stringify(this.state.chart[i])),
+      context_param: label,
+      context_x: event.clientX - 2,
+      context_y: event.clientY - 4
+    });
+  };
+  handleContextClose = () => {
+    this.setState({
+      show_context: null,
+      context_x: null,
+      context_y: null
+    });
+  };
+  handleContextClick = () => {
+    this.setState({
+      show_popup: true,
+      show_context: null,
+      context_x: null,
+      context_y: null
+    });
+  };
+  handlePopupClose = () => {
+    this.setState({
+      show_popup: false
+    });
+  };
+  // Chart Edit window Actions
   handleEditClick = i => {
-    console.log(i);
     this.setState({
       edit_opened: true,
       edit_target: this.state.chart[i],
@@ -48,10 +85,11 @@ class App extends React.Component {
   };
   handleEditClose = () => {
     this.setState({
-      edit_opened: false
+      edit_opened: false,
+      edit_target: []
     });
   };
-
+  // State Update Methods
   handleTitleChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.title = event.target.value;
@@ -69,14 +107,14 @@ class App extends React.Component {
   };
   handleStartChange = date => {
     let edit_target = { ...this.state.edit_target };
-    edit_target.params.start_date = date.format('l');
+    edit_target.params.start_date = date.format("l");
     this.setState({
       edit_target
     });
   };
-  handleEndChange = date=> {
+  handleEndChange = date => {
     let edit_target = { ...this.state.edit_target };
-    edit_target.params.end_date = date.format('l');
+    edit_target.params.end_date = date.format("l");
     this.setState({
       edit_target
     });
@@ -84,7 +122,7 @@ class App extends React.Component {
 
   handleProductChange = event => {
     let edit_target = { ...this.state.edit_target };
-    edit_target.params.end_date = event.target.value;
+    edit_target.params.product_id = event.target.value;
     this.setState({
       edit_target
     });
@@ -97,13 +135,13 @@ class App extends React.Component {
     });
   };
 
-  handleIntervalChange = event =>{
+  handleIntervalChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.interval = event.target.value;
     this.setState({
       edit_target
     });
-  }
+  };
   handleChartChange = () => {
     if (this.state.chart.length > 0) {
       let chart = this.state.chart;
@@ -136,7 +174,15 @@ class App extends React.Component {
     } else {
       return (
         <div>
+          <PopupChart
+            popupchart={this.state.context_target}
+            context_date={this.state.context_param}
+            handleClose={this.handlePopupClose}
+            show_popup={this.state.show_popup}
+          />
+
           <EditWidget
+            size="small"
             chart={this.state.edit_target}
             opened={this.state.edit_opened}
             handleClose={this.handleEditClose}
@@ -149,12 +195,17 @@ class App extends React.Component {
             handleParamIntervalChange={this.handleParamIntervalChange}
             handleSave={this.handleChartChange}
             title={this.state.edit_target.title}
+            products={[]}
           />
-
+          <ContextMenu
+            visible={this.state.show_context}
+            handleContextClose={this.handleContextClose}
+            chart={this.state.context_target}
+            mouseX={this.state.context_x}
+            mouseY={this.state.context_y}
+            handleContextClick={this.handleContextClick}
+          />
           <Container disableGutters={false} maxWidth="lg">
-            <NavBar>
-              <h1>Hello From The NavBar</h1>
-            </NavBar>
             <Layout charts={this.state.chart} layouts={this.state.layouts}>
               {this.state.chart.map((chart, i) => {
                 if (chart.type === "table") {
@@ -175,6 +226,7 @@ class App extends React.Component {
                     >
                       <Button
                         color="primary"
+                        size="small"
                         onClick={() => {
                           this.handleEditClick(i);
                         }}
@@ -182,7 +234,11 @@ class App extends React.Component {
                       >
                         <DehazeIcon />
                       </Button>
-                      <ChartWrapper chart={chart} />
+                      <ChartWrapper
+                        chart={chart}
+                        handleContextOpenClick={this.handleContextOpenClick}
+                        chartIndex={i}
+                      />
                     </Card>
                   );
                 } else {
@@ -203,6 +259,7 @@ class App extends React.Component {
                     >
                       <Button
                         color="primary"
+                        size="small"
                         onClick={() => {
                           this.handleEditClick(i);
                         }}
@@ -210,7 +267,12 @@ class App extends React.Component {
                       >
                         <DehazeIcon />
                       </Button>
-                      <ChartWrapper chart={chart} />
+                      <ChartWrapper
+                        chart={chart}
+                        handleContextOpenClick={this.handleContextOpenClick}
+                        handleContextClose={this.handleContextClose}
+                        chartIndex={i}
+                      />
                     </Card>
                   );
                 }
@@ -286,7 +348,6 @@ class App extends React.Component {
     data.append("user_id", user_id);
     data.append("dashboard_id", dashboard_id);
     data.append("action", action);
-    console.log(charts);
     data.append("widgets", JSON.stringify(charts));
     data.append("positions", JSON.stringify({ layouts }));
     await fetch("http://local.admin.admediary.com/test/chartMgmt.php", {

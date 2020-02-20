@@ -1,5 +1,4 @@
 async function getCharts($user_id = 0) {
-
   let data = [];
 
   // data.push({
@@ -22,7 +21,7 @@ async function getCharts($user_id = 0) {
     type: "line",
     title: "Daily PL 01/07/2020",
     interval: 20000,
-    stacked:1,
+    stacked: 1,
     defaultpos: { h: 2, w: 2, minW: 2, minH: 2 },
     source:
       "http://local.admin.admediary.com/test/getArray.php?report=stackedline&start_date=12/01/2019&end_date=12/07/2019&product_id=45&interval=daily"

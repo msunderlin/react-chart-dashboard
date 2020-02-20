@@ -4,20 +4,41 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import CircleLoader from "../loader/CircleLoader";
 import DropDown from "../dropdowns/DropDown";
 import DateHandler from "../date/DateHandler";
-import moment from "moment";
 import TextInput from "../inputs/TextInput";
 
 class EditWidget extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      products: props.products
+    };
+  }
+
+  componentDidMount() {
+    new Promise((resolve, reject) => {
+      let url =
+        "http://local.admin.admediary.com/test/chartMgmt.php?user_id=59&action=get_products";
+      fetch(url)
+        .then(response => response.json())
+        .then(result => {
+          let parsed = JSON.parse(result);
+          resolve(
+            this.setState({
+              products: JSON.parse(result)
+            })
+          );
+        });
+    });
+  }
   handleClose = () => {
     this.props.handleSave();
     this.props.handleClose();
   };
 
   render() {
-    if (this.props.chart.length === 0){
+    if (this.props.chart.length === 0) {
       let wrapper_style = {
         display: "flex",
         flexDirection: "column",
@@ -30,11 +51,7 @@ class EditWidget extends Component {
         height: "100vh",
         width: "100%"
       };
-      return (
-        <div style={wrapper_style}>
-          <CircleLoader />
-        </div>
-      );
+      return <div style={wrapper_style}>{/* <CircleLoader /> */}</div>;
     } else {
       return (
         <Dialog
@@ -44,53 +61,78 @@ class EditWidget extends Component {
         >
           <DialogTitle id="form-dialog-title">Edit Widget</DialogTitle>
           <DialogContent>
-            <TextInput
-              variant="filled"
-              label="Title"
-              handleChange={this.props.handleTitleChange}
-              value={this.props.title}
-            />
-            <DropDown
-              label="Chart Type"
-              handleChange={this.props.handleTypeChange}
-              value={this.props.chart.type}
-              options={[
-                {
-                  text: "Bar",
-                  value: "bar"
-                },
-               
-                {
-                  text: "Line",
-                  value: "line"
-                }
-              
-              
-              ]}
-            />
-            <br/>
-            <DropDown
-              label="Interval"
-              handleChange={this.props.handleParamIntervalChange}
-              value={this.props.chart.params.interval}
-              options={[
-                {
-                  text:"Hourly",
-                  value:"hourly"
-                },
-                {
-                  text:"Daily",
-                  value:"daily"
-                }
-              ]}
+            <div>
+              <TextInput
+                variant="outlined"
+                size={this.props.size}
+                label="Title"
+                InputLabelProps={{ shrink: this.props.title ? true : false }}
+                handleChange={this.props.handleTitleChange}
+                value={this.props.title}
               />
-            <br/>
-            <DateHandler
-              startDate={this.props.chart.params.start_date}
-              endDate={this.props.chart.params.end_date}
-              handleStartDateChange={this.props.handleStartChange}
-              handleEndDateChange={this.props.handleEndChange}
-            />
+            </div>
+            <br />
+            <div>
+              <DropDown
+                label="Chart Type"
+                variant="outlined"
+                size={this.props.size}
+                handleChange={this.props.handleTypeChange}
+                value={this.props.chart.type}
+                options={[
+                  {
+                    text: "Bar",
+                    value: "bar"
+                  },
+
+                  {
+                    text: "Line",
+                    value: "line"
+                  }
+                ]}
+              />
+            </div>
+            <br />
+            <div>
+              <DropDown
+                variant="outlined"
+                label="Interval"
+                size={this.props.size}
+                handleChange={this.props.handleParamIntervalChange}
+                value={this.props.chart.params.interval}
+                options={[
+                  {
+                    text: "Hourly",
+                    value: "hourly"
+                  },
+                  {
+                    text: "Daily",
+                    value: "daily"
+                  }
+                ]}
+              />
+            </div>
+            <br />
+            <div>
+              <DropDown
+                label="Product"
+                variant="outlined"
+                size={this.props.size}
+                handleChange={this.props.handleProductChange}
+                value={this.props.chart.params.product_id}
+                options={this.state.products}
+              />
+            </div>
+            <br />
+            <div>
+              <DateHandler
+                startDate={this.props.chart.params.start_date}
+                size={this.props.size}
+                endDate={this.props.chart.params.end_date}
+                handleStartDateChange={this.props.handleStartChange}
+                handleEndDateChange={this.props.handleEndChange}
+              />
+            </div>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.handleClose} variant="contained">

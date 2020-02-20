@@ -71,16 +71,13 @@ async function savetoDB(key, value, charts) {
   data.append("action", action);
   data.append("widgets", JSON.stringify(charts));
   data.append("positions", JSON.stringify({ [key]: value }));
-  await fetch(
-    "http://local.admin.admediary.com/test/chartMgmt.php",
-    {
-      method: "POST",
-      headers: {
-        Accept: "application/json"
-      },
-      body: data
-    }
-  )
+  await fetch("http://local.admin.admediary.com/test/chartMgmt.php", {
+    method: "POST",
+    headers: {
+      Accept: "application/json"
+    },
+    body: data
+  })
     .then(response => response.json())
     .then(data => {
       return data;

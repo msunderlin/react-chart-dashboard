@@ -15,6 +15,7 @@ class StackedBarChart extends React.Component {
   }
 
   componentDidMount() {
+    document.addEventListener("contextmenu", this._handleContextMenu);
     this.myChart = new Chart(this.canvasRef.current, {
       type: "bar",
       options: {
@@ -29,9 +30,9 @@ class StackedBarChart extends React.Component {
               }
             }
           ],
-          xAxes:[
+          xAxes: [
             {
-              stacked: this.props.stacked ? true : false,
+              stacked: this.props.stacked ? true : false
             }
           ]
         },
@@ -45,8 +46,22 @@ class StackedBarChart extends React.Component {
   }
 
   render() {
-    return React.createElement("canvas", { ref: this.canvasRef });
+    return <canvas ref={this.canvasRef} />;
   }
+
+  handleOnClick = event => {
+    let firstpoint = this.myChart.getElementAtEvent(event)[0];
+
+    if (firstpoint) {
+      var label = this.myChart.data.labels[firstpoint._index];
+      this.props.handleContextOpenClick(event, label, this.props.chartIndex);
+    }
+  };
+
+  _handleContextMenu = event => {
+    event.preventDefault();
+    this.handleOnClick(event);
+  };
 }
 
 export default StackedBarChart;

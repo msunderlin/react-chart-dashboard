@@ -2,6 +2,7 @@ import React from "react";
 import DropDown from "../dropdowns/DropDown";
 import DatePicker from "../pickers/DatePicker";
 import moment from "moment";
+import FormControl from "@material-ui/core/FormControl";
 
 class DateHandler extends React.Component {
   constructor(props) {
@@ -13,8 +14,6 @@ class DateHandler extends React.Component {
   }
   handleDropdownChange = event => {
     let v = event.target.value;
-    console.log("change occured");
-    console.log("value" + v);
     this.setState({
       value: v
     });
@@ -65,6 +64,7 @@ class DateHandler extends React.Component {
       <React.Fragment>
         <DropDown
           label="Common"
+          size={this.props.size}
           value={this.state.value}
           handleChange={this.handleDropdownChange}
           options={[
@@ -102,23 +102,29 @@ class DateHandler extends React.Component {
             id: "set-date-type"
           }}
         />
-          <React.Fragment>
-          <br/>
+        <React.Fragment>
+          <br />
+          <FormControl variant="filled">
             <DatePicker
+              size={this.props.size}
               date={this.props.startDate}
               label="Start Date"
               handleDateChange={this.props.handleStartDateChange}
               variant="dialog"
               id="date-picker-start"
             />
+          </FormControl>
+          <FormControl variant="filled">
             <DatePicker
+              size={this.props.size}
               date={this.props.endDate}
               label="End Date"
               handleDateChange={this.props.handleEndDateChange}
               variant="dialog"
               id="date-picker-end"
             />
-            </React.Fragment>
+          </FormControl>
+        </React.Fragment>
       </React.Fragment>
     );
   }

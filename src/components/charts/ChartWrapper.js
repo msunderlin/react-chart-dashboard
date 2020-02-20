@@ -7,37 +7,38 @@ import PolarChart from "./PolarChart";
 import StackedBarChart from "./StackedBarChart";
 import StackedLineChart from "./StackedLineChart";
 import Table from "../table/Table";
-import moment from "moment";
 class ChartWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      feeds: [],
-
+      feeds: []
     };
 
-      let query = buildQuery(this.props.chart.params);
-    fetch(this.props.chart.source+'&'+query)
+    let query = buildQuery(this.props.chart.params);
+    fetch(this.props.chart.source + "&" + query)
       .then(response => response.json())
       .then(data => {
         this.setState({ feeds: data });
       });
     this.getHeader = null;
   }
-
+  timer = 0;
   componentDidMount() {
     if (this.getHeader) {
     }
     if (this.props.chart.type !== "table") {
-      window.setInterval(() => {
-      let query = buildQuery(this.props.chart.params);
-    fetch(this.props.chart.source+'&'+query)
+     this.timer = window.setInterval(() => {
+        let query = buildQuery(this.props.chart.params);
+        fetch(this.props.chart.source + "&" + query)
           .then(response => response.json())
           .then(data => {
             this.setState({ feeds: data });
           });
       }, this.props.chart.interval);
     }
+  }
+  componentWillUnmount(){
+    clearInterval(this.timeout);
   }
 
   render() {
@@ -48,10 +49,15 @@ class ChartWrapper extends Component {
         if (chart.stacked === 1) {
           return (
             <StackedBarChart
+              handleContextOpenClick={this.props.handleContextOpenClick}
+              chartIndex={this.props.chartIndex}
+              source={chart.source}
+              params={chart.params}
               data={this.state.feeds}
               title={chart.title}
               stacked={chart.stacked ? true : false}
-              colors={["#7070D1", "#ff0000"]}
+              colors={["#4472C4", "#ED7D31", "#A5A5A5"]}
+              interval={chart.params.interval}
             />
           );
         }
@@ -64,16 +70,20 @@ class ChartWrapper extends Component {
           />
         );
       case "line":
-        if(chart.stacked === 1){
+        if (chart.stacked === 1) {
           return (
-           <StackedLineChart
-            data={this.state.feeds}
-            title={chart.title}
-            stacked={chart.stacked?true:false}
-              colors={["#4472C4", "#ED7D31","#A5A5A5"]}
+            <StackedLineChart
+              handleContextOpenClick={this.props.handleContextOpenClick}
+              chartIndex={this.props.chartIndex}
+              source={chart.source}
+              params={chart.params}
+              data={this.state.feeds}
+              title={chart.title}
+              stacked={chart.stacked ? true : false}
+              colors={["#4472C4", "#ED7D31", "#A5A5A5"]}
               interval={chart.params.interval}
-           /> 
-          )
+            />
+          );
         }
         return <LineChart data={this.state.feeds} title="" color="#7070D1" />;
       case "doughnut":
@@ -147,25 +157,21 @@ class ChartWrapper extends Component {
 
 export default ChartWrapper;
 
+const buildQuery = data => {
+  // If the data is already a string, return it as-is
+  if (typeof data === "string") return data;
 
-const buildQuery = (data) => {
+  // Create a query array to hold the key/value pairs
+  var query = [];
 
-	// If the data is already a string, return it as-is
-	if (typeof (data) === 'string') return data;
+  // Loop through the data object
+  for (var key in data) {
+    if (data.hasOwnProperty(key)) {
+      // Encode each key and value, concatenate them into a string, and push them to the array
+      query.push(encodeURIComponent(key) + "=" + encodeURIComponent(data[key]));
+    }
+  }
 
-	// Create a query array to hold the key/value pairs
-	var query = [];
-
-	// Loop through the data object
-	for (var key in data) {
-		if (data.hasOwnProperty(key)) {
-
-			// Encode each key and value, concatenate them into a string, and push them to the array
-			query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-		}
-	}
-
-	// Join each item in the array with a `&` and return the resulting string
-	return query.join('&');
-
+  // Join each item in the array with a `&` and return the resulting string
+  return query.join("&");
 };

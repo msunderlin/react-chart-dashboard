@@ -8,6 +8,8 @@ const DropDown = props => {
       <InputLabel>{props.label}</InputLabel>
       <Select
         native
+        variant={props.variant}
+        size={props.size}
         lable={props.label}
         value={props.value}
         onChange={props.handleChange}
