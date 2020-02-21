@@ -19,7 +19,7 @@ class EditWidget extends Component {
   componentDidMount() {
     new Promise((resolve, reject) => {
       let url =
-        "http://local.admin.admediary.com/test/chartMgmt.php?user_id=59&action=get_products";
+        "http://local.admin.admediary.com/dashboard/chartMgmt.php?user_id=59&action=get_products";
       fetch(url)
         .then(response => response.json())
         .then(result => {
@@ -121,6 +121,26 @@ class EditWidget extends Component {
                 handleChange={this.props.handleProductChange}
                 value={this.props.chart.params.product_id}
                 options={this.state.products}
+              />
+            </div>
+            <br />
+            <div>
+              <DropDown
+                variant="outlined"
+                label="Data Display Type"
+                size={this.props.size}
+                handleChange={this.props.handleParamDataTypeChange}
+                value={this.props.chart.params.datatype}
+                options={[
+                  {
+                    text: "Percent",
+                    value: "percent"
+                  },
+                  {
+                    text: "Count",
+                    value: "count"
+                  }
+                ]}
               />
             </div>
             <br />

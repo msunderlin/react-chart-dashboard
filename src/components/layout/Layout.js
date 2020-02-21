@@ -71,7 +71,7 @@ async function savetoDB(key, value, charts) {
   data.append("action", action);
   data.append("widgets", JSON.stringify(charts));
   data.append("positions", JSON.stringify({ [key]: value }));
-  await fetch("http://local.admin.admediary.com/test/chartMgmt.php", {
+  await fetch("http://local.admin.admediary.com/dashboard/chartMgmt.php", {
     method: "POST",
     headers: {
       Accept: "application/json"

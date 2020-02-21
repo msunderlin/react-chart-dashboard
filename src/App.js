@@ -105,6 +105,7 @@ class App extends React.Component {
       edit_target
     });
   };
+
   handleStartChange = date => {
     let edit_target = { ...this.state.edit_target };
     edit_target.params.start_date = date.format("l");
@@ -119,7 +120,13 @@ class App extends React.Component {
       edit_target
     });
   };
-
+  handleParamDataTypeChange = event => {
+    let edit_target = { ...this.state.edit_target };
+    edit_target.params.datatype = event.target.value;
+    this.setState({
+      edit_target
+    });
+  }
   handleProductChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.params.product_id = event.target.value;
@@ -147,8 +154,8 @@ class App extends React.Component {
       let chart = this.state.chart;
       chart[this.state.edit_target_id] = this.state.edit_target;
       this.setState({ chart });
-      this.saveChartsToDB(this.state.layouts, chart);
-      this.forceUpdate();
+      this.saveChartsToDB(this.state.layouts, chart).then()
+
     }
   };
 
@@ -191,6 +198,7 @@ class App extends React.Component {
             handleStartChange={this.handleStartChange}
             handleEndChange={this.handleEndChange}
             handleIntervalChange={this.handleIntervalChange}
+            handleParamDataTypeChange={this.handleParamDataTypeChange}
             handleProductChange={this.handleProductChange}
             handleParamIntervalChange={this.handleParamIntervalChange}
             handleSave={this.handleChartChange}
@@ -293,7 +301,7 @@ class App extends React.Component {
     dashboard_name = dashboard_name.replace("/", "");
     if (isNaN(dashboard_name)) {
       dashboard_id = await fetch(
-        "http://local.admin.admediary.com/test/chartMgmt.php?user_id=" +
+        "http://local.admin.admediary.com/dashboard/chartMgmt.php?user_id=" +
           user_id +
           "&action=" +
           action +
@@ -322,7 +330,7 @@ class App extends React.Component {
     const dashboard_id = window.getDashboardId();
 
     ls = await fetch(
-      "http://local.admin.admediary.com/test/chartMgmt.php?user_id=" +
+      "http://local.admin.admediary.com/dashboard/chartMgmt.php?user_id=" +
         user_id +
         "&action=" +
         action +
@@ -350,7 +358,7 @@ class App extends React.Component {
     data.append("action", action);
     data.append("widgets", JSON.stringify(charts));
     data.append("positions", JSON.stringify({ layouts }));
-    await fetch("http://local.admin.admediary.com/test/chartMgmt.php", {
+    await fetch("http://local.admin.admediary.com/dashboard/chartMgmt.php", {
       method: "POST",
       headers: {
         Accept: "application/json"

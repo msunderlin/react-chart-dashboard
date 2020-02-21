@@ -25,7 +25,6 @@ class BarChart extends React.Component {
               stacked: this.props.stacked ? true : false,
               ticks: {
                 min: 0,
-                max: 100
               }
             }
           ]

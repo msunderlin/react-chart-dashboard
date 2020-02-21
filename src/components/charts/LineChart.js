@@ -16,6 +16,7 @@ class LineChart extends React.Component {
     this.myChart = new Chart(this.canvasRef.current, {
       type: "line",
       options: {
+       
         maintainAspectRatio: false,
         scales: {
           xAxes: [

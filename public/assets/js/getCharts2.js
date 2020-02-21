@@ -3,7 +3,7 @@ async function getCharts() {
   const action = getAction();
   const dashboard_id = getDashboardId();
   const charts = await fetch(
-    "http://local.admin.admediary.com/test/chartMgmt.php?user_id=" +
+    "http://local.admin.admediary.com/dashboard/chartMgmt.php?user_id=" +
       user_id +
       "&action=" +
       action +

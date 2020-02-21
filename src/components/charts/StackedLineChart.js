@@ -36,6 +36,47 @@ class StackedLineChart extends React.Component {
     this.myChart = new Chart(this.canvasRef.current, {
       type: "line",
       options: {
+        tooltips: {
+          mode: "index",
+          callbacks: {
+            label: (tooltipItem, data) => {
+              let datatype = this.props.params.datatype;
+              let sum = 0;
+              if(datatype==='count'){
+              data.datasets.forEach(function(dataset) {
+                sum += Number(dataset.data[tooltipItem.index]);
+              });
+            }
+              var label = data.datasets[tooltipItem.datasetIndex].label || "";
+
+              if (label) {
+                label += ": ";
+              }
+                label += Math.round(tooltipItem.yLabel * 10) / 10;
+
+              if(datatype==='count'){
+                label+= ' (';
+                  label += (tooltipItem.yLabel === 0)?0: Math.round((tooltipItem.yLabel / sum)*10);
+                  label += '%)';
+              }
+              return label;
+            },
+            footer: (tooltipItems, data) =>{
+              let datatype = this.props.params.datatype;
+              if(datatype==='count'){
+              let sum = 0;
+              tooltipItems.forEach(function(tooltipItem) {
+                sum += Number(
+                  data.datasets[tooltipItem.datasetIndex].data[
+                    tooltipItem.index
+                  ]
+                );
+              });
+              return "Total : " + sum;
+            }
+          }
+          }
+        },
         maintainAspectRatio: false,
         scales: {
           xAxes: [

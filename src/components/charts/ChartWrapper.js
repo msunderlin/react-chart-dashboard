@@ -27,7 +27,7 @@ class ChartWrapper extends Component {
     if (this.getHeader) {
     }
     if (this.props.chart.type !== "table") {
-     this.timer = window.setInterval(() => {
+      this.timer = window.setInterval(() => {
         let query = buildQuery(this.props.chart.params);
         fetch(this.props.chart.source + "&" + query)
           .then(response => response.json())
@@ -37,7 +37,8 @@ class ChartWrapper extends Component {
       }, this.props.chart.interval);
     }
   }
-  componentWillUnmount(){
+
+  componentWillUnmount() {
     clearInterval(this.timeout);
   }
 
