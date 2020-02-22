@@ -4,6 +4,7 @@ import { Button } from "@material-ui/core";
 import "../../../node_modules/react-grid-layout/css/styles.css";
 import "../../../node_modules/react-resizable/css/styles.css";
 import "./layout.css";
+import EditMenu from "./editMenu";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -36,13 +37,8 @@ class Layout extends React.Component {
     return (
       <>
         <br />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => this.resetLayout()}
-        >
-          Reset Layout
-        </Button>
+
+        <EditMenu handleResetLayout={() => this.resetLayout()} handleWidgetAdd={this.props.handleWidgetAdd}/>
         <ResponsiveReactGridLayout
           width={2400}
           className="layout"

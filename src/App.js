@@ -9,6 +9,7 @@ import ChartWrapper from "./components/charts/ChartWrapper";
 import EditWidget from "./components/edit/EditWidget";
 import ContextMenu from "./components/contextMenu/contextMenu";
 import PopupChart from "./components/layout/PopupChart";
+import EditMenu from "./components/layout/editMenu";
 
 class App extends React.Component {
   constructor(props) {
@@ -89,6 +90,12 @@ class App extends React.Component {
       edit_target: []
     });
   };
+  //Add Widget
+  handleWidgetAdd = widget => {
+    let chart = this.state.chart;
+    chart.push(JSON.parse(widget));
+      this.setState({ chart }, () => { this.saveChartsToDB(this.state.layouts, chart)});
+  };
   // State Update Methods
   handleTitleChange = event => {
     let edit_target = { ...this.state.edit_target };
@@ -126,7 +133,7 @@ class App extends React.Component {
     this.setState({
       edit_target
     });
-  }
+  };
   handleProductChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.params.product_id = event.target.value;
@@ -153,9 +160,7 @@ class App extends React.Component {
     if (this.state.chart.length > 0) {
       let chart = this.state.chart;
       chart[this.state.edit_target_id] = this.state.edit_target;
-      this.setState({ chart });
-      this.saveChartsToDB(this.state.layouts, chart).then()
-
+      this.setState({ chart }, () => { this.saveChartsToDB(this.state.layouts, chart)});
     }
   };
 
@@ -214,7 +219,11 @@ class App extends React.Component {
             handleContextClick={this.handleContextClick}
           />
           <Container disableGutters={false} maxWidth="lg">
-            <Layout charts={this.state.chart} layouts={this.state.layouts}>
+            <Layout
+              charts={this.state.chart}
+              layouts={this.state.layouts}
+              handleWidgetAdd={this.handleWidgetAdd}
+            >
               {this.state.chart.map((chart, i) => {
                 if (chart.type === "table") {
                   return (
