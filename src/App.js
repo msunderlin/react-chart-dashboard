@@ -348,7 +348,7 @@ class App extends React.Component {
     dashboard_name = dashboard_name.replace("/", "");
     if (isNaN(dashboard_name)) {
       dashboard_id = await fetch(
-      ajax_url+"?user_id=" +
+      window.ajax_url+"?user_id=" +
           user_id +
           "&action=" +
           action +
@@ -378,7 +378,7 @@ class App extends React.Component {
     const dashboard_id = window.getDashboardId();
 
     ls = await fetch(
-      ajax_url+"?user_id=" +
+      window.ajax_url+"?user_id=" +
         user_id +
         "&action=" +
         action +
@@ -406,7 +406,7 @@ class App extends React.Component {
     data.append("action", action);
     data.append("widgets", JSON.stringify(charts));
     data.append("positions", JSON.stringify({ layouts }));
-    await fetch(ajax_url, {
+    await fetch(window.ajax_url, {
       method: "POST",
       headers: {
         Accept: "application/json"
