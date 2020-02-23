@@ -269,14 +269,14 @@ class App extends React.Component {
                       >
                         <DehazeIcon />
                       </Button>
-                      <IconButton
+                      {/* <IconButton
                         aria-label="delete"
                         onClick={() => {
                           this.handleWidgetRemove(i);
                         }}
                       >
                         <CloseIcon />
-                      </IconButton>
+                      </IconButton> */}
                       <ChartWrapper
                         chart={chart}
                         handleContextOpenClick={this.handleContextOpenClick}
@@ -338,6 +338,8 @@ class App extends React.Component {
   }
 
   async getParams() {
+
+    if(window.local_dev){
     let url = window.location.href;
     let dashboard_name = new URL(url).pathname;
     let user_id = window.getUserID();
@@ -346,7 +348,7 @@ class App extends React.Component {
     dashboard_name = dashboard_name.replace("/", "");
     if (isNaN(dashboard_name)) {
       dashboard_id = await fetch(
-        "http://local.admin.admediary.com/dashboard/chartMgmt.php?user_id=" +
+      window.ajax_url+"?user_id=" +
           user_id +
           "&action=" +
           action +
@@ -367,6 +369,7 @@ class App extends React.Component {
       return await dashboard_id;
     }
   }
+  }
 
   async getFromDB(key) {
     let ls = {};
@@ -375,7 +378,7 @@ class App extends React.Component {
     const dashboard_id = window.getDashboardId();
 
     ls = await fetch(
-      "http://local.admin.admediary.com/dashboard/chartMgmt.php?user_id=" +
+      window.ajax_url+"?user_id=" +
         user_id +
         "&action=" +
         action +
@@ -403,7 +406,7 @@ class App extends React.Component {
     data.append("action", action);
     data.append("widgets", JSON.stringify(charts));
     data.append("positions", JSON.stringify({ layouts }));
-    await fetch("http://local.admin.admediary.com/dashboard/chartMgmt.php", {
+    await fetch(window.ajax_url, {
       method: "POST",
       headers: {
         Accept: "application/json"

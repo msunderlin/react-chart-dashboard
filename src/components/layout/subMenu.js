@@ -9,7 +9,7 @@ const SubMenu = (props)=> {
   const handleClick = event => {
    setAnchorEl(event.currentTarget);
   };
-  const lead_status ='{\"type\":\"bar\",\"title\":\"Lead Status\",\"interval\":20000,\"stacked\":1,\"defaultpos\":{\"h\":2,\"w\":2,\"minW\":2,\"minH\":2},\"source\":\"http:\/\/local.admin.admediary.com\/dashboard\/getArray.php?report=stackedline\",\"params\":{\"start_date\":\"12\/01\/2019\",\"end_date\":\"12\/07\/2019\",\"product_id\":\"57\",\"interval\":\"daily\",\"datatype\":\"percent\"}}';
+  const lead_status ='{\"type\":\"bar\",\"title\":\"Lead Status\",\"interval\":20000,\"stacked\":1,\"defaultpos\":{\"h\":2,\"w\":2,\"minW\":2,\"minH\":2},\"source\":\"'+window.base_url+'\/dashboard\/getArray.php?report=stackedline\",\"params\":{\"start_date\":\"12\/01\/2019\",\"end_date\":\"12\/07\/2019\",\"product_id\":\"57\",\"interval\":\"daily\",\"datatype\":\"percent\"}}';
 
   const handleClose = (widget) => {
     setAnchorEl(null);
