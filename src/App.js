@@ -376,14 +376,14 @@ class App extends React.Component {
     const action = "get_layout";
     const user_id = window.getUserID();
     const dashboard_id = window.getDashboardId();
-
+    const url =  window.ajax_url+"?user_id=" +
+    user_id +
+    "&action=" +
+    action +
+    "&dashboard_id=" +
+    dashboard_id;
     ls = await fetch(
-      window.ajax_url+"?user_id=" +
-        user_id +
-        "&action=" +
-        action +
-        "&dashboard_id=" +
-        dashboard_id
+     url
     )
       .then(response => response.json())
       .then(data => {
@@ -406,7 +406,8 @@ class App extends React.Component {
     data.append("action", action);
     data.append("widgets", JSON.stringify(charts));
     data.append("positions", JSON.stringify({ layouts }));
-    await fetch(window.ajax_url, {
+    const url = window.ajax_url;
+    await fetch(url, {
       method: "POST",
       headers: {
         Accept: "application/json"
