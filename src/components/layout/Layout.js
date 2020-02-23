@@ -67,7 +67,7 @@ async function savetoDB(key, value, charts) {
   data.append("action", action);
   data.append("widgets", JSON.stringify(charts));
   data.append("positions", JSON.stringify({ [key]: value }));
-  await fetch(window.ajax_url, {
+  await fetch(ajax_url, {
     method: "POST",
     headers: {
       Accept: "application/json"

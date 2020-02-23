@@ -35,19 +35,7 @@
     <input type="hidden" value="get_dashboard" id="dashboard_action">
     <input type="hidden" value="1" id="dashboard_id">
     <script>
-      const base_url = <?php  
-       $base_url = 'https://admin.admediary.com';
-    if ( preg_match ( '/^local./', $_SERVER['SERVER_NAME'] ) ){
-       $base_url = 'http://local.admin.admediary.com';
-    }elseif ( preg_match ( '/^dev./', $_SERVER['SERVER_NAME'] ) ){
-       $base_url = 'https://dev.admin.admediary.com';
 
-    }elseif ( preg_match ( '/^staging./', $_SERVER['SERVER_NAME'] ) ){
-       $base_url = 'https://staging.admin.admediary.com';
-     }  
-     echo $base_url;
-    ?>;
-    const ajax_url = base_url+'/dashboard/chartMgmt.php';
 
         function getUserID(){
           return document.querySelector('#user_id').value;

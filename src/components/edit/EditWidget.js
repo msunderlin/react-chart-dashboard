@@ -19,7 +19,7 @@ class EditWidget extends Component {
   componentDidMount() {
     new Promise((resolve, reject) => {
       let url =
-        window.ajax_url+"?user_id=59&action=get_products";
+        ajax_url+"?user_id=59&action=get_products";
       fetch(url)
         .then(response => response.json())
         .then(result => {
