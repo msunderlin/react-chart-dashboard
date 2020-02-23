@@ -154,16 +154,16 @@ class EditWidget extends Component {
               />
             </div>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={this.props.handleClose} variant="contained">
-              Cancel
-            </Button>
+          <DialogActions style={{justifyContent: "flex-start"}}>
             <Button
               onClick={this.handleClose}
               variant="contained"
               color="primary"
             >
               Save
+            </Button>
+            <Button onClick={this.props.handleClose} variant="contained">
+              Cancel
             </Button>
           </DialogActions>
         </Dialog>

@@ -9,7 +9,8 @@ import ChartWrapper from "./components/charts/ChartWrapper";
 import EditWidget from "./components/edit/EditWidget";
 import ContextMenu from "./components/contextMenu/contextMenu";
 import PopupChart from "./components/layout/PopupChart";
-import EditMenu from "./components/layout/editMenu";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
 class App extends React.Component {
   constructor(props) {
@@ -94,7 +95,22 @@ class App extends React.Component {
   handleWidgetAdd = widget => {
     let chart = this.state.chart;
     chart.push(JSON.parse(widget));
-      this.setState({ chart }, () => { this.saveChartsToDB(this.state.layouts, chart)});
+    this.setState({ chart }, () => {
+      this.saveChartsToDB(this.state.layouts, chart);
+    });
+  };
+  //delete Widget
+  handleWidgetRemove = i => {
+    console.log(i);
+    let chart = this.state.chart;
+    let layouts = this.state.layouts;
+
+    chart.splice(i, 1);
+    layouts.lg.splice(i, 1);
+
+    this.setState({ chart, layouts }, () => {
+      this.saveChartsToDB(layouts, chart);
+    });
   };
   // State Update Methods
   handleTitleChange = event => {
@@ -160,7 +176,9 @@ class App extends React.Component {
     if (this.state.chart.length > 0) {
       let chart = this.state.chart;
       chart[this.state.edit_target_id] = this.state.edit_target;
-      this.setState({ chart }, () => { this.saveChartsToDB(this.state.layouts, chart)});
+      this.setState({ chart }, () => {
+        this.saveChartsToDB(this.state.layouts, chart);
+      });
     }
   };
 
@@ -251,6 +269,14 @@ class App extends React.Component {
                       >
                         <DehazeIcon />
                       </Button>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => {
+                          this.handleWidgetRemove(i);
+                        }}
+                      >
+                        <CloseIcon />
+                      </IconButton>
                       <ChartWrapper
                         chart={chart}
                         handleContextOpenClick={this.handleContextOpenClick}
@@ -284,6 +310,16 @@ class App extends React.Component {
                       >
                         <DehazeIcon />
                       </Button>
+                      {/* <IconButton
+                        size="small"
+                        aria-label="delete"
+                        onClick={() => {
+                          this.handleWidgetRemove(i);
+                        }}
+                        style={{ position: "absolute", top: 0, right: 0 }}
+                      >
+                        <CloseIcon />
+                      </IconButton> */}
                       <ChartWrapper
                         chart={chart}
                         handleContextOpenClick={this.handleContextOpenClick}
