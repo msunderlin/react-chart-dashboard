@@ -31,7 +31,7 @@ class Layout extends React.Component {
   }
   onLayoutChange(layout, layouts) {
     savetoDB("layouts", layouts, this.props.charts);
-    this.setState({ layouts });
+    this.setState((state)=>({ layouts }),this.props.handleLayoutsChange(layouts));
   }
   render() {
     return (

@@ -9,12 +9,16 @@ class StackedBarChart extends React.Component {
   }
 
   componentDidUpdate() {
+    console.log('stacked BarChart updated'+this.props.title);
     this.myChart.data.labels = this.props.data.labels;
     this.myChart.data.datasets = this.props.data.datasets;
-    this.myChart.title = this.props.title;
+    this.myChart.options.title.text = this.props.title;
+    console.log(this.myChart);
     this.myChart.update();
   }
-
+  componentWillUnmount(){
+    this.myChart.destroy();
+  }
   componentDidMount() {
     document.addEventListener("contextmenu", this._handleContextMenu);
     this.myChart = new Chart(this.canvasRef.current, {

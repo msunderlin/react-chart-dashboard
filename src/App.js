@@ -36,150 +36,174 @@ class App extends React.Component {
   componentDidMount() {
     this.getParams().then(async () => {
       window.getCharts().then(result => {
-        this.setState({ chart: JSON.parse(JSON.stringify(result)) });
+        this.setState(state => ({ chart: JSON.parse(JSON.stringify(result)) }));
       });
     });
 
     this.getParams().then(async () => {
       this.getFromDB("layouts").then(result => {
-        this.setState({ layouts: JSON.parse(JSON.stringify(result)) });
+        this.setState(state => ({
+          layouts: JSON.parse(JSON.stringify(result))
+        }));
       });
     });
   }
 
+  componentDidUpdate() {
+    console.log("App.js updated");
+  }
+
   //Context Menu Actions
   handleContextOpenClick = (event, label, i) => {
-    this.setState({
+    this.setState(state => ({
       show_context: event.target,
-      context_target: JSON.parse(JSON.stringify(this.state.chart[i])),
+      context_target: JSON.parse(JSON.stringify(state.chart[i])),
       context_param: label,
       context_x: event.clientX - 2,
       context_y: event.clientY - 4
-    });
+    }));
   };
   handleContextClose = () => {
-    this.setState({
+    this.setState(state => ({
       show_context: null,
       context_x: null,
       context_y: null
-    });
+    }));
   };
   handleContextClick = () => {
-    this.setState({
+    this.setState(state => ({
       show_popup: true,
       show_context: null,
       context_x: null,
       context_y: null
-    });
+    }));
   };
   handlePopupClose = () => {
-    this.setState({
+    this.setState(state => ({
       show_popup: false
-    });
+    }));
   };
   // Chart Edit window Actions
   handleEditClick = i => {
-    this.setState({
+    this.setState(state => ({
       edit_opened: true,
       edit_target: this.state.chart[i],
       edit_target_id: i
-    });
+    }));
   };
   handleEditClose = () => {
-    this.setState({
+    this.setState(state => ({
       edit_opened: false,
       edit_target: []
-    });
+    }));
   };
   //Add Widget
   handleWidgetAdd = widget => {
     let chart = this.state.chart;
     chart.push(JSON.parse(widget));
-    this.setState({ chart }, () => {
-      this.saveChartsToDB(this.state.layouts, chart);
-    });
+    this.setState(
+      state => ({
+        chart
+      }),
+      () => {
+        this.saveChartsToDB(this.state.layouts, chart);
+      }
+    );
   };
   //delete Widget
   handleWidgetRemove = i => {
     console.log(i);
-    let chart = this.state.chart;
-    let layouts = this.state.layouts;
+
+    let chart = JSON.parse(JSON.stringify(this.state.chart));
+    let layouts = JSON.parse(JSON.stringify(this.state.layouts));
 
     chart.splice(i, 1);
-    layouts.lg.splice(i, 1);
-
-    this.setState({ chart, layouts }, () => {
-      this.saveChartsToDB(layouts, chart);
+    Object.entries(layouts).forEach(entry => {
+      let key = entry[0];
+      layouts[key].splice(i, 1);
     });
+    this.setState(state => ({
+      chart,
+       layouts
+    }));
+    this.saveChartsToDB(layouts, chart);
   };
   // State Update Methods
   handleTitleChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.title = event.target.value;
-    this.setState({
+    this.setState(state => ({
       edit_target
-    });
+    }));
   };
 
   handleTypeChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.type = event.target.value;
-    this.setState({
+    this.setState(state => ({
       edit_target
-    });
+    }));
   };
 
   handleStartChange = date => {
     let edit_target = { ...this.state.edit_target };
     edit_target.params.start_date = date.format("l");
-    this.setState({
+    this.setState(state => ({
       edit_target
-    });
+    }));
   };
   handleEndChange = date => {
     let edit_target = { ...this.state.edit_target };
     edit_target.params.end_date = date.format("l");
-    this.setState({
+    this.setState(state => ({
       edit_target
-    });
+    }));
   };
   handleParamDataTypeChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.params.datatype = event.target.value;
-    this.setState({
+    this.setState(state => ({
       edit_target
-    });
+    }));
   };
   handleProductChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.params.product_id = event.target.value;
-    this.setState({
+    this.setState(state => ({
       edit_target
-    });
+    }));
   };
   handleParamIntervalChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.params.interval = event.target.value;
-    this.setState({
+    this.setState(state => ({
       edit_target
-    });
+    }));
   };
 
   handleIntervalChange = event => {
     let edit_target = { ...this.state.edit_target };
     edit_target.interval = event.target.value;
-    this.setState({
+    this.setState(state => ({
       edit_target
-    });
+    }));
   };
   handleChartChange = () => {
     if (this.state.chart.length > 0) {
+      console.log();
       let chart = this.state.chart;
       chart[this.state.edit_target_id] = this.state.edit_target;
-      this.setState({ chart }, () => {
-        this.saveChartsToDB(this.state.layouts, chart);
-      });
+      this.setState(state => ({
+        chart
+      }));
+      this.saveChartsToDB(this.state.layouts, chart);
     }
+  };
+
+  handleLayoutsChange = layouts=> {
+    this.setState(state => ({
+      layouts
+    }));
   };
 
   render() {
@@ -241,6 +265,7 @@ class App extends React.Component {
               charts={this.state.chart}
               layouts={this.state.layouts}
               handleWidgetAdd={this.handleWidgetAdd}
+              handleLayoutsChange = {this.handleLayoutsChange}
             >
               {this.state.chart.map((chart, i) => {
                 if (chart.type === "table") {
@@ -269,14 +294,14 @@ class App extends React.Component {
                       >
                         <DehazeIcon />
                       </Button>
-                      {/* <IconButton
+                      <IconButton
                         aria-label="delete"
                         onClick={() => {
                           this.handleWidgetRemove(i);
                         }}
                       >
                         <CloseIcon />
-                      </IconButton> */}
+                      </IconButton>
                       <ChartWrapper
                         chart={chart}
                         handleContextOpenClick={this.handleContextOpenClick}
@@ -310,7 +335,7 @@ class App extends React.Component {
                       >
                         <DehazeIcon />
                       </Button>
-                      {/* <IconButton
+                      <IconButton
                         size="small"
                         aria-label="delete"
                         onClick={() => {
@@ -319,7 +344,7 @@ class App extends React.Component {
                         style={{ position: "absolute", top: 0, right: 0 }}
                       >
                         <CloseIcon />
-                      </IconButton> */}
+                      </IconButton>
                       <ChartWrapper
                         chart={chart}
                         handleContextOpenClick={this.handleContextOpenClick}
@@ -338,37 +363,37 @@ class App extends React.Component {
   }
 
   async getParams() {
-
-    if(window.local_dev){
-    let url = window.location.href;
-    let dashboard_name = new URL(url).pathname;
-    let user_id = window.getUserID();
-    let action = "dashboard_lookup";
-    let dashboard_id = null;
-    dashboard_name = dashboard_name.replace("/", "");
-    if (isNaN(dashboard_name)) {
-      dashboard_id = await fetch(
-      window.ajax_url+"?user_id=" +
-          user_id +
-          "&action=" +
-          action +
-          "&dashboard_name=" +
-          dashboard_name
-      )
-        .then(response => response.json())
-        .then(data => {
-          return data.dashboard_id;
-        })
-        .catch(e => {});
-      if (dashboard_id === false) {
-        window.setAction("list");
-      } else {
-        window.setAction("get_dashboard");
-        window.setDashboardId(await dashboard_id);
+    if (window.local_dev) {
+      let url = window.location.href;
+      let dashboard_name = new URL(url).pathname;
+      let user_id = window.getUserID();
+      let action = "dashboard_lookup";
+      let dashboard_id = null;
+      dashboard_name = dashboard_name.replace("/", "");
+      if (isNaN(dashboard_name)) {
+        dashboard_id = await fetch(
+          window.ajax_url +
+            "?user_id=" +
+            user_id +
+            "&action=" +
+            action +
+            "&dashboard_name=" +
+            dashboard_name
+        )
+          .then(response => response.json())
+          .then(data => {
+            return data.dashboard_id;
+          })
+          .catch(e => {});
+        if (dashboard_id === false) {
+          window.setAction("list");
+        } else {
+          window.setAction("get_dashboard");
+          window.setDashboardId(await dashboard_id);
+        }
+        return await dashboard_id;
       }
-      return await dashboard_id;
     }
-  }
   }
 
   async getFromDB(key) {
@@ -376,15 +401,15 @@ class App extends React.Component {
     const action = "get_layout";
     const user_id = window.getUserID();
     const dashboard_id = window.getDashboardId();
-    const url =  window.ajax_url+"?user_id=" +
-    user_id +
-    "&action=" +
-    action +
-    "&dashboard_id=" +
-    dashboard_id;
-    ls = await fetch(
-     url
-    )
+    const url =
+      window.ajax_url +
+      "?user_id=" +
+      user_id +
+      "&action=" +
+      action +
+      "&dashboard_id=" +
+      dashboard_id;
+    ls = await fetch(url)
       .then(response => response.json())
       .then(data => {
         return JSON.parse(data);

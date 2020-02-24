@@ -13,9 +13,10 @@ class ChartWrapper extends Component {
     this.state = {
       feeds: []
     };
-
+    let url = window.base_url+this.props.chart.source;
+    url = window.base_url+"/dashboard/getArray.php?"+this.props.chart.source.split('?').pop();
     let query = buildQuery(this.props.chart.params);
-    fetch(this.props.chart.source + "&" + query)
+    fetch(url+ "&" + query)
       .then(response => response.json())
       .then(data => {
         this.setState({ feeds: data });
@@ -28,8 +29,10 @@ class ChartWrapper extends Component {
     }
     if (this.props.chart.type !== "table") {
       this.timer = window.setInterval(() => {
-        let query = buildQuery(this.props.chart.params);
-        fetch(this.props.chart.source + "&" + query)
+    let url = window.base_url+this.props.chart.source;
+    url = window.base_url+"/dashboard/getArray.php?"+this.props.chart.source.split('?').pop();
+    let query = buildQuery(this.props.chart.params);
+    fetch(url+ "&" + query)
           .then(response => response.json())
           .then(data => {
             this.setState({ feeds: data });
@@ -39,7 +42,11 @@ class ChartWrapper extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.timeout);
+    clearInterval(this.timer);
+    this.setState({feeds:[]});
+  }
+  componentDidUpdate(){
+    console.log('Chart Wrapper updated');
   }
 
   render() {
