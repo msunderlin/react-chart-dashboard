@@ -63,10 +63,10 @@ class Table extends React.Component {
       return [
         {
           icon: tableIcons["Add"],
-          tooltip: "Save User",
+          tooltip: "Select Dashboard",
           onClick: (event, rowData) =>
             (window.location.href =
-              window.location.href + "/" + rowData.dashboard_name)
+              window.location.href + "" + rowData.dashboard_name)
         }
       ];
     } else {
