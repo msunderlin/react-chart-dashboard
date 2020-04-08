@@ -283,28 +283,32 @@ class App extends React.Component {
                         minW: chart.defaultpos.minW,
                         maxH: chart.defaultpos.minH
                       }}
+                      style={{ position: "relative" }}
                     >
-                      <Button
+                     <Button
                         color="primary"
                         size="small"
                         onClick={() => {
                           this.handleEditClick(i);
                         }}
-                        style={{ position: "absolute", top: 0, left: 0 }}
+                        style={{ position: "absolute", top: 0, left: 0, zIndex:1000 }}
                       >
                         <DehazeIcon />
                       </Button>
                       <IconButton
+                        size="small"
                         aria-label="delete"
                         onClick={() => {
                           this.handleWidgetRemove(i);
                         }}
+                        style={{ position: "absolute", top: 0, right: 0, zIndex:1000 }}
                       >
                         <CloseIcon />
                       </IconButton>
                       <ChartWrapper
                         chart={chart}
                         handleContextOpenClick={this.handleContextOpenClick}
+                        handleContextClose={this.handleContextClose}
                         chartIndex={i}
                       />
                     </Card>
