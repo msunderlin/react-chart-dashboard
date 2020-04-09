@@ -11,8 +11,11 @@ class ChartWrapper extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      feeds: []
+	    widget_id: this.props.widget_id,
+	widget: [],
+	data: []
     };
+
     let url = window.base_url+this.props.chart.source;
     url = window.base_url+"/dashboard/getArray.php?"+this.props.chart.source.split('?').pop();
     let query = buildQuery(this.props.chart.params);
@@ -24,6 +27,7 @@ class ChartWrapper extends Component {
     this.getHeader = null;
   }
   timer = 0;
+
   componentDidMount() {
     if (this.getHeader) {
     }
@@ -40,7 +44,14 @@ class ChartWrapper extends Component {
       }, this.props.chart.interval);
     }
   }
+async getWidget(id){
+	let widget = null;
+	const action = "get_widget";
+	const user_id = window.getUserID();
+	const dashboard_id = window.getDashboardId();
+	const url = window.ajax_url +"?user_id="+
 
+}
   componentWillUnmount() {
     clearInterval(this.timer);
     this.setState({feeds:[]});
@@ -160,7 +171,7 @@ class ChartWrapper extends Component {
       default:
         return "";
     }
-  }
+ }
 }
 
 export default ChartWrapper;
@@ -183,3 +194,4 @@ const buildQuery = data => {
   // Join each item in the array with a `&` and return the resulting string
   return query.join("&");
 };
+
