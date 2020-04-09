@@ -1,8 +1,8 @@
-async function getCharts() {
+async function getWidgets() {
   const user_id = getUserID();
   const action = getAction();
   const dashboard_id = getDashboardId();
-  const charts = await fetch(
+  const widgets = await fetch(
     window.ajax_url+"?user_id=" +
       user_id +
       "&action=" +
@@ -22,5 +22,5 @@ async function getCharts() {
       console.error("Error:", error);
       return false;
     });
-  return await charts;
+  return await widgets;
 }

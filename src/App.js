@@ -17,7 +17,7 @@ class App extends React.Component {
     super(props);
     this.getParams();
     this.state = {
-      chart: [],
+      widgets: [],
       layouts: [],
       user_id: window.getUserID(),
       action: window.getAction(),
@@ -35,8 +35,8 @@ class App extends React.Component {
 
   componentDidMount() {
     this.getParams().then(async () => {
-      window.getCharts().then(result => {
-        this.setState(state => ({ chart: JSON.parse(JSON.stringify(result)) }));
+      window.getWidgets().then(result => {
+        this.setState(state => ({ widgets: JSON.parse(JSON.stringify(result)) }));
       });
     });
 
@@ -207,7 +207,7 @@ class App extends React.Component {
   };
 
   render() {
-    if (this.state.chart.length === 0 || this.state.layouts.length === 0) {
+    if (this.state.widgets.length === 0 || this.state.layouts.length === 0) {
       let wrapper_style = {
         display: "flex",
         flexDirection: "column",
@@ -262,70 +262,24 @@ class App extends React.Component {
           />
           <Container disableGutters={false} maxWidth="lg">
             <Layout
-              charts={this.state.chart}
+              //charts={this.state.chart}
               layouts={this.state.layouts}
               handleWidgetAdd={this.handleWidgetAdd}
               handleLayoutsChange = {this.handleLayoutsChange}
             >
-              {this.state.chart.map((chart, i) => {
-                if (chart.type === "table") {
+              {this.state.widgets.map((widget, i) => {
                   return (
                     <Card
                       variant="outlined"
                       key={i}
                       className="grid-item"
                       data-grid={{
-                        x: chart.defaultpos.h * i,
-                        y: chart.defaultpos.w * i,
-                        h: chart.defaultpos.h,
-                        w: chart.defaultpos.w,
-                        minH: chart.defaultpos.minH,
-                        minW: chart.defaultpos.minW,
-                        maxH: chart.defaultpos.minH
-                      }}
-                      style={{ position: "relative" }}
-                    >
-                     <Button
-                        color="primary"
-                        size="small"
-                        onClick={() => {
-                          this.handleEditClick(i);
-                        }}
-                        style={{ position: "absolute", top: 0, left: 0, zIndex:1000 }}
-                      >
-                        <DehazeIcon />
-                      </Button>
-                      <IconButton
-                        size="small"
-                        aria-label="delete"
-                        onClick={() => {
-                          this.handleWidgetRemove(i);
-                        }}
-                        style={{ position: "absolute", top: 0, right: 0, zIndex:1000 }}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                      <ChartWrapper
-                        chart={chart}
-                        handleContextOpenClick={this.handleContextOpenClick}
-                        handleContextClose={this.handleContextClose}
-                        chartIndex={i}
-                      />
-                    </Card>
-                  );
-                } else {
-                  return (
-                    <Card
-                      variant="outlined"
-                      key={i}
-                      className="grid-item"
-                      data-grid={{
-                        x: chart.defaultpos.h * i,
-                        y: chart.defaultpos.w * i,
-                        h: chart.defaultpos.h,
-                        w: chart.defaultpos.w,
-                        minH: chart.defaultpos.minH,
-                        minW: chart.defaultpos.minW
+                        x: widget.defaultpos.h * i,
+                        y: widget.defaultpos.w * i,
+                        h: widget.defaultpos.h,
+                        w: widget.defaultpos.w,
+                        minH: widget.defaultpos.minH,
+                        minW: widget.defaultpos.minW
                       }}
                       style={{ position: "relative" }}
                     >
@@ -350,14 +304,13 @@ class App extends React.Component {
                         <CloseIcon />
                       </IconButton>
                       <ChartWrapper
-                        chart={chart}
+                        chart={widget}
                         handleContextOpenClick={this.handleContextOpenClick}
                         handleContextClose={this.handleContextClose}
                         chartIndex={i}
                       />
                     </Card>
                   );
-                }
               })}
             </Layout>
           </Container>
