@@ -1,6 +1,5 @@
 import React from "react";
 import { WidthProvider, Responsive } from "react-grid-layout";
-import { Button } from "@material-ui/core";
 import "../../../node_modules/react-grid-layout/css/styles.css";
 import "../../../node_modules/react-resizable/css/styles.css";
 import "./layout.css";
@@ -57,29 +56,4 @@ class Layout extends React.Component {
   }
 }
 
-async function savetoDB(key, value, charts) {
-  const action = "set_layout";
-  const user_id = window.getUserID();
-  const dashboard_id = window.getDashboardId();
-  const data = new FormData();
-  data.append("user_id", user_id);
-  data.append("dashboard_id", dashboard_id);
-  data.append("action", action);
-  data.append("widgets", JSON.stringify(charts));
-  data.append("positions", JSON.stringify({ [key]: value }));
-  await fetch(window.ajax_url, {
-    method: "POST",
-    headers: {
-      Accept: "application/json"
-    },
-    body: data
-  })
-    .then(response => response.json())
-    .then(data => {
-      return data;
-    })
-    .catch(e => {
-      console.error(e);
-    });
-}
 export default Layout;

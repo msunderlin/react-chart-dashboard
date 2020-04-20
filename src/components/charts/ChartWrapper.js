@@ -13,117 +13,70 @@ class ChartWrapper extends Component {
     super(props);
     this.state = {
 	    widget_id: this.props.widget_id,
-	widget: [],
-	data: [],
-	
-    };
+      widget: [],
+      data: [],
+      source: [],
+      sourceParams: []
 
-    let url = window.base_url+this.props.chart.source;
-    url = window.base_url+"/dashboard/getArray.php?"+this.props.chart.source.split('?').pop();
-    let query = buildQuery(this.props.chart.params);
-    fetch(url+ "&" + query)
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ feeds: data });
-      });
-    
+    };
+   //    let url = window.base_url+this.props.chart.source;
+    //    url = window.base_url+"/dashboard/getArray.php?"+this.props.chart.source.split('?').pop();
+    //    let query = buildQuery(this.props.chart.params);
+    //    fetch(url+ "&" + query)
+    //     .then(response => response.json())
+    //      .then(data => {
+    //        this.setState({ data: data });
+    //      });
+
     this.getHeader = null;
   }
 
-  //storing the instance of the set interval here.  
+  //storing the instance of the set interval here.
   timer = 0;
-
+  //Lifecycle Methods
   componentDidMount() {
     if (this.getHeader) {
     }
-    if (this.props.chart.type !== "table") {
-      this.timer = window.setInterval(() => {
+    this.getWidget(this.props.widget_id).then(widget =>
+
+     this.setState(state => ({
+      widget
+     }))).then( widget =>{
+    this.getSource(this.state.widget.source_id).then(source =>
+    this.setState(state => ({
+     source
+    })))}).then(source =>{
+      this.getSourceParams(this.state.widget.source_id).then(sourceParams =>
+        this.setState(state =>({
+          sourceParams
+        })))})
+
+    //    if (this.props.chart.type !== "table") {
+      /*      this.timer = window.setInterval(() => {
     let url = window.base_url+this.props.chart.source;
     url = window.base_url+"/dashboard/getArray.php?"+this.props.chart.source.split('?').pop();
     let query = buildQuery(this.props.chart.params);
     fetch(url+ "&" + query)
           .then(response => response.json())
           .then(data => {
-            this.setState({ feeds: data });
+            this.setState({ data: data });
           });
       }, this.props.chart.interval);
     }
+    console.log(this.props.chart);*/
   }
-async getWidget(id){
-	const action = "get_widget";
-	const user_id = window.getUserID();
-	const url = window.ajax_url +"?user_id="+user_id+"&widget_id="+id;
-	const widget = await fetch(url)
-		.then(response =>response.json())
-		.then(data => {
-			return data;
-})
-	.catch(error =>{
-		console.error("Error:", error);
-		return false;
-	});
-	return await widget;
-}
-
-async getSource(id){
-	const action = "get_source";
-	const user_id = window.getUserID();
-	const url = window.ajax_url +"?user_id="+user_id+"&source_id="+id;
-	const source = await fetch(url)
-		.then(response =>response.json())
-		.then(data => {
-			return data.source;
-	})
-	.catch(error =>{
-		console.error("Error:", error);
-		return false;
-	});
-	return await source;
-}
-	async getSources(){
-		const action = "get_sources";
-		const user_id = window.getUserID();
-		const url = window.ajax_url +"?user_id="+user_id;
-		const sources = await fetch(url)
-			.then(response => response.json())
-			.then(data => {
-				return data.sources;
-			})
-			.catch(error => {
-				console.error("Error:", error);
-			return false;
-			});
-			
-		return await sources;
-	}	
-	async saveToDb(){
-		const action = "save_widget";
-		const user_id = window.getUserID();
-		const url = window.ajax_url +"?user_id="+user_id;
-		const sources = await fetch(url)
-			.then(response => response.json())
-			.then(data => {
-				return data.sources;
-			})
-			.catch(error => {
-				console.error("Error:", error);
-			return false;
-			});
-			
-		return await sources;
-
-	}
   componentWillUnmount() {
     clearInterval(this.timer);
-    this.setState({feeds:[]});
+    this.setState({data:[]});
   }
   componentDidUpdate(){
     console.log('Chart Wrapper updated');
   }
 
   render() {
-    const chart = this.props.chart;
-    const type = chart.type;
+    console.log(this.state);
+    const chart = this.state.widget;
+    const type = this.state.widget.type_id;
     switch (type) {
       case "bar":
         if (chart.stacked === 1) {
@@ -133,7 +86,7 @@ async getSource(id){
               chartIndex={this.props.chartIndex}
               source={chart.source}
               params={chart.params}
-              data={this.state.feeds}
+              data={this.state.data}
               title={chart.title}
               stacked={chart.stacked ? true : false}
               colors={["#4472C4", "#ED7D31", "#A5A5A5"]}
@@ -143,7 +96,7 @@ async getSource(id){
         }
         return (
           <BarChart
-            data={this.state.feeds}
+            data={this.state.data}
             title={chart.title}
             stacked={chart.stacked ? true : false}
             color="red"
@@ -157,7 +110,7 @@ async getSource(id){
               chartIndex={this.props.chartIndex}
               source={chart.source}
               params={chart.params}
-              data={this.state.feeds}
+              data={this.state.data}
               title={chart.title}
               stacked={chart.stacked ? true : false}
               colors={["#4472C4", "#ED7D31", "#A5A5A5"]}
@@ -165,11 +118,11 @@ async getSource(id){
             />
           );
         }
-        return <LineChart data={this.state.feeds} title="" color="#7070D1" />;
+        return <LineChart data={this.state.data} title="" color="#7070D1" />;
       case "doughnut":
         return (
           <DoughnutChart
-            data={this.state.feeds}
+            data={this.state.data}
             title={chart.title}
             colors={[
               "#a8e0ff",
@@ -184,7 +137,7 @@ async getSource(id){
       case "pie":
         return (
           <PieChart
-            data={this.state.feeds}
+            data={this.state.data}
             title={chart.title}
             colors={[
               "#a8e0ff",
@@ -199,7 +152,7 @@ async getSource(id){
       case "polar":
         return (
           <PolarChart
-            data={this.state.feeds}
+            data={this.state.data}
             title={chart.title}
             colors={[
               "#a8e0ff",
@@ -304,7 +257,88 @@ async getSource(id){
       this.saveChartsToDB(this.state.layouts, chart);
     }
   };
+  //Helper Functions
+async getWidget(id){
+	const action = "get_widget";
+	const user_id = window.getUserID();
+  const dashboard_id = window.getDashboardId();
+	const url = window.ajax_url +"?user_id="+user_id+"&action="+action+"&widget_id="+id+"&dashboard_id="+dashboard_id;
+	const widget = await fetch(url)
+		.then(response =>response.json())
+		.then(data => {
+			return data;
+})
+	.catch(error =>{
+		console.error("Error:", error);
+		return false;
+  });
+	return await widget;
+}
 
+async getSource(id){
+	const action = "get_source";
+	const user_id = window.getUserID();
+	const url = window.ajax_url +"?user_id="+user_id+"&action="+action+"&source_id="+id;
+	const source = await fetch(url)
+		.then(response =>response.json())
+		.then(data => {
+			return data.source;
+	})
+	.catch(error =>{
+		console.error("Error:", error);
+		return false;
+	});
+	return await source;
+}
+	async getSources(){
+		const action = "get_sources";
+		const user_id = window.getUserID();
+		const url = window.ajax_url +"?user_id="+user_id+"&action="+action;
+		const sources = await fetch(url)
+			.then(response => response.json())
+			.then(data => {
+				return data.sources;
+			})
+			.catch(error => {
+				console.error("Error:", error);
+			return false;
+			});
+
+		return await sources;
+  }
+	async getSourceParams(id){
+	const action = "get_sourceparams";
+	const user_id = window.getUserID();
+	const url = window.ajax_url +"?user_id="+user_id+"&action="+action+"&source_id="+id;
+	const sourceParams = await fetch(url)
+		.then(response =>response.json())
+		.then(data => {
+			return data.source;
+	})
+	.catch(error =>{
+		console.error("Error:", error);
+		return false;
+	});
+	return await sourceParams;
+  }
+async saveToDb(){
+		const action = "save_widget";
+		const user_id = window.getUserID();
+		const url = window.ajax_url +"?user_id="+user_id+"&action="+action;
+
+		const sources = await fetch(url)
+			.then(response => response.json())
+			.then(data => {
+				return data.sources;
+			})
+			.catch(error => {
+				console.error("Error:", error);
+			return false;
+			});
+
+		return await sources;
+
+	}
 
 }
 

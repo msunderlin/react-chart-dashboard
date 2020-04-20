@@ -16,7 +16,7 @@ async function getWidgets() {
       if((typeof data) == "string"){
        data =  JSON.parse(data);
       }
-      return data; 
+      return data;
     })
     .catch(error => {
       console.error("Error:", error);

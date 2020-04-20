@@ -196,18 +196,20 @@ class App extends React.Component {
               handleLayoutsChange = {this.handleLayoutsChange}
             >
               {this.state.widgets.map((widget, i) => {
+               var pos =  this.state.layouts.lg[i];
+                console.log(pos);
                   return (
                     <Card
                       variant="outlined"
                       key={i}
                       className="grid-item"
                       data-grid={{
-                        x: widget.defaultpos.h * i,
-                        y: widget.defaultpos.w * i,
-                        h: widget.defaultpos.h,
-                        w: widget.defaultpos.w,
-                        minH: widget.defaultpos.minH,
-                        minW: widget.defaultpos.minW
+                        x: pos.h * i,
+                        y: pos.w * i,
+                        h: pos.h,
+                        w: pos.w,
+                        minH: pos.minH,
+                        minW: pos.minW
                       }}
                       style={{ position: "relative" }}
                     >
@@ -217,7 +219,7 @@ class App extends React.Component {
                         onClick={() => {
                           this.handleEditClick(i);
                         }}
-                        style={{ position: "absolute", top: 0, left: 0 }}
+                        style={{ position: "absolute", top: 0, left: 0, zIndex:500 }}
                       >
                         <DehazeIcon />
                       </Button>
@@ -227,12 +229,12 @@ class App extends React.Component {
                         onClick={() => {
                           this.handleWidgetRemove(i);
                         }}
-                        style={{ position: "absolute", top: 0, right: 0 }}
+                        style={{ position: "absolute", top: 0, right: 0, zIndex:500 }}
                       >
                         <CloseIcon />
                       </IconButton>
                       <ChartWrapper
-                        chart={widget}
+                        widget_id={widget}
                         handleContextOpenClick={this.handleContextOpenClick}
                         handleContextClose={this.handleContextClose}
                         chartIndex={i}

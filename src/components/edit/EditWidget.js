@@ -23,7 +23,6 @@ class EditWidget extends Component {
       fetch(url)
         .then(response => response.json())
         .then(result => {
-          let parsed = JSON.parse(result);
           resolve(
             this.setState({
               products: JSON.parse(result)
