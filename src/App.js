@@ -36,7 +36,9 @@ class App extends React.Component {
   componentDidMount() {
     this.getParams().then(async () => {
       window.getWidgets().then(result => {
-        this.setState(state => ({ widgets: JSON.parse(JSON.stringify(result)) }));
+        this.setState(state => ({
+          widgets: JSON.parse(JSON.stringify(result))
+        }));
       });
     });
 
@@ -124,11 +126,11 @@ class App extends React.Component {
     });
     this.setState(state => ({
       chart,
-       layouts
+      layouts
     }));
     this.saveChartsToDB(layouts, chart);
   };
-  handleLayoutsChange = layouts=> {
+  handleLayoutsChange = layouts => {
     this.setState(state => ({
       layouts
     }));
@@ -193,54 +195,64 @@ class App extends React.Component {
               //charts={this.state.chart}
               layouts={this.state.layouts}
               handleWidgetAdd={this.handleWidgetAdd}
-              handleLayoutsChange = {this.handleLayoutsChange}
+              handleLayoutsChange={this.handleLayoutsChange}
             >
               {this.state.widgets.map((widget, i) => {
-               var pos =  this.state.layouts.lg[i];
+                var pos = this.state.layouts.lg[i];
                 console.log(pos);
-                  return (
-                    <Card
-                      variant="outlined"
-                      key={i}
-                      className="grid-item"
-                      data-grid={{
-                        x: pos.h * i,
-                        y: pos.w * i,
-                        h: pos.h,
-                        w: pos.w,
-                        minH: pos.minH,
-                        minW: pos.minW
+                return (
+                  <Card
+                    variant="outlined"
+                    key={i}
+                    className="grid-item"
+                    data-grid={{
+                      x: pos.h * i,
+                      y: pos.w * i,
+                      h: pos.h,
+                      w: pos.w,
+                      minH: pos.minH,
+                      minW: pos.minW
+                    }}
+                    style={{ position: "relative" }}
+                  >
+                    <Button
+                      color="primary"
+                      size="small"
+                      onClick={() => {
+                        this.handleEditClick(i);
                       }}
-                      style={{ position: "relative" }}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        zIndex: 500
+                      }}
                     >
-                      <Button
-                        color="primary"
-                        size="small"
-                        onClick={() => {
-                          this.handleEditClick(i);
-                        }}
-                        style={{ position: "absolute", top: 0, left: 0, zIndex:500 }}
-                      >
-                        <DehazeIcon />
-                      </Button>
-                      <IconButton
-                        size="small"
-                        aria-label="delete"
-                        onClick={() => {
-                          this.handleWidgetRemove(i);
-                        }}
-                        style={{ position: "absolute", top: 0, right: 0, zIndex:500 }}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                      <ChartWrapper
-                        widget_id={widget}
-                        handleContextOpenClick={this.handleContextOpenClick}
-                        handleContextClose={this.handleContextClose}
-                        chartIndex={i}
-                      />
-                    </Card>
-                  );
+                      <DehazeIcon />
+                    </Button>
+                    <IconButton
+                      size="small"
+                      aria-label="delete"
+                      onClick={() => {
+                        this.handleWidgetRemove(i);
+                      }}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        right: 0,
+                        zIndex: 500
+                      }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                    <ChartWrapper
+                      widget_id={widget}
+                      handleContextOpenClick={this.handleContextOpenClick}
+                      handleContextClose={this.handleContextClose}
+                      chartIndex={i}
+                    />
+                  </Card>
+                );
               })}
             </Layout>
           </Container>
