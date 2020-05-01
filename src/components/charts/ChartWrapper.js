@@ -20,56 +20,9 @@ class ChartWrapper extends Component {
       data: [],
       source: [],
       sourceParams: [],
-      loaded: false
+      loaded: false,
+      init_loaded: false
     };
-    this.getWidget(this.props.widget_id)
-      .then((widget) =>{
-        this.setState((state) => ({
-          widget,
-        }))
-        return widget;
-      })
-      .then((widget)=>{
-        let widgetParams = JSON.parse(widget.params);
-        this.setState((state)=>({
-            widgetParams,
-        }))
-        return widget;
-      })
-      .then((widget) => {
-        this.getSource(this.state.widget.source_id)
-          .then((source) =>
-            this.setState((state) => ({
-              source,
-            }))
-          )
-          .then((source) => {
-            this.getSourceParams(this.state.widget.source_id)
-              .then((sourceParams) =>
-                this.setState((state) => ({
-                  sourceParams,
-                }))
-              )
-              .then((source) => {
-                //build out url and params
-                this.buildUrl()
-                  .then((widget_url) =>
-                    this.setState((state) => ({
-                      widget_url,
-                    }))
-                  )
-                  .then((sourceParams) => {
-                    let url = window.base_url + this.state.widget_url;
-                    fetch(url)
-                      .then((response) => response.json())
-                      .then((data) => {
-                        this.setState({ data: data });
-                        return;
-                      });
-                  });
-              });
-          });
-      });
 
     this.getHeader = null;
   }
@@ -77,10 +30,20 @@ class ChartWrapper extends Component {
   //storing the instance of the set interval here.
   timer = 0;
   //Lifecycle Methods
-  componentDidMount() {
+  async componentDidMount() {
+    await this.initalizeData();
+    console.log(this.state);
+    let url = window.base_url + this.state.widget_url;
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          this.setState({ data: data });
+        });
     if (this.getHeader) {
     }
-     
+    console.log('++++++++++++++++++++++++++++++++++++++++++');
+      console.log(this.state);
+    console.log('++++++++++++++++++++++++++++++++++++++++++');
        if (this.state.widget.type_id !== "6") {
     this.timer = window.setInterval(() => {
       let url = window.base_url + this.state.widget_url;
@@ -89,10 +52,10 @@ class ChartWrapper extends Component {
         .then((data) => {
           this.setState({ data: data });
         });
-    }, this.state.widgetParams[0].interval)
+    },5000) //this.state.widgetParams[0].interval)
 
     console.log(this.props.chart);
-  }
+}
   }
   componentWillUnmount() {
     clearInterval(this.timer);
@@ -125,9 +88,6 @@ class ChartWrapper extends Component {
         </div>
       );
     }else{
-      this.setState((state) => ({
-       loaded: true, 
-      })) 
     switch (type) {
       case "1":
         //BarChart
@@ -244,77 +204,7 @@ class ChartWrapper extends Component {
     }
   }
   }
-  // State Update Methods
-  handleTitleChange = (event) => {
-    let edit_target = { ...this.state.edit_target };
-    edit_target.title = event.target.value;
-    this.setState((state) => ({
-      edit_target,
-    }));
-  };
 
-  handleTypeChange = (event) => {
-    let edit_target = { ...this.state.edit_target };
-    edit_target.type = event.target.value;
-    this.setState((state) => ({
-      edit_target,
-    }));
-  };
-
-  handleStartChange = (date) => {
-    let edit_target = { ...this.state.edit_target };
-    edit_target.params.start_date = date.format("l");
-    this.setState((state) => ({
-      edit_target,
-    }));
-  };
-  handleEndChange = (date) => {
-    let edit_target = { ...this.state.edit_target };
-    edit_target.params.end_date = date.format("l");
-    this.setState((state) => ({
-      edit_target,
-    }));
-  };
-  handleParamDataTypeChange = (event) => {
-    let edit_target = { ...this.state.edit_target };
-    edit_target.params.datatype = event.target.value;
-    this.setState((state) => ({
-      edit_target,
-    }));
-  };
-  handleProductChange = (event) => {
-    let edit_target = { ...this.state.edit_target };
-    edit_target.params.product_id = event.target.value;
-    this.setState((state) => ({
-      edit_target,
-    }));
-  };
-  handleParamIntervalChange = (event) => {
-    let edit_target = { ...this.state.edit_target };
-    edit_target.params.interval = event.target.value;
-    this.setState((state) => ({
-      edit_target,
-    }));
-  };
-
-  handleIntervalChange = (event) => {
-    let edit_target = { ...this.state.edit_target };
-    edit_target.interval = event.target.value;
-    this.setState((state) => ({
-      edit_target,
-    }));
-  };
-  handleChartChange = () => {
-    if (this.state.chart.length > 0) {
-      console.log();
-      let chart = this.state.chart;
-      chart[this.state.edit_target_id] = this.state.edit_target;
-      this.setState((state) => ({
-        chart,
-      }));
-      this.saveChartsToDB(this.state.layouts, chart);
-    }
-  };
   //Helper Functions
   async getWidget(id) {
     const action = "get_widget";
@@ -403,27 +293,30 @@ class ChartWrapper extends Component {
     return await sourceParams;
   }
 
-  async buildUrl() {
-    var url = this.state.source.source_url;
-    for (let i = 0; i < this.state.sourceParams.length; i++) {
+  async buildUrl(widget, source, sourceParams) {
+    console.log('----------------------------');
+    console.log(source);
+    console.log('----------------------------');
+    var url = source.source_url;
+    for (let i = 0; i < sourceParams.length; i++) {
       if (i === 0) {
         url += "?";
       } else {
         url += "&";
       }
-      url += this.state.sourceParams[i].param_url_name + "=";
-      if (this.state.widget.params == null) {
-        url += this.state.sourceParams[i].default_value;
+      url += sourceParams[i].param_url_name + "=";
+      if (widget.params == null) {
+        url += sourceParams[i].default_value;
       } else {
         if (
-          typeof this.state.widget.params[
-            this.state.sourceParams[i].param_url_name
+          typeof widget.params[
+            sourceParams[i].param_url_name
           ] == "undefined"
         ) {
-          url += this.state.sourceParams[i].default_value;
+          url += sourceParams[i].default_value;
         } else {
-          url += this.state.widget.params[
-            this.state.sourceParams[i].param_url_name
+          url += widget.params[
+            sourceParams[i].param_url_name
           ];
         }
       }
@@ -448,6 +341,25 @@ class ChartWrapper extends Component {
 
     return await sources;
   }
+ async initalizeData(){
+                        let widget = await this.getWidget(this.props.widget_id);
+                        let widgetParams = JSON.parse(widget.params);
+                        let source = await this.getSource(widget.source_id);
+                        let sourceParams = await this.getSourceParams(
+                          source.source_id
+                        );
+                        let init_loaded = true;
+   let widget_url = await this.buildUrl(widget, source, sourceParams);
+   console.log(widget_url);
+                        this.setState((state) => ({
+                          widget,
+                          widgetParams,
+                          source,
+                          sourceParams,
+                          widget_url,
+                          init_loaded
+                        }));
+                      }
 }
 
 export default ChartWrapper;

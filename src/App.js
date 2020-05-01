@@ -22,7 +22,7 @@ class App extends React.Component {
       user_id: window.getUserID(),
       action: window.getAction(),
       edit_opened: false,
-      edit_target: [],
+      edit_target: 0,
       edit_target_id: 0,
       show_context: null,
       context_action: null,
@@ -59,7 +59,7 @@ class App extends React.Component {
   handleContextOpenClick = (event, label, i) => {
     this.setState(state => ({
       show_context: event.target,
-      context_target: JSON.parse(JSON.stringify(state.chart[i])),
+      context_target: JSON.parse(JSON.stringify(state.widgets[i])),
       context_param: label,
       context_x: event.clientX - 2,
       context_y: event.clientY - 4
@@ -87,9 +87,13 @@ class App extends React.Component {
   };
   // Chart Edit window Actions
   handleEditClick = i => {
+    console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
+    console.log('handleEditClick() clicked');
+    console.log(this.state.widgets[i]);
+    console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
     this.setState(state => ({
       edit_opened: true,
-      edit_target: this.state.chart[i],
+      edit_target: this.state.widgets[i],
       edit_target_id: i
     }));
   };
@@ -101,7 +105,7 @@ class App extends React.Component {
   };
   //Add Widget
   handleWidgetAdd = widget => {
-    let chart = this.state.chart;
+    let chart = this.state.widgets;
     chart.push(JSON.parse(widget));
     this.setState(
       state => ({
@@ -116,7 +120,7 @@ class App extends React.Component {
   handleWidgetRemove = i => {
     console.log(i);
 
-    let chart = JSON.parse(JSON.stringify(this.state.chart));
+    let chart = JSON.parse(JSON.stringify(this.state.widgets));
     let layouts = JSON.parse(JSON.stringify(this.state.layouts));
 
     chart.splice(i, 1);
@@ -167,7 +171,7 @@ class App extends React.Component {
 
           <EditWidget
             size="small"
-            chart={this.state.edit_target}
+            widget_id={this.state.edit_target}
             opened={this.state.edit_opened}
             handleClose={this.handleEditClose}
             handleTitleChange={this.handleTitleChange}
@@ -192,7 +196,7 @@ class App extends React.Component {
           />
           <Container disableGutters={false} maxWidth="lg">
             <Layout
-              //charts={this.state.chart}
+              //charts={this.state.widgets}
               layouts={this.state.layouts}
               handleWidgetAdd={this.handleWidgetAdd}
               handleLayoutsChange={this.handleLayoutsChange}

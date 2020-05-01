@@ -7,29 +7,41 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DropDown from "../dropdowns/DropDown";
 import DateHandler from "../date/DateHandler";
 import TextInput from "../inputs/TextInput";
+import EditHelper from "./EditHelper";
 
 class EditWidget extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: props.products
+      widget_id: this.props.widget_id,
+      widget: null,
+      products: props.products,
     };
   }
-
-  componentDidMount() {
-    new Promise((resolve, reject) => {
-      let url =
-        window.ajax_url+"?user_id=59&action=get_products";
-      fetch(url)
-        .then(response => response.json())
-        .then(result => {
-          resolve(
-            this.setState({
-              products: JSON.parse(result)
-            })
-          );
-        });
-    });
+  editHelper = null;
+  async componentDidUpdate() {
+    console.log(this.props.widget_id);
+    if (this.props.widget_id === 0) {
+    } else {
+      this.editHelper = new EditHelper();
+      let widget = await this.editHelper.initalizeData(this.props.widget_id);
+      console.log(widget);
+      this.setState((state) => ({
+        widget,
+      }));
+      new Promise((resolve, reject) => {
+        let url = window.ajax_url + "?user_id=59&action=get_products";
+        fetch(url)
+          .then((response) => response.json())
+          .then((result) => {
+            resolve(
+              this.setState({
+                products: JSON.parse(result),
+              })
+            );
+          });
+      });
+    }
   }
   handleClose = () => {
     this.props.handleSave();
@@ -37,7 +49,7 @@ class EditWidget extends Component {
   };
 
   render() {
-    if (this.props.chart.length === 0) {
+    if (this.state.widget === null) {
       let wrapper_style = {
         display: "flex",
         flexDirection: "column",
@@ -48,10 +60,14 @@ class EditWidget extends Component {
         top: "0",
         left: "0",
         height: "100vh",
-        width: "100%"
+        width: "100%",
       };
       return <div style={wrapper_style}>{/* <CircleLoader /> */}</div>;
     } else {
+      console.log(this.props);
+      console.log(this.state);
+      const widget = this.state.widget;
+      console.log(widget);
       return (
         <Dialog
           open={this.props.opened}
@@ -77,17 +93,17 @@ class EditWidget extends Component {
                 variant="outlined"
                 size={this.props.size}
                 handleChange={this.props.handleTypeChange}
-                value={this.props.chart.type}
+                value={this.state.widget.type}
                 options={[
                   {
                     text: "Bar",
-                    value: "bar"
+                    value: "bar",
                   },
 
                   {
                     text: "Line",
-                    value: "line"
-                  }
+                    value: "line",
+                  },
                 ]}
               />
             </div>
@@ -102,12 +118,12 @@ class EditWidget extends Component {
                 options={[
                   {
                     text: "Hourly",
-                    value: "hourly"
+                    value: "hourly",
                   },
                   {
                     text: "Daily",
-                    value: "daily"
-                  }
+                    value: "daily",
+                  },
                 ]}
               />
             </div>
@@ -133,12 +149,12 @@ class EditWidget extends Component {
                 options={[
                   {
                     text: "Percent",
-                    value: "percent"
+                    value: "percent",
                   },
                   {
                     text: "Count",
-                    value: "count"
-                  }
+                    value: "count",
+                  },
                 ]}
               />
             </div>
@@ -153,7 +169,7 @@ class EditWidget extends Component {
               />
             </div>
           </DialogContent>
-          <DialogActions style={{justifyContent: "flex-start"}}>
+          <DialogActions style={{ justifyContent: "flex-start" }}>
             <Button
               onClick={this.handleClose}
               variant="contained"
