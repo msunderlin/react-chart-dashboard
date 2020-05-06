@@ -8,6 +8,7 @@ const TextInput = props => {
       <InputLabel>{props.label}</InputLabel>
       <TextField
         onChange={props.handleChange}
+        name={props.name}
         variant={props.variant}
         value={props.value}
       />

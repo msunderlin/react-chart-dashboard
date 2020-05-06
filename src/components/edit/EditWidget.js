@@ -14,8 +14,7 @@ class EditWidget extends Component {
     super(props);
     this.state = {
       widget_id: this.props.widget_id,
-      widget: null,
-      products: props.products,
+      widget: null
     };
   }
   editHelper = null;
@@ -23,6 +22,7 @@ class EditWidget extends Component {
     console.log(this.props.widget_id);
     if (this.props.widget_id === 0) {
     } else {
+      if(this.state.widget === null){
       this.editHelper = new EditHelper();
       let widget = await this.editHelper.initalizeData(this.props.widget_id);
       console.log(widget);
@@ -41,10 +41,24 @@ class EditWidget extends Component {
             );
           });
       });
-    }
+    }}
   }
+
+  handleChange = (event)=>{
+    let node = event.target.name.split('.');
+    console.log(this.state.widget[node[0]]);
+    let widget = {...this.state.widget};
+    widget[node[0]][node[1]] = event.target.value;
+    this.setState((state)=>({
+      widget
+    }))
+
+  }
+
+
   handleClose = () => {
-    this.props.handleSave();
+this.editHelper.saveToDB(this.state.widget.widget);
+    
     this.props.handleClose();
   };
 
@@ -64,10 +78,10 @@ class EditWidget extends Component {
       };
       return <div style={wrapper_style}>{/* <CircleLoader /> */}</div>;
     } else {
-      console.log(this.props);
       console.log(this.state);
       const widget = this.state.widget;
       console.log(widget);
+
       return (
         <Dialog
           open={this.props.opened}
@@ -76,17 +90,19 @@ class EditWidget extends Component {
         >
           <DialogTitle id="form-dialog-title">Edit Widget</DialogTitle>
           <DialogContent>
+            
             <div>
               <TextInput
                 variant="outlined"
                 size={this.props.size}
                 label="Title"
-                InputLabelProps={{ shrink: this.props.title ? true : false }}
-                handleChange={this.props.handleTitleChange}
-                value={this.props.title}
+                name='widget.title'
+                InputLabelProps={{ shrink: this.state.widget.widget.title? true : false }}
+                handleChange={this.handleChange}
+                value={this.state.widget.widget.title}
               />
-            </div>
-            <br />
+            </div><br />
+            {/* 
             <div>
               <DropDown
                 label="Chart Type"
@@ -167,7 +183,7 @@ class EditWidget extends Component {
                 handleStartDateChange={this.props.handleStartChange}
                 handleEndDateChange={this.props.handleEndChange}
               />
-            </div>
+            </div> */}
           </DialogContent>
           <DialogActions style={{ justifyContent: "flex-start" }}>
             <Button
