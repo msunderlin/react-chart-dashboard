@@ -87,10 +87,6 @@ class App extends React.Component {
   };
   // Chart Edit window Actions
   handleEditClick = i => {
-    console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
-    console.log('handleEditClick() clicked');
-    console.log(this.state.widgets[i]);
-    console.log('PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP');
     this.setState(state => ({
       edit_opened: true,
       edit_target: this.state.widgets[i],

@@ -45,10 +45,9 @@ class EditWidget extends Component {
   }
 
   handleChange = (event)=>{
-    let node = event.target.name.split('.');
-    console.log(this.state.widget[node[0]]);
+    let node = event.target.name;
     let widget = {...this.state.widget};
-    widget[node[0]][node[1]] = event.target.value;
+    widget.widget[node] = event.target.value;
     this.setState((state)=>({
       widget
     }))
@@ -58,9 +57,34 @@ class EditWidget extends Component {
 
   handleClose = () => {
 this.editHelper.saveToDB(this.state.widget.widget);
-    
+
     this.props.handleClose();
   };
+
+  getValue = (field) => {
+    //first we check if the property is set in tne widget.
+    let w_params = {...this.state.widget};
+    w_params = JSON.parse(w_params.widgetParams);
+    if(typeof w_params[field] != 'undefined'){
+      if(w_params[field]){
+        return w_params[field];
+      }
+    }
+      let default_value = this.state.widget.sourceParams.map((param, i) => {
+      if(param.param_url_name == field){
+        return param.default_value;
+      }else{
+        return false;
+      }
+
+      });
+
+     default_value = default_value.filter((el)=>{
+      return el
+    });
+    return default_value[0];
+
+  }
 
   render() {
     if (this.state.widget === null) {
@@ -90,8 +114,29 @@ this.editHelper.saveToDB(this.state.widget.widget);
         >
           <DialogTitle id="form-dialog-title">Edit Widget</DialogTitle>
           <DialogContent>
-            
-            <div>
+                <div>
+
+              <TextInput
+                variant="outlined"
+                size={this.props.size}
+                label="Title"
+                name='title'
+                InputLabelProps={{ shrink: this.state.widget.widget.title? true : false }}
+                handleChange={this.handleChange}
+                value={this.state.widget.widget.title}
+              />
+            </div>
+                <br />
+
+                {this.state.widget.sourceParams.map((param, i) => {
+                  let comp = null;
+                  let type = 'text';
+              switch (param.data_type) {
+                case "text":
+                case "numeric":
+               return (<React.Fragment key={param.source_param_id}>
+
+                 <div>
               <TextInput
                 variant="outlined"
                 size={this.props.size}
@@ -101,8 +146,72 @@ this.editHelper.saveToDB(this.state.widget.widget);
                 handleChange={this.handleChange}
                 value={this.state.widget.widget.title}
               />
-            </div><br />
-            {/* 
+            </div>
+                <br />
+                </React.Fragment>
+              )
+                 break;
+                case "dropdown":
+                  let value = this.getValue(param.param_url_name);
+                  let data = null;
+                  if(param.table_columns == "ajax"){
+                    //todo create ajax call
+                  }else{
+                    data = eval(param.table_actions);
+                  }
+               return (<React.Fragment key={param.source_param_id}>
+                    <div>
+              <DropDown
+                label="Chart Type"
+                variant="outlined"
+                size={this.props.size}
+                handleChange={this.handleChange}
+                value={value}
+                options={data
+                }
+              />
+                    </div>
+                    <br/>
+                </React.Fragment>
+                  )
+                  break;
+                case "date":
+               return (<React.Fragment key={param.source_param_id}>
+                 <div>
+ <DateHandler
+                startDate={this.props.chart.params.start_date}
+                size={this.props.size}
+                endDate={this.props.chart.params.end_date}
+                handleStartDateChange={this.props.handleStartChange}
+                handleEndDateChange={this.props.handleEndChange}
+              />
+            </div>
+                <br />
+                </React.Fragment>
+                  );
+                  break;
+                case "start_date":
+                  let end_date = this.state.widget.sourceParams.filter(function(el){
+                    return el.data_type = 'end_date';
+                  });
+                 return (<React.Fragment key={param.source_param_id}>
+                 <div>
+ <DateHandler
+                startDate={this.props.chart.params.start_date}
+                size={this.props.size}
+                endDate={this.props.chart.params.end_date}
+                handleStartDateChange={this.props.handleStartChange}
+                handleEndDateChange={this.props.handleEndChange}
+              />
+            </div>
+                <br />
+                </React.Fragment>
+                  );
+                 break;
+                  default:
+                  break;
+              }
+                          /*
             <div>
               <DropDown
                 label="Chart Type"
@@ -183,7 +292,8 @@ this.editHelper.saveToDB(this.state.widget.widget);
                 handleStartDateChange={this.props.handleStartChange}
                 handleEndDateChange={this.props.handleEndChange}
               />
-            </div> */}
+            </div> */
+            })}
           </DialogContent>
           <DialogActions style={{ justifyContent: "flex-start" }}>
             <Button
