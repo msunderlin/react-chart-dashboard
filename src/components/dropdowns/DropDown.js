@@ -8,6 +8,7 @@ const DropDown = props => {
       <InputLabel>{props.label}</InputLabel>
       <Select
         native
+        name={props.name}
         variant={props.variant}
         size={props.size}
         lable={props.label}

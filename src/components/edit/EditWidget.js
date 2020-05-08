@@ -14,7 +14,7 @@ class EditWidget extends Component {
     super(props);
     this.state = {
       widget_id: this.props.widget_id,
-      widget: null
+      widget: null,
     };
   }
   editHelper = null;
@@ -22,69 +22,71 @@ class EditWidget extends Component {
     console.log(this.props.widget_id);
     if (this.props.widget_id === 0) {
     } else {
-      if(this.state.widget === null){
-      this.editHelper = new EditHelper();
-      let widget = await this.editHelper.initalizeData(this.props.widget_id);
-      console.log(widget);
-      this.setState((state) => ({
-        widget,
-      }));
-      new Promise((resolve, reject) => {
-        let url = window.ajax_url + "?user_id=59&action=get_products";
-        fetch(url)
-          .then((response) => response.json())
-          .then((result) => {
-            resolve(
-              this.setState({
-                products: JSON.parse(result),
-              })
-            );
-          });
-      });
-    }}
+      if (this.state.widget === null) {
+        this.editHelper = new EditHelper();
+        let widget = await this.editHelper.initalizeData(this.props.widget_id);
+        console.log(widget);
+        this.setState((state) => ({
+          widget,
+        }));
+        new Promise((resolve, reject) => {
+          let url = window.ajax_url + "?user_id=59&action=get_products";
+          fetch(url)
+            .then((response) => response.json())
+            .then((result) => {
+              resolve(
+                this.setState({
+                  products: JSON.parse(result),
+                })
+              );
+            });
+        });
+      }
+    }
   }
 
-  handleChange = (event)=>{
+  handleChange = (event) => {
     let node = event.target.name;
-    let widget = {...this.state.widget};
-    widget.widget[node] = event.target.value;
-    this.setState((state)=>({
-      widget
-    }))
-
-  }
-
+    let widget = { ...this.state.widget };
+    let params = JSON.parse(widget.widgetParams);
+    console.log(params);
+    params[node] = event.target.value;
+    params = JSON.stringify(params);
+    widget.widgetParams = params;
+    console.log(widget);
+    this.setState((state) => ({
+      widget,
+    }));
+  };
 
   handleClose = () => {
-this.editHelper.saveToDB(this.state.widget.widget);
+    this.editHelper.saveToDB(this.state.widget.widget);
 
     this.props.handleClose();
   };
 
   getValue = (field) => {
     //first we check if the property is set in tne widget.
-    let w_params = {...this.state.widget};
+    let w_params = { ...this.state.widget };
     w_params = JSON.parse(w_params.widgetParams);
-    if(typeof w_params[field] != 'undefined'){
-      if(w_params[field]){
+    if (typeof w_params[field] != "undefined") {
+      if (w_params[field]) {
         return w_params[field];
       }
     }
-      let default_value = this.state.widget.sourceParams.map((param, i) => {
-      if(param.param_url_name == field){
+    let default_value = this.state.widget.sourceParams.map((param, i) => {
+      if (param.param_url_name == field) {
         return param.default_value;
-      }else{
+      } else {
         return false;
       }
+    });
 
-      });
-
-     default_value = default_value.filter((el)=>{
-      return el
+    default_value = default_value.filter((el) => {
+      return el;
     });
     return default_value[0];
-
-  }
+  };
 
   render() {
     if (this.state.widget === null) {
@@ -114,104 +116,115 @@ this.editHelper.saveToDB(this.state.widget.widget);
         >
           <DialogTitle id="form-dialog-title">Edit Widget</DialogTitle>
           <DialogContent>
-                <div>
-
+            <div>
               <TextInput
                 variant="outlined"
                 size={this.props.size}
                 label="Title"
-                name='title'
-                InputLabelProps={{ shrink: this.state.widget.widget.title? true : false }}
+                name="title"
+                InputLabelProps={{
+                  shrink: this.state.widget.widget.title ? true : false,
+                }}
                 handleChange={this.handleChange}
                 value={this.state.widget.widget.title}
               />
             </div>
-                <br />
+            <br />
 
-                {this.state.widget.sourceParams.map((param, i) => {
-                  let comp = null;
-                  let type = 'text';
+            {this.state.widget.sourceParams.map((param, i) => {
+              let comp = null;
               switch (param.data_type) {
                 case "text":
                 case "numeric":
-               return (<React.Fragment key={param.source_param_id}>
-
-                 <div>
-              <TextInput
-                variant="outlined"
-                size={this.props.size}
-                label="Title"
-                name='widget.title'
-                InputLabelProps={{ shrink: this.state.widget.widget.title? true : false }}
-                handleChange={this.handleChange}
-                value={this.state.widget.widget.title}
-              />
-            </div>
-                <br />
-                </React.Fragment>
-              )
-                 break;
+                  return (
+                    <React.Fragment key={param.source_param_id}>
+                      <div>
+                        <TextInput
+                          variant="outlined"
+                          size={this.props.size}
+                          label={param.param_name}
+                          name={param.param_url_name}
+                          InputLabelProps={{
+                            shrink: this.state.widget.widget.title
+                              ? true
+                              : false,
+                          }}
+                          handleChange={this.handleChange}
+                          value={this.getValue(param.param_url_name)}
+                        />
+                      </div>
+                      <br />
+                    </React.Fragment>
+                  );
+                  break;
                 case "dropdown":
-                  let value = this.getValue(param.param_url_name);
                   let data = null;
-                  if(param.table_columns == "ajax"){
+                  if (param.table_columns === "ajax") {
                     //todo create ajax call
-                  }else{
+                  } else {
                     data = eval(param.table_actions);
                   }
-               return (<React.Fragment key={param.source_param_id}>
-                    <div>
-              <DropDown
-                label="Chart Type"
-                variant="outlined"
-                size={this.props.size}
-                handleChange={this.handleChange}
-                value={value}
-                options={data
-                }
-              />
-                    </div>
-                    <br/>
-                </React.Fragment>
-                  )
+                  return (
+                    <React.Fragment key={param.source_param_id}>
+                      <div>
+                        <DropDown
+                          label={param.param_name}
+                          variant="outlined"
+                          name={param.param_url_name}
+                          size={this.props.size}
+                          handleChange={this.handleChange}
+                          value={this.getValue(param.param_url_name)}
+                          options={data}
+                        />
+                      </div>
+                      <br />
+                    </React.Fragment>
+                  );
                   break;
                 case "date":
-               return (<React.Fragment key={param.source_param_id}>
-                 <div>
- <DateHandler
-                startDate={this.props.chart.params.start_date}
-                size={this.props.size}
-                endDate={this.props.chart.params.end_date}
-                handleStartDateChange={this.props.handleStartChange}
-                handleEndDateChange={this.props.handleEndChange}
-              />
-            </div>
-                <br />
-                </React.Fragment>
+                  console.log("rendering Date");
+                  return (
+                    <React.Fragment key={param.source_param_id}>
+                      <div>
+                        <DateHandler
+                          label={param.param_name}
+                          size={this.props.size}
+                          name={param.param_url_name}
+                          handleChange={this.handleChange}
+                          value={this.getValue(param.param_url_name)}
+                          date={this.getValue(param.param_url_name)}
+                          single={true}
+                        />
+                      </div>
+                      <br />
+                    </React.Fragment>
                   );
                   break;
                 case "start_date":
-                  let end_date = this.state.widget.sourceParams.filter(function(el){
-                    return el.data_type = 'end_date';
-                  });
-                 return (<React.Fragment key={param.source_param_id}>
-                 <div>
- <DateHandler
-                startDate={this.props.chart.params.start_date}
-                size={this.props.size}
-                endDate={this.props.chart.params.end_date}
-                handleStartDateChange={this.props.handleStartChange}
-                handleEndDateChange={this.props.handleEndChange}
-              />
-            </div>
-                <br />
-                </React.Fragment>
+                  let end_date = this.state.widget.sourceParams.filter(
+                    function (el) {
+                      return (el.data_type = "end_date");
+                    }
                   );
-                 break;
-                  default:
+                  return (
+                    <React.Fragment key={param.source_param_id}>
+                      <div>
+                        <DateHandler
+                          startDate={this.props.chart.params.start_date}
+                          size={this.props.size}
+                          endDate={this.props.chart.params.end_date}
+                          handleStartDateChange={this.props.handleStartChange}
+                          handleEndDateChange={this.props.handleEndChange}
+                        />
+                      </div>
+                      <br />
+                    </React.Fragment>
+                  );
+                  break;
+                default:
                   break;
               }
-                          /*
+              /*
             <div>
               <DropDown
                 label="Chart Type"
