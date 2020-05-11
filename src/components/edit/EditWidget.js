@@ -19,11 +19,23 @@ class EditWidget extends Component {
   }
   editHelper = null;
   async componentDidUpdate() {
+         let widget = this.state.widget; 
+          console.log('--------------------------------------------------');
     console.log(this.props.widget_id);
+          console.log('--------------------------------------------------');
+
     if (this.props.widget_id === 0) {
     } else {
 
-        if (this.state.widget === null) {
+      if(this.state.widget_id !== this.props.widget_id){
+
+        this.setState(state=>({
+          widget_id: this.props.widget_id,
+        }))
+        widget = null;
+    }
+
+        if (widget === null) {
           console.log('==================================================');
           console.log(this.props.widget_id);
           console.log('==================================================');

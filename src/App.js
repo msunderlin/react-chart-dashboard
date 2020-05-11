@@ -100,7 +100,7 @@ class App extends React.Component {
   handleEditClose = () => {
     this.setState(state => ({
       edit_opened: false,
-      edit_target: []
+      edit_target:0 
     }));
   };
   //Add Widget
