@@ -87,9 +87,13 @@ class App extends React.Component {
   };
   // Chart Edit window Actions
   handleEditClick = i => {
+          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++');
+    console.log('handleEditClick called with '+i);
+    console.log(this.state.widgets[i-1]);
+          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++');
     this.setState(state => ({
       edit_opened: true,
-      edit_target: this.state.widgets[i],
+      edit_target: this.state.widgets[i-1],
       edit_target_id: i
     }));
   };
@@ -156,6 +160,7 @@ class App extends React.Component {
         </div>
       );
     } else {
+      console.log(this.state.edit_target);
       return (
         <div>
           <PopupChart
@@ -199,7 +204,6 @@ class App extends React.Component {
             >
               {this.state.widgets.map((widget, i) => {
                 var pos = this.state.layouts.lg[i];
-                console.log(pos);
                 return (
                   <Card
                     variant="outlined"
@@ -219,7 +223,7 @@ class App extends React.Component {
                       color="primary"
                       size="small"
                       onClick={() => {
-                        this.handleEditClick(i);
+                        this.handleEditClick(widget);
                       }}
                       style={{
                         position: "absolute",
@@ -234,7 +238,7 @@ class App extends React.Component {
                       size="small"
                       aria-label="delete"
                       onClick={() => {
-                        this.handleWidgetRemove(i);
+                        this.handleWidgetRemove(widget);
                       }}
                       style={{
                         position: "absolute",

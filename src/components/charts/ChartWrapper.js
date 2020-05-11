@@ -32,7 +32,6 @@ class ChartWrapper extends Component {
   //Lifecycle Methods
   async componentDidMount() {
     await this.initalizeData();
-    console.log(this.state);
     let url = window.base_url + this.state.widget_url;
       fetch(url)
         .then((response) => response.json())
@@ -41,9 +40,6 @@ class ChartWrapper extends Component {
         });
     if (this.getHeader) {
     }
-    console.log('++++++++++++++++++++++++++++++++++++++++++');
-      console.log(this.state);
-    console.log('++++++++++++++++++++++++++++++++++++++++++');
        if (this.state.widget.type_id !== "6") {
     this.timer = window.setInterval(() => {
       let url = window.base_url + this.state.widget_url;
@@ -54,7 +50,6 @@ class ChartWrapper extends Component {
         });
     },5000) //this.state.widgetParams[0].interval)
 
-    console.log(this.props.chart);
 }
   }
   componentWillUnmount() {
@@ -66,7 +61,6 @@ class ChartWrapper extends Component {
   }
 
   render() {
-    console.log(this.state);
     const chart = this.state.widget;
     const type = this.state.widget.type_id;
     if(this.state.data.length === 0 ){

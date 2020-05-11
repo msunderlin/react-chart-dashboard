@@ -22,26 +22,32 @@ class EditWidget extends Component {
     console.log(this.props.widget_id);
     if (this.props.widget_id === 0) {
     } else {
-      if (this.state.widget === null) {
-        this.editHelper = new EditHelper();
-        let widget = await this.editHelper.initalizeData(this.props.widget_id);
-        console.log(widget);
-        this.setState((state) => ({
-          widget,
-        }));
-        new Promise((resolve, reject) => {
-          let url = window.ajax_url + "?user_id=59&action=get_products";
-          fetch(url)
-            .then((response) => response.json())
-            .then((result) => {
-              resolve(
-                this.setState({
-                  products: JSON.parse(result),
-                })
-              );
-            });
-        });
-      }
+
+        if (this.state.widget === null) {
+          console.log('==================================================');
+          console.log(this.props.widget_id);
+          console.log('==================================================');
+          this.editHelper = new EditHelper();
+          let widget = await this.editHelper.initalizeData(
+            this.props.widget_id
+          );
+          console.log(widget);
+          this.setState((state) => ({
+            widget,
+          }));
+          new Promise((resolve, reject) => {
+            let url = window.ajax_url + "?user_id=59&action=get_products";
+            fetch(url)
+              .then((response) => response.json())
+              .then((result) => {
+                resolve(
+                  this.setState({
+                    products: JSON.parse(result),
+                  })
+                );
+              });
+          });
+        }
     }
   }
 
