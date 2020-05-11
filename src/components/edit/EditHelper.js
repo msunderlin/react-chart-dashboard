@@ -106,7 +106,43 @@ class EditHelper {
 
   async saveToDB(widget){
         console.log(widget);
-  }
+        const action = "set_widget";
+        const user_id = window.getUserID();
+      const data = new FormData();
+      data.append("user_id", user_id);
+      data.append("action", action);
+      data.append("widget_id",widget.widget_id);
+      data.append("created_by",widget.created_by);
+      data.append("created_at",widget.created_at);
+      data.append("dashboard_id",widget.dashboard_id);
+      data.append("height",widget.height);
+      data.append("width",widget.width);
+      data.append("maxH",widget.maxH);
+      data.append("maxW",widget.maxW);
+      data.append("minH",widget.minH);
+      data.append("minW",widget.minW);
+      data.append("params",widget.params);
+      data.append("source_id",widget.source_id);
+      data.append("title",widget.title);
+      data.append("type_id",widget.type_id);
+      data.append("updated_at",widget.updated_at);
+      data.append("updated_by",widget.updated_by);
+      const url = window.ajax_url;
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          Accept: "application/json"
+        },
+        body: data
+      })
+        .then(response => response.json())
+        .then(data => {
+          return data;
+        })
+        .catch(e => {
+          console.error(e);
+        });
+    }
 
 }
 

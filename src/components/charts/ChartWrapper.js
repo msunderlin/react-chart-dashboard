@@ -82,6 +82,10 @@ class ChartWrapper extends Component {
         </div>
       );
     }else{
+
+    console.log("++++++++++++++++++++++++++++++");
+    console.log(chart);
+    console.log("++++++++++++++++++++++++++++++");
     switch (type) {
       case "1":
         //BarChart
@@ -278,7 +282,6 @@ class ChartWrapper extends Component {
     const sourceParams = await fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         return data;
       })
       .catch((error) => {

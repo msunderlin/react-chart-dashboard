@@ -19,59 +19,67 @@ class EditWidget extends Component {
   }
   editHelper = null;
   async componentDidUpdate() {
-         let widget = this.state.widget; 
-          console.log('--------------------------------------------------');
+    let widget = this.state.widget;
+    console.log("--------------------------------------------------");
     console.log(this.props.widget_id);
-          console.log('--------------------------------------------------');
+    console.log("--------------------------------------------------");
 
     if (this.props.widget_id === 0) {
     } else {
-
-      if(this.state.widget_id !== this.props.widget_id){
-
-        this.setState(state=>({
+      if (this.state.widget_id !== this.props.widget_id) {
+        this.setState((state) => ({
           widget_id: this.props.widget_id,
-        }))
+        }));
         widget = null;
-    }
+      }
 
-        if (widget === null) {
-          console.log('==================================================');
-          console.log(this.props.widget_id);
-          console.log('==================================================');
-          this.editHelper = new EditHelper();
-          let widget = await this.editHelper.initalizeData(
-            this.props.widget_id
-          );
-          console.log(widget);
-          this.setState((state) => ({
-            widget,
-          }));
-          new Promise((resolve, reject) => {
-            let url = window.ajax_url + "?user_id=59&action=get_products";
-            fetch(url)
-              .then((response) => response.json())
-              .then((result) => {
-                resolve(
-                  this.setState({
-                    products: JSON.parse(result),
-                  })
-                );
-              });
-          });
-        }
+      if (widget === null) {
+        console.log("==================================================");
+        console.log(this.props.widget_id);
+        console.log("==================================================");
+        this.editHelper = new EditHelper();
+        let widget = await this.editHelper.initalizeData(this.props.widget_id);
+        console.log(widget);
+        this.setState((state) => ({
+          widget,
+        }));
+        new Promise((resolve, reject) => {
+          let url = window.ajax_url + "?user_id=59&action=get_products";
+          fetch(url)
+            .then((response) => response.json())
+            .then((result) => {
+              resolve(
+                this.setState({
+                  products: JSON.parse(result),
+                })
+              );
+            });
+        });
+      }
     }
   }
+  handleTitleChange = (event) => {
 
+    let widget = { ...this.state.widget };
+    widget.widget.title = event.target.value;
+    this.setState((state) => ({
+      widget,
+    }));
+
+  }
   handleChange = (event) => {
     let node = event.target.name;
     let widget = { ...this.state.widget };
-    let params = JSON.parse(widget.widgetParams);
+    let params = widget.widgetParams;
+    if (typeof params == "string") {
+      params = JSON.parse(params);
+    }
     console.log(params);
     params[node] = event.target.value;
     params = JSON.stringify(params);
+    console.log(params);
     widget.widgetParams = params;
-    console.log(widget);
+    widget.widget.params = params;
     this.setState((state) => ({
       widget,
     }));
@@ -79,14 +87,16 @@ class EditWidget extends Component {
 
   handleClose = () => {
     this.editHelper.saveToDB(this.state.widget.widget);
-
     this.props.handleClose();
   };
 
   getValue = (field) => {
     //first we check if the property is set in tne widget.
     let w_params = { ...this.state.widget };
-    w_params = JSON.parse(w_params.widgetParams);
+    w_params = w_params.widgetParams;
+    if (typeof w_params == "string") {
+      w_params = JSON.parse(w_params);
+    }
     if (typeof w_params[field] != "undefined") {
       if (w_params[field]) {
         return w_params[field];
@@ -143,11 +153,15 @@ class EditWidget extends Component {
                 InputLabelProps={{
                   shrink: this.state.widget.widget.title ? true : false,
                 }}
-                handleChange={this.handleChange}
+                handleChange={this.handleTitleChange}
                 value={this.state.widget.widget.title}
               />
             </div>
             <br />
+            <div>
+  
+              </div>
+              <br />
 
             {this.state.widget.sourceParams.map((param, i) => {
               let comp = null;
@@ -178,7 +192,7 @@ class EditWidget extends Component {
                 case "dropdown":
                   let data = null;
                   if (param.table_columns === "ajax") {
-                    //todo create ajax call
+
                   } else {
                     data = eval(param.table_actions);
                   }
