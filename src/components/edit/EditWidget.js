@@ -59,14 +59,12 @@ class EditWidget extends Component {
     }
   }
   handleTitleChange = (event) => {
-
     let widget = { ...this.state.widget };
     widget.widget.title = event.target.value;
     this.setState((state) => ({
       widget,
     }));
-
-  }
+  };
   handleChange = (event) => {
     let node = event.target.name;
     let widget = { ...this.state.widget };
@@ -135,7 +133,9 @@ class EditWidget extends Component {
       console.log(this.state);
       const widget = this.state.widget;
       console.log(widget);
-
+      console.log('++++++++++++++++++++++++++++++++++++++++++++++++++');
+console.log(this.editHelper.getSources());
+      console.log('++++++++++++++++++++++++++++++++++++++++++++++++++');
       return (
         <Dialog
           open={this.props.opened}
@@ -159,10 +159,33 @@ class EditWidget extends Component {
             </div>
             <br />
             <div>
-  
-              </div>
-              <br />
+              /*set refresh interval*/
+              <TextInput
+                variant="outlined"
+                size={this.props.size}
+                label="Refresh Interval"
+                name="interval"
+                InputLabelProps={{
+                  shrink: this.state.widget.widget.interval ? true : false,
+                }}
+                handleChange={this.handleChange}
+                value={this.state.widget.widget.interval}
+              />
+            </div>
+            <br />
 
+            <div>
+              <DropDown
+                label="Data Source"
+                variant="outlined"
+                name='source_id'
+                size={this.props.size}
+                handleChange={this.handleSourceChange}
+                value={this.state.widget.widget.source_id}
+                options={this.editHelper.getSources()}
+              />
+            </div>
+            <br />
             {this.state.widget.sourceParams.map((param, i) => {
               let comp = null;
               switch (param.data_type) {
@@ -192,7 +215,7 @@ class EditWidget extends Component {
                 case "dropdown":
                   let data = null;
                   if (param.table_columns === "ajax") {
-
+                    data = this.editHelper.getAjaxOptions(param.table_actions);
                   } else {
                     data = eval(param.table_actions);
                   }

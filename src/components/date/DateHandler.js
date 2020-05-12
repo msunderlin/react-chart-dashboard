@@ -76,7 +76,7 @@ class DateHandler extends React.Component {
             label="Common"
             size={this.props.size}
             value={this.state.value}
-            handleChange={this.handleDropdownChange}
+            handleChange={this.handleDateDropdownChange}
             options={[
               {
                 text: "Today",
@@ -85,22 +85,6 @@ class DateHandler extends React.Component {
               {
                 text: "Yesterday",
                 value: "y"
-              },
-              {
-                text: "This Week",
-                value: "tw"
-              },
-              {
-                text: "This Month",
-                value: "tm"
-              },
-              {
-                text: "Last Month",
-                value: "lm"
-              },
-              {
-                text: "This Year",
-                value: "ty"
               },
               {
                 text: "Custom Date Range",
@@ -119,8 +103,7 @@ class DateHandler extends React.Component {
                 size={this.props.size}
                 date={this.props.startDate}
                 label="Start Date"
-                handleDateChange={this.props.handleStartDateChange}
-                handleChange = {this.props.handlChange}
+                handleDateChange={this.props.handleDateChange}
                 variant="dialog"
                 id="date-picker-start"
               />
