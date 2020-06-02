@@ -9,11 +9,9 @@ class StackedBarChart extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('stacked BarChart updated'+this.props.title);
     this.myChart.data.labels = this.props.data.labels;
     this.myChart.data.datasets = this.props.data.datasets;
     this.myChart.options.title.text = this.props.title;
-    console.log(this.myChart);
     this.myChart.update();
   }
   componentWillUnmount(){
@@ -21,6 +19,7 @@ class StackedBarChart extends React.Component {
   }
   componentDidMount() {
     document.addEventListener("contextmenu", this._handleContextMenu);
+    console.log(this.props.stacked);
     this.myChart = new Chart(this.canvasRef.current, {
       type: "bar",
       options: {
@@ -69,7 +68,7 @@ class StackedBarChart extends React.Component {
         scales: {
           yAxes: [
             {
-              stacked: this.props.stacked ? true : false,
+              stacked:  false,
               ticks: {
                 min: 0
               }
@@ -77,12 +76,14 @@ class StackedBarChart extends React.Component {
           ],
           xAxes: [
             {
-              stacked: this.props.stacked ? true : false
+              display:false,
+              stacked:  false
             }
           ]
         },
         title: { display: true, text: this.props.title },
         legend: {
+          display:false,
           position: "bottom"
         }
       },

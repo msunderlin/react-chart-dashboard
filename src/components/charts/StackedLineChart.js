@@ -15,7 +15,7 @@ class StackedLineChart extends React.Component {
         {
           type: "time",
           time: {
-            unit: this.props.interval === "hourly" ? "hour" : "day"
+            unit: this.props.data_interval === "hourly" ? "hour" : "day"
           }
         }
       ],
@@ -81,9 +81,10 @@ class StackedLineChart extends React.Component {
         scales: {
           xAxes: [
             {
+              display:false,
               type: "time",
               time: {
-                unit: this.props.interval === "hourly" ? "hour" : "day"
+                unit: this.props.data_interval === "hourly" ? "hour" : "day"
               }
             }
           ],
@@ -98,6 +99,7 @@ class StackedLineChart extends React.Component {
         },
         title: { display: true, text: this.props.title },
         legend: {
+          display:false,
           position: "bottom"
         }
       },

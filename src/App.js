@@ -1,21 +1,26 @@
 import React from "react";
-import Container from "@material-ui/core/Container";
-import Card from "@material-ui/core/Card";
-import Button from "@material-ui/core/Button";
-import DehazeIcon from "@material-ui/icons/Dehaze";
-import CircleLoader from "./components/loader/CircleLoader";
-import Layout from "./components/layout/Layout";
-import ChartWrapper from "./components/charts/ChartWrapper";
-import EditWidget from "./components/edit/EditWidget";
-import ContextMenu from "./components/contextMenu/contextMenu";
-import PopupChart from "./components/layout/PopupChart";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
 
+
+import Button from "@material-ui/core/Button";
+import Card from "@material-ui/core/Card";
+import CloseIcon from "@material-ui/icons/Close";
+import Container from "@material-ui/core/Container";
+import DehazeIcon from "@material-ui/icons/Dehaze";
+import Grid from "@material-ui/core/Grid";
+import IconButton from "@material-ui/core/IconButton";
+import Paper from "@material-ui/core/Paper";
+
+import ChartWrapper from "./components/charts/ChartWrapper";
+import CircleLoader from "./components/loader/CircleLoader";
+import ContextMenu from "./components/menus/contextMenu";
+import EditWidget from "./components/edit/EditWidget";
+import Layout from "./components/layout/Layout";
+import PopupChart from "./components/layout/PopupChart";
+import SideMenu from "./components/menus/sideMenu";
+import TopBar from "./components/menus/topBar";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.getParams();
     this.state = {
       widgets: [],
       layouts: [],
@@ -29,115 +34,142 @@ class App extends React.Component {
       context_param: null,
       context_x: null,
       context_y: null,
-      show_popup: false
+      show_popup: false,
+      paused: false,
+      refreshed_id: 0,
     };
   }
 
   componentDidMount() {
-    this.getParams().then(async () => {
-      window.getWidgets().then(result => {
-        this.setState(state => ({
-          widgets: JSON.parse(JSON.stringify(result))
-        }));
-      });
-    });
-
-    this.getParams().then(async () => {
-      this.getFromDB("layouts").then(result => {
-        this.setState(state => ({
-          layouts: JSON.parse(JSON.stringify(result))
-        }));
-      });
-    });
+    this.initializeData();
   }
 
-  componentDidUpdate() {
-    console.log("App.js updated");
-  }
+  componentDidUpdate() {}
 
   //Context Menu Actions
   handleContextOpenClick = (event, label, i) => {
-    this.setState(state => ({
+    this.setState((state) => ({
       show_context: event.target,
       context_target: JSON.parse(JSON.stringify(state.widgets[i])),
       context_param: label,
       context_x: event.clientX - 2,
-      context_y: event.clientY - 4
+      context_y: event.clientY - 4,
     }));
   };
   handleContextClose = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       show_context: null,
       context_x: null,
-      context_y: null
+      context_y: null,
     }));
   };
   handleContextClick = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       show_popup: true,
       show_context: null,
       context_x: null,
-      context_y: null
+      context_y: null,
+      paused: true,
     }));
   };
   handlePopupClose = () => {
-    this.setState(state => ({
-      show_popup: false
+    this.setState((state) => ({
+      show_popup: false,
+      paused: false,
     }));
   };
   // Chart Edit window Actions
-  handleEditClick = i => {
-          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++');
-    console.log('handleEditClick called with '+i);
-    console.log(this.state.widgets[i-1]);
-          console.log('++++++++++++++++++++++++++++++++++++++++++++++++++');
-    this.setState(state => ({
+  handleEditClick = (i) => {
+    this.setState((state) => ({
       edit_opened: true,
-      edit_target: this.state.widgets[i-1],
-      edit_target_id: i
+      edit_target: i,
+      edit_target_id: i,
+      paused: true,
     }));
   };
   handleEditClose = () => {
-    this.setState(state => ({
-      edit_opened: false,
-      edit_target: []
-    }));
-  };
-  //Add Widget
-  handleWidgetAdd = widget => {
-    let chart = this.state.widgets;
-    chart.push(JSON.parse(widget));
     this.setState(
-      state => ({
-        chart
+      (state) => ({
+        edit_opened: false,
+        edit_target: 0,
+        edit_target_id: 0,
+        paused: false,
+        widgets: [],
+        layouts: [],
       }),
       () => {
-        this.saveChartsToDB(this.state.layouts, chart);
+        this.initializeData();
       }
     );
   };
-  //delete Widget
-  handleWidgetRemove = i => {
-    console.log(i);
-
-    let chart = JSON.parse(JSON.stringify(this.state.widgets));
-    let layouts = JSON.parse(JSON.stringify(this.state.layouts));
-
-    chart.splice(i, 1);
-    Object.entries(layouts).forEach(entry => {
-      let key = entry[0];
-      layouts[key].splice(i, 1);
-    });
-    this.setState(state => ({
-      chart,
-      layouts
+  //Add Widget
+  handleWidgetAdd = (widget) => {
+    this.setState((state) => ({
+      edit_opened: true,
+      edit_target: "new",
+      edit_target_id: "new",
+      paused: true,
     }));
-    this.saveChartsToDB(layouts, chart);
   };
-  handleLayoutsChange = layouts => {
-    this.setState(state => ({
-      layouts
+  //delete Widget
+  handleWidgetRemove = (i) => {
+    let charts = this.state.widgets;
+    let layouts = JSON.parse(JSON.stringify(this.state.layouts));
+    let chart = charts.map((chart, j) => {
+      if (chart == i) {
+        return j;
+      }
+    });
+    //getchart index
+    Object.entries(layouts).forEach((entry) => {
+      let key = entry[0];
+      layouts[key].splice(chart, 1);
+    });
+
+    this.handleLayoutsChange(layouts);
+    this.handleWidgetDelete(i);
+    this.setState(
+      (state) => ({
+        widgets: [],
+        layouts: [],
+      }),
+      () => {
+        this.initializeData();
+      }
+    );
+  };
+  handleLayoutsChange = (layouts) => {
+    this.saveLayoutToDB(layouts);
+    this.setState((state) => ({
+      layouts,
     }));
+  };
+
+  handleResetLayout = async (key) => {
+    let ls = {};
+    const action = "reset_layout";
+    const user_id = window.getUserID();
+    const dashboard_id = window.getDashboardId();
+    const url =
+      window.ajax_url +
+      "?user_id=" +
+      user_id +
+      "&action=" +
+      action +
+      "&dashboard_id=" +
+      dashboard_id;
+    ls = await fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ layouts: data["layouts"] });
+        this.saveLayoutToDB(data["layouts"]);
+        this.forceUpdate();
+        return data;
+      })
+      .catch(() => {
+        return false;
+      });
+    return ls[key];
   };
 
   render() {
@@ -152,7 +184,7 @@ class App extends React.Component {
         top: "0",
         left: "0",
         height: "100vh",
-        width: "100%"
+        width: "100%",
       };
       return (
         <div style={wrapper_style}>
@@ -160,7 +192,6 @@ class App extends React.Component {
         </div>
       );
     } else {
-      console.log(this.state.edit_target);
       return (
         <div>
           <PopupChart
@@ -184,7 +215,6 @@ class App extends React.Component {
             handleProductChange={this.handleProductChange}
             handleParamIntervalChange={this.handleParamIntervalChange}
             handleSave={this.handleChartChange}
-            title={this.state.edit_target.title}
             products={[]}
           />
           <ContextMenu
@@ -195,71 +225,83 @@ class App extends React.Component {
             mouseY={this.state.context_y}
             handleContextClick={this.handleContextClick}
           />
-          <Container disableGutters={false} maxWidth="lg">
-            <Layout
-              //charts={this.state.widgets}
-              layouts={this.state.layouts}
-              handleWidgetAdd={this.handleWidgetAdd}
-              handleLayoutsChange={this.handleLayoutsChange}
-            >
-              {this.state.widgets.map((widget, i) => {
-                var pos = this.state.layouts.lg[i];
-                return (
-                  <Card
-                    variant="outlined"
-                    key={i}
-                    className="grid-item"
-                    data-grid={{
-                      x: pos.h * i,
-                      y: pos.w * i,
-                      h: pos.h,
-                      w: pos.w,
-                      minH: pos.minH,
-                      minW: pos.minW
-                    }}
-                    style={{ position: "relative" }}
-                  >
-                    <Button
-                      color="primary"
-                      size="small"
-                      onClick={() => {
-                        this.handleEditClick(widget);
-                      }}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        zIndex: 500
-                      }}
-                    >
-                      <DehazeIcon />
-                    </Button>
-                    <IconButton
-                      size="small"
-                      aria-label="delete"
-                      onClick={() => {
-                        this.handleWidgetRemove(widget);
-                      }}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                        zIndex: 500
-                      }}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                    <ChartWrapper
-                      widget_id={widget}
-                      handleContextOpenClick={this.handleContextOpenClick}
-                      handleContextClose={this.handleContextClose}
-                      chartIndex={i}
-                    />
-                  </Card>
-                );
-              })}
-            </Layout>
-          </Container>
+          <Grid container direction="row" spacing={0}>
+            <Grid item xs={2}>
+               <SideMenu></SideMenu> 
+            </Grid>
+            <Grid item xs={10}>
+            <TopBar/>
+              <Container disableGutters={true} maxWidth={false}>
+                <Layout
+                  charts={this.state.widgets}
+                  layouts={this.state.layouts}
+                  handleWidgetAdd={this.handleWidgetAdd}
+                  handleLayoutsChange={this.handleLayoutsChange}
+                  handleWidgetAdd={this.handleWidgetAdd}
+                  handleResetLayout={this.handleResetLayout}
+                >
+                  {this.state.widgets.map((widget, i) => {
+                    var pos = this.state.layouts.lg[i];
+                    return (
+                      <Card
+                        variant="outlined"
+                        key={i}
+                        className="grid-item no-outline"
+                        data-grid={{
+                          x: pos.x,
+                          y: pos.y,
+                          h: pos.h,
+                          w: pos.w,
+                          minH: pos.minH,
+                          minW: pos.minW,
+                          static: pos.static,
+                        }}
+                        style={{ position: "relative" }}
+                      >
+                        <Button
+                          color="primary"
+                          size="small"
+                          onClick={() => {
+                            this.handleEditClick(widget);
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            zIndex: 500,
+                          }}
+                        >
+                          <DehazeIcon />
+                        </Button>
+                        <IconButton
+                          size="small"
+                          aria-label="delete"
+                          onClick={() => {
+                            this.handleWidgetRemove(widget);
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            right: 0,
+                            zIndex: 500,
+                          }}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                        <ChartWrapper
+                          widget_id={widget}
+                          handleContextOpenClick={this.handleContextOpenClick}
+                          handleContextClose={this.handleContextClose}
+                          chartIndex={i}
+                          paused={this.state.paused}
+                        />
+                      </Card>
+                    );
+                  })}
+                </Layout>
+              </Container>
+            </Grid>
+          </Grid>
         </div>
       );
     }
@@ -283,11 +325,11 @@ class App extends React.Component {
             "&dashboard_name=" +
             dashboard_name
         )
-          .then(response => response.json())
-          .then(data => {
+          .then((response) => response.json())
+          .then((data) => {
             return data.dashboard_id;
           })
-          .catch(e => {});
+          .catch((e) => {});
         if (dashboard_id === false) {
           window.setAction("list");
         } else {
@@ -313,14 +355,13 @@ class App extends React.Component {
       "&dashboard_id=" +
       dashboard_id;
     ls = await fetch(url)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         return JSON.parse(data);
       })
       .catch(() => {
         return false;
       });
-
     return ls[key];
   }
 
@@ -338,16 +379,84 @@ class App extends React.Component {
     await fetch(url, {
       method: "POST",
       headers: {
-        Accept: "application/json"
+        Accept: "application/json",
       },
-      body: data
+      body: data,
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         return data;
       })
-      .catch(e => {
+      .catch((e) => {
         console.error(e);
+      });
+  }
+  async saveLayoutToDB(layouts) {
+    const action = "set_layout";
+    const user_id = window.getUserID();
+    const dashboard_id = window.getDashboardId();
+    const data = new FormData();
+    data.append("user_id", user_id);
+    data.append("dashboard_id", dashboard_id);
+    data.append("action", action);
+    data.append("positions", JSON.stringify({ layouts }));
+    const url = window.ajax_url;
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: data,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }
+
+  async handleWidgetDelete(widget_id) {
+    const action = "remove_widget";
+    const user_id = window.getUserID();
+    const dashboard_id = window.getDashboardId();
+    const data = new FormData();
+    data.append("user_id", user_id);
+    data.append("dashboard_id", dashboard_id);
+    data.append("action", action);
+    data.append("widget_id", widget_id);
+    const url = window.ajax_url;
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: data,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }
+  async initializeData() {
+    this.getParams()
+      .then(async () => {
+        window.getWidgets().then((result) => {
+          this.setState((state) => ({
+            widgets: JSON.parse(JSON.stringify(result)),
+          }));
+        });
+      })
+      .then(async () => {
+        this.getFromDB("layouts").then((result) => {
+          this.setState((state) => ({
+            layouts: JSON.parse(JSON.stringify(result)),
+          }));
+        });
       });
   }
 }

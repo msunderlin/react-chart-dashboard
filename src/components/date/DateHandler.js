@@ -9,26 +9,27 @@ class DateHandler extends React.Component {
     super(props);
     this.state = {
       is_dynamic: true,
-      value: ""
+      value: "",
     };
   }
-  handleDropdownChange = event => {
+  handleDropdownChange = (event) => {
     let v = event.target.value;
     this.setState({
-      value: v
+      value: v,
     });
     if (v === "cdr") {
       this.setState({
-        is_dynamic: false
+        is_dynamic: false,
       });
     } else {
       this.setState({
-        is_dynamic: true
+        is_dynamic: true,
       });
       this.setDates(v);
     }
   };
-  setDates = (single, value) => {
+  setDates = (value) => {
+    let single = this.props.single;
     let date = moment();
     let startDate = moment();
     let endDate = moment();
@@ -39,7 +40,7 @@ class DateHandler extends React.Component {
           date = date.subtract(1, "d");
         }
         startDate = startDate.subtract(1, "d");
-        endDate = startDate;
+        endDate = endDate.subtract(1,"d");
         break;
       case "tw":
         //this week only modify start date
@@ -60,13 +61,10 @@ class DateHandler extends React.Component {
         break;
     }
     if (single) {
-
-      this.props.handleChange();
-      
+      this.props.handleDateChange(date);
     } else {
-      this.props.handleStartDateChange(startDate);
-      this.props.handleEndDateChange(endDate);
-    }
+      this.props.handleStartEndDateChange(startDate,endDate);
+    };
   };
   render() {
     if (this.props.single) {
@@ -80,36 +78,20 @@ class DateHandler extends React.Component {
             options={[
               {
                 text: "Today",
-                value: "t"
+                value: "t",
               },
               {
                 text: "Yesterday",
-                value: "y"
-              },
-              {
-                text: "This Week",
-                value: "tw"
-              },
-              {
-                text: "This Month",
-                value: "tm"
-              },
-              {
-                text: "Last Month",
-                value: "lm"
-              },
-              {
-                text: "This Year",
-                value: "ty"
+                value: "y",
               },
               {
                 text: "Custom Date Range",
-                value: "cdr"
-              }
+                value: "cdr",
+              },
             ]}
             inputProps={{
               name: "set-date-type",
-              id: "set-date-type"
+              id: "set-date-type",
             }}
           />
           <React.Fragment>
@@ -117,15 +99,14 @@ class DateHandler extends React.Component {
             <FormControl variant="filled">
               <DatePicker
                 size={this.props.size}
-                date={this.props.startDate}
-                label="Start Date"
-                handleDateChange={this.props.handleStartDateChange}
-                handleChange = {this.props.handlChange}
+                date={this.props.date}
+                label="Date"
+                handleDateChange={this.props.handleDateChange}
                 variant="dialog"
-                id="date-picker-start"
+                id="date-picker"
               />
             </FormControl>
-            </React.Fragment>
+          </React.Fragment>
         </React.Fragment>
       );
     } else {
@@ -139,36 +120,36 @@ class DateHandler extends React.Component {
             options={[
               {
                 text: "Today",
-                value: "t"
+                value: "t",
               },
               {
                 text: "Yesterday",
-                value: "y"
+                value: "y",
               },
               {
                 text: "This Week",
-                value: "tw"
+                value: "tw",
               },
               {
                 text: "This Month",
-                value: "tm"
+                value: "tm",
               },
               {
                 text: "Last Month",
-                value: "lm"
+                value: "lm",
               },
               {
                 text: "This Year",
-                value: "ty"
+                value: "ty",
               },
               {
                 text: "Custom Date Range",
-                value: "cdr"
-              }
+                value: "cdr",
+              },
             ]}
             inputProps={{
               name: "set-date-type",
-              id: "set-date-type"
+              id: "set-date-type",
             }}
           />
           <React.Fragment>

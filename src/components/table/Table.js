@@ -44,7 +44,7 @@ const tableIcons = {
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
 class Table extends React.Component {
@@ -52,22 +52,23 @@ class Table extends React.Component {
     super(props);
     this.tableRef = React.createRef();
     this.state = {
-      url: this.props.url
+      url: this.props.url,
     };
     this.getHeader = null;
   }
   footerData = null;
-
   is_list = () => {
-    if (parseInt(window.getDashboardId()) === 1) {
+    if (this.props.actions.length > 4) {
       return [
         {
           icon: tableIcons["Add"],
           tooltip: "Select Dashboard",
           onClick: (event, rowData) =>
             (window.location.href =
-              window.location.href + "" + rowData.dashboard_name)
-        }
+              window.location.origin +
+              "/dashboard/index.php?dashboard_name=" +
+              rowData.dash_name),
+        },
       ];
     } else {
       return [];
@@ -75,32 +76,37 @@ class Table extends React.Component {
   };
   render() {
     return (
-      <React.Fragment>
+      <div className={"table-wrapper"}>
         <MaterialTable
+          style={{
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
           icons={tableIcons}
           title={this.props.title}
           options={this.props.options}
           tableRef={this.tableRef}
           columns={this.props.columns}
           actions={this.is_list()}
-          data={query =>
+          data={(query) =>
             new Promise((resolve, reject) => {
               let url = this.state.url;
               url += "&per_page=" + query.pageSize;
               url += "&page=" + (query.page + 1);
               fetch(url)
-                .then(response => response.json())
-                .then(result => {
+                .then((response) => response.json())
+                .then((result) => {
                   resolve({
                     data: result.data,
                     page: result.page - 1,
-                    totalCount: result.total
+                    totalCount: result.total,
                   });
                 });
             })
           }
         />
-      </React.Fragment>
+      </div>
     );
   }
 }

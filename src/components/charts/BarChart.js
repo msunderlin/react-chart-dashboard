@@ -31,7 +31,8 @@ class BarChart extends React.Component {
         },
         title: { display: true, text: this.props.title },
         legend: {
-          position: "bottom"
+          position: "bottom",
+          display:false
         }
       },
       data: {

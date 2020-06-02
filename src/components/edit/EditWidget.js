@@ -15,55 +15,158 @@ class EditWidget extends Component {
     this.state = {
       widget_id: this.props.widget_id,
       widget: null,
+      sources: null,
+      is_ajax: false
     };
   }
   editHelper = null;
+  async componentDidMount() {
+    this.editHelper = new EditHelper();
+    let dataSources = await this.editHelper.getSources();
+    this.setState((state) => ({
+      sources: dataSources,
+    }));
+  }
   async componentDidUpdate() {
-    console.log(this.props.widget_id);
+    let widget = this.state.widget;
     if (this.props.widget_id === 0) {
     } else {
+      if (this.state.widget_id !== this.props.widget_id) {
+        this.setState((state) => ({
+          widget_id: this.props.widget_id,
+        }));
+        widget = null;
+      }
 
-        if (this.state.widget === null) {
-          console.log('==================================================');
-          console.log(this.props.widget_id);
-          console.log('==================================================');
-          this.editHelper = new EditHelper();
-          let widget = await this.editHelper.initalizeData(
-            this.props.widget_id
-          );
-          console.log(widget);
+      if (widget === null) {
+        this.editHelper.initalizeData(this.props.widget_id).then((widget) => {
           this.setState((state) => ({
             widget,
           }));
-          new Promise((resolve, reject) => {
-            let url = window.ajax_url + "?user_id=59&action=get_products";
-            fetch(url)
-              .then((response) => response.json())
-              .then((result) => {
-                resolve(
-                  this.setState({
-                    products: JSON.parse(result),
-                  })
-                );
-              });
-          });
-        }
+        });
+      }
     }
   }
 
   handleChange = (event) => {
     let node = event.target.name;
     let widget = { ...this.state.widget };
-    let params = JSON.parse(widget.widgetParams);
-    console.log(params);
+    let params = "";
+    if (typeof widget.widgetParams === "string") {
+      params = JSON.parse(widget.widgetParams);
+    } else {
+      params = widget.widgetParams;
+    }
     params[node] = event.target.value;
     params = JSON.stringify(params);
     widget.widgetParams = params;
-    console.log(widget);
+    widget.widget.params = params;
     this.setState((state) => ({
       widget,
     }));
   };
+  handleSourceChange = async (event) => {
+    let source_id = event.target.value;
+    let widget = { ...this.state.widget };
+    widget.widget.source_id = source_id;
+    widget.source = await this.editHelper.getSource(source_id);
+    widget.sourceParams = await this.editHelper.getSourceParams(source_id);
+    let params = { interval: 50000 };
+    params = JSON.stringify(params);
+    widget.widgetParams = params;
+    widget.widget.params = params;
+    this.setState((state) => ({
+      widget,
+    }));
+  };
+  // edge cases
+  handleTitleChange = (event) => {
+    let widget = { ...this.state.widget };
+    widget.widget.title = event.target.value;
+    this.setState((state) => ({
+      widget,
+    }));
+  };
+  handleTypeChange = (event) => {
+    let widget = { ...this.state.widget };
+    widget.widget.type_id = event.target.value;
+    this.setState((state) => ({
+      widget,
+    }));
+  };
+  handleIntervalChange = (event) => {
+    let widget = { ...this.state.widget };
+    widget.widget.title = event.target.value;
+    this.setState((state) => ({
+      widget,
+    }));
+  };
+  handleDateChange = (date) => {
+    let widget = { ...this.state.widget };
+    let params = "";
+    if (typeof widget.widgetParams === "string") {
+      params = JSON.parse(widget.widgetParams);
+    } else {
+      params = widget.widgetParams;
+    }
+    params.date = date.format("l");
+    params = JSON.stringify(params);
+    widget.widget.params = params;
+    widget.widgetParams = params;
+    this.setState({
+      widget,
+    });
+  };
+  handleEndDateChange = (date) => {
+    let widget = { ...this.state.widget };
+    let params = "";
+    if (typeof widget.widgetParams === "string") {
+      params = JSON.parse(widget.widgetParams);
+    } else {
+      params = widget.widgetParams;
+    }
+    params.end_date = date.format("l");
+    params = JSON.stringify(params);
+    widget.widgetParams = params;
+    widget.widget.params = params;
+    this.setState({
+      widget,
+    });
+  };
+  handleStartDateChange = (date) => {
+    let widget = { ...this.state.widget };
+    let params = "";
+    if (typeof widget.widgetParams === "string") {
+      params = JSON.parse(widget.widgetParams);
+    } else {
+      params = widget.widgetParams;
+    }
+    params.start_date = date.format("l");
+    params = JSON.stringify(params);
+    widget.widgetParams = params;
+    widget.widget.params = params;
+    this.setState({
+      widget,
+    });
+  };
+
+  handleStartEndDateChange =(startDate, endDate) =>{
+    let widget = { ...this.state.widget };
+    let params = "";
+    if (typeof widget.widgetParams === "string") {
+      params = JSON.parse(widget.widgetParams);
+    } else {
+      params = widget.widgetParams;
+    }
+    params.start_date = startDate.format("l")
+    params.end_date = endDate.format("l");
+    params = JSON.stringify(params);
+    widget.widgetParams = params;
+    widget.widget.params = params;
+    this.setState({
+      widget,
+    });
+  }
 
   handleClose = () => {
     this.editHelper.saveToDB(this.state.widget.widget);
@@ -74,7 +177,11 @@ class EditWidget extends Component {
   getValue = (field) => {
     //first we check if the property is set in tne widget.
     let w_params = { ...this.state.widget };
-    w_params = JSON.parse(w_params.widgetParams);
+    if (typeof w_params.widgetParams === "string") {
+      w_params = JSON.parse(w_params.widgetParams);
+    } else {
+      w_params = w_params.widgetParams;
+    }
     if (typeof w_params[field] != "undefined") {
       if (w_params[field]) {
         return w_params[field];
@@ -110,9 +217,7 @@ class EditWidget extends Component {
       };
       return <div style={wrapper_style}>{/* <CircleLoader /> */}</div>;
     } else {
-      console.log(this.state);
       const widget = this.state.widget;
-      console.log(widget);
 
       return (
         <Dialog
@@ -131,12 +236,50 @@ class EditWidget extends Component {
                 InputLabelProps={{
                   shrink: this.state.widget.widget.title ? true : false,
                 }}
-                handleChange={this.handleChange}
+                handleChange={this.handleTitleChange}
                 value={this.state.widget.widget.title}
               />
             </div>
             <br />
+            <div>
+              <TextInput
+                variant="outlined"
+                size={this.props.size}
+                label="Refresh Interval"
+                name="interval"
+                InputLabelProps={{
+                  shrink: this.state.widget.widget.interval ? true : false,
+                }}
+                handleChange={this.handleChange}
+                value={this.getValue("interval")}
+              />
+            </div>
+            <br />
 
+            <div>
+              <DropDown
+                label="Data Source"
+                variant="outlined"
+                name="source_id"
+                size={this.props.size}
+                handleChange={this.handleSourceChange}
+                value={this.state.widget.widget.source_id}
+                options={this.state.sources}
+              />
+            </div>
+            <br />
+            <div>
+              <DropDown
+                label="Widget Type"
+                variant="outlined"
+                name="type_id"
+                size={this.props.size}
+                handleChange={this.handleTypeChange}
+                value={this.state.widget.widget.type_id}
+                options={this.editHelper.getTypes(this.state.widget.source.types)}
+              />
+            </div>
+            <br />
             {this.state.widget.sourceParams.map((param, i) => {
               let comp = null;
               switch (param.data_type) {
@@ -165,10 +308,15 @@ class EditWidget extends Component {
                   break;
                 case "dropdown":
                   let data = null;
+                  let is_ajax = false;
                   if (param.table_columns === "ajax") {
                     //todo create ajax call
+                   data =   window.ajax_url + param.table_actions;
+                   is_ajax = true;
                   } else {
                     data = eval(param.table_actions);
+                    is_ajax = false;
+                    
                   }
                   return (
                     <React.Fragment key={param.source_param_id}>
@@ -181,6 +329,7 @@ class EditWidget extends Component {
                           handleChange={this.handleChange}
                           value={this.getValue(param.param_url_name)}
                           options={data}
+                          is_ajax ={is_ajax}
                         />
                       </div>
                       <br />
@@ -188,7 +337,6 @@ class EditWidget extends Component {
                   );
                   break;
                 case "date":
-                  console.log("rendering Date");
                   return (
                     <React.Fragment key={param.source_param_id}>
                       <div>
@@ -196,7 +344,7 @@ class EditWidget extends Component {
                           label={param.param_name}
                           size={this.props.size}
                           name={param.param_url_name}
-                          handleChange={this.handleChange}
+                          handleDateChange={this.handleDateChange}
                           value={this.getValue(param.param_url_name)}
                           date={this.getValue(param.param_url_name)}
                           single={true}
@@ -207,20 +355,17 @@ class EditWidget extends Component {
                   );
                   break;
                 case "start_date":
-                  let end_date = this.state.widget.sourceParams.filter(
-                    function (el) {
-                      return (el.data_type = "end_date");
-                    }
-                  );
                   return (
                     <React.Fragment key={param.source_param_id}>
                       <div>
                         <DateHandler
-                          startDate={this.props.chart.params.start_date}
+                          startDate={this.getValue("start_date")}
                           size={this.props.size}
-                          endDate={this.props.chart.params.end_date}
-                          handleStartDateChange={this.props.handleStartChange}
-                          handleEndDateChange={this.props.handleEndChange}
+                          endDate={this.getValue("end_date")}
+                          handleStartDateChange={this.handleStartDateChange}
+                          handleEndDateChange={this.handleEndDateChange}
+                          handleStartEndDateChange = {this.handleStartEndDateChange}
+                          single={false}
                         />
                       </div>
                       <br />

@@ -37,6 +37,7 @@ class LineChart extends React.Component {
         },
         title: { display: true, text: this.props.title },
         legend: {
+          display:false,
           position: "bottom"
         }
       },
