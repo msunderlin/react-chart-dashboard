@@ -27,7 +27,7 @@ class EditWidget extends Component {
       sources: dataSources,
     }));
   }
-  async componentDidUpdate() {
+  componentDidUpdate() {
     let widget = this.state.widget;
     if (this.props.widget_id === 0) {
     } else {
@@ -47,6 +47,7 @@ class EditWidget extends Component {
       }
     }
   }
+
 
   handleChange = (event) => {
     let node = event.target.name;
@@ -109,7 +110,8 @@ class EditWidget extends Component {
     } else {
       params = widget.widgetParams;
     }
-    params.date = date.format("l");
+    
+    params.date = date;
     params = JSON.stringify(params);
     widget.widget.params = params;
     widget.widgetParams = params;
@@ -125,7 +127,7 @@ class EditWidget extends Component {
     } else {
       params = widget.widgetParams;
     }
-    params.end_date = date.format("l");
+    params.end_date = date;
     params = JSON.stringify(params);
     widget.widgetParams = params;
     widget.widget.params = params;
@@ -141,7 +143,7 @@ class EditWidget extends Component {
     } else {
       params = widget.widgetParams;
     }
-    params.start_date = date.format("l");
+    params.start_date = date;
     params = JSON.stringify(params);
     widget.widgetParams = params;
     widget.widget.params = params;
@@ -158,8 +160,8 @@ class EditWidget extends Component {
     } else {
       params = widget.widgetParams;
     }
-    params.start_date = startDate.format("l")
-    params.end_date = endDate.format("l");
+    params.start_date = startDate
+    params.end_date = endDate;
     params = JSON.stringify(params);
     widget.widgetParams = params;
     widget.widget.params = params;
@@ -168,8 +170,8 @@ class EditWidget extends Component {
     });
   }
 
-  handleClose = () => {
-    this.editHelper.saveToDB(this.state.widget.widget);
+  handleClose = async () => {
+   await this.editHelper.saveToDB(this.state.widget.widget);
 
     this.props.handleClose();
   };
@@ -217,9 +219,10 @@ class EditWidget extends Component {
       };
       return <div style={wrapper_style}>{/* <CircleLoader /> */}</div>;
     } else {
-      const widget = this.state.widget;
 
-      return (
+      const widget = this.state.widget;
+        
+      return (this.props.opened &&
         <Dialog
           open={this.props.opened}
           onClose={this.handleClose}

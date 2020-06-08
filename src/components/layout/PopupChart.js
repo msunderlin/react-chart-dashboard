@@ -3,6 +3,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import EditHelper from "../edit/EditHelper";
+import DateHelper from "../../util/dateHelper";
 import moment from "moment";
 
 import PopupChartWrapper from "../charts/PopupChartWrapper";
@@ -13,36 +14,23 @@ class PopupChart extends React.Component {
   }
   editWidget = null;
   async componentDidMount() {
+    const dateHelper = new DateHelper();
     if (!this.props.show_popup) {
-      return "";
-    }
-    this.editWidget = new EditHelper();
-    let widget = await this.editWidget
-      .initalizeData(this.props.popupchart)
-      .then((widget) => {
-        this.setState({ widget });
-      });
-  }
-  async componentDidUpdate() {
-    if (this.editWidget === null) {
-      this.editWidget = new EditHelper();
-    }
-    if (!this.props.show_popup) {
-      return "";
-    }
-    if(this.state.widget !== null){
       return "";
     }
     let props = this.props;
-    let widget = await this.editWidget
+    console.log(props.context_date);
+    this.editWidget = new EditHelper();
+    await this.editWidget
       .initalizeData(this.props.popupchart)
       .then((widget) => {
         this.setState({ widget });
       });
-    widget = this.state.widget;
+    let widget = this.state.widget;
     let params = widget.widgetParams;
     let popupchart = props.popupchart;
-    let year = moment(params.start_date).year();
+    let c_start_date= dateHelper.startDateHandler(params.start_date);
+    let year = moment(c_start_date).year();
     let start_date = moment(props.context_date)
       .year(year)
       .startOf("day")
@@ -63,11 +51,12 @@ class PopupChart extends React.Component {
       widget.source,
       widget.sourceParams
     );
-    console.log(widget);
     this.setState((state) => ({
       widget,
     }));
   }
+
+  componentWillUnmount = () => {};
   handleStartDateChange = (date) => {
     let widget = { ...this.state.widget };
     let params = "";
@@ -111,28 +100,26 @@ class PopupChart extends React.Component {
       let year = moment(this.state.widget.widgetParams.start_date).year();
       let date = moment(props.context_date).year(year).format("l");
       return (
-        props.show_popup && (
-          <Dialog
-            maxWidth={false}
-            open={Boolean(props.show_popup)}
-            onClose={props.handleClose}
-            aria-labelledby="form-dialog-title"
-          >
-            <DialogTitle id="form-dialog-title">
-              {popupchart.title} - Hourly Detail for {date}
-            </DialogTitle>
-            <DialogContent>
-              <div style={{ height: "60vh", width: "60vw" }}>
-                <PopupChartWrapper
-                  chart={widget}
-                  key={"popup"}
-                  widget_id={popupchart}
-                  paused={false}
-                />
-              </div>
-            </DialogContent>
-          </Dialog>
-        )
+        <Dialog
+          maxWidth={false}
+          open={Boolean(props.show_popup)}
+          onClose={props.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">
+            {popupchart.title} - Hourly Detail for {date}
+          </DialogTitle>
+          <DialogContent>
+            <div style={{ height: "60vh", width: "60vw" }}>
+              <PopupChartWrapper
+                chart={widget}
+                key={"popup"}
+                widget_id={popupchart}
+                paused={false}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
       );
     }
   }

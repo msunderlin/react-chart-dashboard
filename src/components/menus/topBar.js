@@ -11,11 +11,9 @@ class TopBar extends React.Component {
     return (
       <Grid
       container
-        disableGutters={true}
         direction="row"
         alignItems="flex-end"
         justify="center"
-        maxWidth={false}
         style={{
           position: "relative",
           backgroundColor: "#2c2e33",

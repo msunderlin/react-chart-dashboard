@@ -19,7 +19,6 @@ class StackedBarChart extends React.Component {
   }
   componentDidMount() {
     document.addEventListener("contextmenu", this._handleContextMenu);
-    console.log(this.props.stacked);
     this.myChart = new Chart(this.canvasRef.current, {
       type: "bar",
       options: {

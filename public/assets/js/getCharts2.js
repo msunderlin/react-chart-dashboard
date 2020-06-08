@@ -12,7 +12,6 @@ async function getWidgets() {
   )
     .then(response => response.json())
     .then(data => {
-      console.log(typeof data);
       if((typeof data) == "string"){
        data =  JSON.parse(data);
       }

@@ -3,6 +3,7 @@ import DropDown from "../dropdowns/DropDown";
 import DatePicker from "../pickers/DatePicker";
 import moment from "moment";
 import FormControl from "@material-ui/core/FormControl";
+import DateHelper from "../../util/dateHelper";
 
 class DateHandler extends React.Component {
   constructor(props) {
@@ -12,6 +13,23 @@ class DateHandler extends React.Component {
       value: "",
     };
   }
+  componentDidMount = () => {
+    let val = "";
+    if (this.props.single) {
+      val = this.props.date;
+      if (val.length > 3) {
+        val = "cdr";
+      }
+    } else {
+      val = this.props.startDate;
+      if (val.length > 3) {
+        val = "cdr";
+      }
+    }
+    this.setState({ value: val });
+  };
+
+
   handleDropdownChange = (event) => {
     let v = event.target.value;
     this.setState({
@@ -28,6 +46,7 @@ class DateHandler extends React.Component {
       this.setDates(v);
     }
   };
+  datehelper = new DateHelper();
   setDates = (value) => {
     let single = this.props.single;
     let date = moment();
@@ -40,7 +59,7 @@ class DateHandler extends React.Component {
           date = date.subtract(1, "d");
         }
         startDate = startDate.subtract(1, "d");
-        endDate = endDate.subtract(1,"d");
+        endDate = endDate.subtract(1, "d");
         break;
       case "tw":
         //this week only modify start date
@@ -61,10 +80,10 @@ class DateHandler extends React.Component {
         break;
     }
     if (single) {
-      this.props.handleDateChange(date);
+      this.props.handleDateChange(value);
     } else {
-      this.props.handleStartEndDateChange(startDate,endDate);
-    };
+      this.props.handleStartEndDateChange(value, value);
+    }
   };
   render() {
     if (this.props.single) {
@@ -99,7 +118,7 @@ class DateHandler extends React.Component {
             <FormControl variant="filled">
               <DatePicker
                 size={this.props.size}
-                date={this.props.date}
+                date={this.datehelper.singleDateHandler(this.props.date)}
                 label="Date"
                 handleDateChange={this.props.handleDateChange}
                 variant="dialog"
@@ -121,6 +140,18 @@ class DateHandler extends React.Component {
               {
                 text: "Today",
                 value: "t",
+              },
+              {
+                text: "Today - 1 day",
+                value: "t-1",
+              },
+              {
+                text: "Today - 2 days",
+                value: "t-2",
+              },
+              {
+                text: "Todays - 3 days",
+                value: "t-3",
               },
               {
                 text: "Yesterday",
@@ -157,7 +188,7 @@ class DateHandler extends React.Component {
             <FormControl variant="filled">
               <DatePicker
                 size={this.props.size}
-                date={this.props.startDate}
+                date={this.datehelper.startDateHandler(this.props.startDate)}
                 label="Start Date"
                 handleDateChange={this.props.handleStartDateChange}
                 variant="dialog"
@@ -167,7 +198,7 @@ class DateHandler extends React.Component {
             <FormControl variant="filled">
               <DatePicker
                 size={this.props.size}
-                date={this.props.endDate}
+                date={this.datehelper.endDateHandler(this.props.endDate)}
                 label="End Date"
                 handleDateChange={this.props.handleEndDateChange}
                 variant="dialog"

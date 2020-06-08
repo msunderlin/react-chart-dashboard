@@ -80,10 +80,6 @@ class PopupChartWrapper extends Component {
     // if(this.state.widget === []){
     //   return;
     // }
-    // console.log(this.state);
-    // console.log('=================================================');
-    // console.log(this.state.widget_url);
-    // console.log('=================================================');
     // if (this.state.widget.type_id !== "6") {
     //   let url = window.base_url + this.state.widget_url;
     //   fetch(url)
@@ -123,7 +119,6 @@ class PopupChartWrapper extends Component {
         if (this.timer === 0) {
           this.timer = 3;
           this.initalizeData().then(() => {
-            console.log(this.state.widget);
             clearInterval(this.timer);
             this.timer = 3;
             let url = window.base_url + this.state.widget_url;
@@ -424,9 +419,6 @@ class PopupChartWrapper extends Component {
     return await sources;
   }
   async initalizeData() {
-    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-    console.log(this.props.chart);
-    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
     let widget = this.props.chart.widget;
     let widgetParams = this.props.chart.widget.params;
     let source = this.props.chart.source;

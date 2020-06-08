@@ -1,6 +1,5 @@
 import React from "react";
 
-
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CloseIcon from "@material-ui/icons/Close";
@@ -18,6 +17,7 @@ import Layout from "./components/layout/Layout";
 import PopupChart from "./components/layout/PopupChart";
 import SideMenu from "./components/menus/sideMenu";
 import TopBar from "./components/menus/topBar";
+import { isThisTypeNode } from "typescript";
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -39,15 +39,27 @@ class App extends React.Component {
       refreshed_id: 0,
     };
   }
-
-  componentDidMount() {
-    this.initializeData();
+  default_position = {h: 3,
+    minH: 2,
+    minW: 2,
+    moved: false,
+    static: false,
+    w: 10,
+    x: 0,
+    y: 0}
+ async componentDidMount() {
+    await this.initializeData();
   }
 
-  componentDidUpdate() {}
+  componentDidUpdate() {
+   }
 
   //Context Menu Actions
   handleContextOpenClick = (event, label, i) => {
+    console.log(event.target);
+    console.log(label);
+    console.log(i);
+    console.log(this.state.widgets[i]);
     this.setState((state) => ({
       show_context: event.target,
       context_target: JSON.parse(JSON.stringify(state.widgets[i])),
@@ -88,19 +100,28 @@ class App extends React.Component {
     }));
   };
   handleEditClose = () => {
-    this.setState(
-      (state) => ({
-        edit_opened: false,
-        edit_target: 0,
-        edit_target_id: 0,
-        paused: false,
-        widgets: [],
-        layouts: [],
-      }),
-      () => {
-        this.initializeData();
-      }
-    );
+    if (this.state.edit_target === "new") {
+      this.setState(
+        (state) => ({
+          edit_opened: false,
+          edit_target: 0,
+          edit_target_id: 0,
+          paused: false,
+        }),
+        () => {
+          this.initializeData();
+        }
+      );
+    } else {
+      this.setState(
+        (state) => ({
+          edit_opened: false,
+          edit_target: 0,
+          edit_target_id: 0,
+          paused: false,
+
+        }));
+    }
   };
   //Add Widget
   handleWidgetAdd = (widget) => {
@@ -112,7 +133,7 @@ class App extends React.Component {
     }));
   };
   //delete Widget
-  handleWidgetRemove = (i) => {
+   handleWidgetRemove = async (i) => {
     let charts = this.state.widgets;
     let layouts = JSON.parse(JSON.stringify(this.state.layouts));
     let chart = charts.map((chart, j) => {
@@ -126,17 +147,13 @@ class App extends React.Component {
       layouts[key].splice(chart, 1);
     });
 
-    this.handleLayoutsChange(layouts);
-    this.handleWidgetDelete(i);
-    this.setState(
-      (state) => ({
-        widgets: [],
-        layouts: [],
-      }),
-      () => {
-        this.initializeData();
-      }
-    );
+    await this.handleWidgetDelete(i);
+    this.setState({
+      widgets: [],
+      layouts: []
+    },async ()=>{
+    this.handleLayoutsChange(layouts)
+    await this.initializeData()});
   };
   handleLayoutsChange = (layouts) => {
     this.saveLayoutToDB(layouts);
@@ -194,13 +211,15 @@ class App extends React.Component {
     } else {
       return (
         <div>
+          {this.state.show_popup && 
           <PopupChart
             popupchart={this.state.context_target}
             context_date={this.state.context_param}
             handleClose={this.handlePopupClose}
             show_popup={this.state.show_popup}
           />
-
+    }
+{this.state.edit_opened &&
           <EditWidget
             size="small"
             widget_id={this.state.edit_target}
@@ -217,6 +236,7 @@ class App extends React.Component {
             handleSave={this.handleChartChange}
             products={[]}
           />
+}
           <ContextMenu
             visible={this.state.show_context}
             handleContextClose={this.handleContextClose}
@@ -226,11 +246,11 @@ class App extends React.Component {
             handleContextClick={this.handleContextClick}
           />
           <Grid container direction="row" spacing={0}>
-            <Grid item xs={2}>
-               <SideMenu></SideMenu> 
+            <Grid item xs={1}>
+              <SideMenu></SideMenu>
             </Grid>
-            <Grid item xs={10}>
-            <TopBar/>
+            <Grid item xs={11}>
+              <TopBar />
               <Container disableGutters={true} maxWidth={false}>
                 <Layout
                   charts={this.state.widgets}
@@ -242,6 +262,9 @@ class App extends React.Component {
                 >
                   {this.state.widgets.map((widget, i) => {
                     var pos = this.state.layouts.lg[i];
+                    if(typeof pos === "undefined"){
+                      pos = this.default_position;
+                    }
                     return (
                       <Card
                         variant="outlined"
@@ -293,7 +316,7 @@ class App extends React.Component {
                           handleContextOpenClick={this.handleContextOpenClick}
                           handleContextClose={this.handleContextClose}
                           chartIndex={i}
-                          paused={this.state.paused}
+                          paused={(this.state.paused && this.state.edit_target == widget)}
                         />
                       </Card>
                     );
@@ -318,18 +341,18 @@ class App extends React.Component {
       if (isNaN(dashboard_name)) {
         dashboard_id = await fetch(
           window.ajax_url +
-            "?user_id=" +
-            user_id +
-            "&action=" +
-            action +
-            "&dashboard_name=" +
-            dashboard_name
+          "?user_id=" +
+          user_id +
+          "&action=" +
+          action +
+          "&dashboard_name=" +
+          dashboard_name
         )
           .then((response) => response.json())
           .then((data) => {
             return data.dashboard_id;
           })
-          .catch((e) => {});
+          .catch((e) => { });
         if (dashboard_id === false) {
           window.setAction("list");
         } else {

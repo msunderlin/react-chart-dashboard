@@ -23,8 +23,6 @@ class DropDown extends React.Component {
         });
           this.fetching = false;
     } else {
-      console.log(typeof this.props.options);
-      console.log(this.props.options);
       this.setState((state) => ({
         options: this.props.options,
       }));
@@ -46,8 +44,6 @@ class DropDown extends React.Component {
           this.fetching = false;
         }
       } else {
-        console.log(typeof this.props.options);
-        console.log(this.props.options);
         this.setState((state) => ({
           options: this.props.options,
         }));
@@ -77,7 +73,6 @@ class DropDown extends React.Component {
         >
           <option value="" />
           {this.state.options.map((o, i) => {
-            console.log(o);
             return (
               <option key={i} value={o.value}>
                 {o.text}

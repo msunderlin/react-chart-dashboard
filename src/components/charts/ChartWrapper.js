@@ -26,6 +26,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
+import DateHelper from "../../util/dateHelper";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -50,7 +51,7 @@ const tableIcons = {
   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
 class ChartWrapper extends Component {
@@ -73,6 +74,7 @@ class ChartWrapper extends Component {
 
   //storing the instance of the set interval here.
   timer = 0;
+  fetching = false;
   //Lifecycle Methods
   async componentDidMount() {
     this.timer = 3;
@@ -80,32 +82,41 @@ class ChartWrapper extends Component {
 
     if (this.state.widget.type_id !== "6") {
       let url = window.base_url + this.state.widget_url;
-    console.log(url);
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          this.setState({ data: data });
-        });
+      if (this.fetching === false) {
+        this.fetching = true;
+        fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            this.setState({ data: data });
+            this.fetching = false;
+          });
+      }
     }
     if (this.getHeader) {
     }
     if (this.state.widget.type_id !== "6") {
       this.timer = setInterval(() => {
         let url = window.base_url + this.state.widget_url;
-        fetch(url)
-          .then((response) => response.json())
-          .then((data) => {
-            this.setState({ data: data });
-          });
+        if (this.fetching === false) {
+          this.fetching = true;
+          fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+              this.setState({ data: data });
+              this.fetching = false;
+            });
+        }
       }, this.state.widgetParams.interval);
     }
   }
   componentWillUnmount() {
     clearInterval(this.timer);
+    this.fetching = false;
     this.setState({ data: [] });
   }
   componentDidUpdate() {
     if (this.props.paused) {
+      this.fetching = false;
       if (this.timer > 0) {
         clearInterval(this.timer);
         this.timer = 0;
@@ -117,17 +128,25 @@ class ChartWrapper extends Component {
             clearInterval(this.timer);
             this.timer = 3;
             let url = window.base_url + this.state.widget_url;
-            fetch(url)
-              .then((response) => response.json())
-              .then((data) => {
-                this.setState({ data: data });
-              });
-            this.timer = setInterval(() => {
+            if (this.fetching === false) {
+              this.fetching = true;
               fetch(url)
                 .then((response) => response.json())
                 .then((data) => {
                   this.setState({ data: data });
+                  this.fetching = false;
                 });
+            }
+            this.timer = setInterval(() => {
+              if (this.fetching === false) {
+                this.fetching = true;
+                fetch(url)
+                  .then((response) => response.json())
+                  .then((data) => {
+                    this.setState({ data: data });
+                    this.fetching = false;
+                  });
+              }
             }, this.state.widgetParams.interval);
           });
         }
@@ -137,7 +156,6 @@ class ChartWrapper extends Component {
 
   render() {
     const chart = this.state.widget;
-    console.log(chart);
     const type = this.state.widget.type_id;
     if (this.state.data.length === 0 && type !== "6") {
       let wrapper_style = {
@@ -161,7 +179,7 @@ class ChartWrapper extends Component {
       switch (type) {
         case "1":
           //BarChart
-         
+
           return (
             <BarChart
               data={this.state.data}
@@ -172,7 +190,7 @@ class ChartWrapper extends Component {
           );
         case "2":
           //LineChart
-        
+
           return <LineChart data={this.state.data} title="" color="#7070D1" />;
         case "3":
           //DoughnutChart
@@ -231,7 +249,6 @@ class ChartWrapper extends Component {
               }
             })
             .filter((a) => a != null);
-            console.log(columns)
           columns = [...columns[0]];
           let actions = this.state.sourceParams
             .map((param, i) => {
@@ -240,7 +257,7 @@ class ChartWrapper extends Component {
               }
             })
             .filter((a) => a != null);
-            actions = JSON.stringify(actions);
+          actions = JSON.stringify(actions);
           return (
             <Table
               title={chart.title}
@@ -250,7 +267,12 @@ class ChartWrapper extends Component {
                 search: false,
                 sort: true,
                 paging: false,
-                headerStyle: { position: "sticky", top: 0, backgroundColor:"#29c7ca",color:"#fff"},
+                headerStyle: {
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "#29c7ca",
+                  color: "#fff",
+                },
                 padding: "dense",
               }}
               innerRef={(header) => (this.getHeader = header)}
@@ -267,7 +289,7 @@ class ChartWrapper extends Component {
               data={this.state.data}
               title={chart.title}
               // stacked={chart.stacked ? true : false}
-              stacked = {false}
+              stacked={false}
               colors={[
                 "#29a6ca",
                 "#29c7ca",
@@ -279,27 +301,27 @@ class ChartWrapper extends Component {
               interval={chart.params.interval}
             />
           );
-          case "8":
-            return (
-              <StackedLineChart
-                handleContextOpenClick={this.props.handleContextOpenClick}
-                chartIndex={this.props.chartIndex}
-                source={chart.source}
-                params={chart.params}
-                data={this.state.data}
-                title={chart.title}
-                stacked={chart.stacked ? true : false}
-                colors={[
-                  "#29a6ca",
-                  "#29c7ca",
-                  "#82ddbe",
-                  "#0091ff",
-                  "#b08ea2",
-                  "#BBB6DF",
-                ]}
-                interval={chart.params.interval}
-              />
-            );
+        case "8":
+          return (
+            <StackedLineChart
+              handleContextOpenClick={this.props.handleContextOpenClick}
+              chartIndex={this.props.chartIndex}
+              source={chart.source}
+              params={chart.params}
+              data={this.state.data}
+              title={chart.title}
+              stacked={chart.stacked ? true : false}
+              colors={[
+                "#29a6ca",
+                "#29c7ca",
+                "#82ddbe",
+                "#0091ff",
+                "#b08ea2",
+                "#BBB6DF",
+              ]}
+              interval={chart.params.interval}
+            />
+          );
         default:
           return "";
       }
@@ -396,20 +418,36 @@ class ChartWrapper extends Component {
 
   async buildUrl(widget, source, sourceParams) {
     var url = source.source_url;
+    const datehelper = new DateHelper();
+    let value = '';
     url += "?user_id=" + window.getUserID();
     for (let i = 0; i < sourceParams.length; i++) {
       url += "&";
       url += sourceParams[i].param_url_name + "=";
       if (widget.params == null) {
-        url += sourceParams[i].default_value;
+       value = sourceParams[i].default_value;
       } else {
         let params = JSON.parse(widget.params);
         if (typeof params[sourceParams[i].param_url_name] == "undefined") {
-          url += sourceParams[i].default_value;
+          value = sourceParams[i].default_value;
         } else {
-          url += params[sourceParams[i].param_url_name];
+          value = params[sourceParams[i].param_url_name];
         }
       }
+      switch(sourceParams[i].param_url_name){
+        case "date":
+            value = datehelper.singleDateHandler(value);
+          break;
+        case "start_date":
+            value = datehelper.startDateHandler(value);
+          break;
+        case "end_date":
+            value = datehelper.endDateHandler(value);
+          break;
+          default:
+            break;
+      }
+      url += value;
     }
     return url;
   }
